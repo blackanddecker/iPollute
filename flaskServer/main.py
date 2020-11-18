@@ -13,9 +13,6 @@ app.config['MYSQL_PASSWORD'] = db['DB_PASSWORD']
 app.config['MYSQL_DB'] = db['DB']
 
 
-
-
-
 def getConnection():
     try:
         connection = pymysql.connect(host=app.config['MYSQL_HOST'],
@@ -33,9 +30,6 @@ def getConnection():
     return connection
 
 
-
-
-
 @app.route('/')
 def hello_world():
     return 'Hello, World!'
@@ -47,11 +41,6 @@ def login():
 @app.route('/signin')
 def login():
     return 
-
-# ---------------- Customer / Settings / Login ------------------#
-
-
-
 
 @app.route('/updateUser', methods=['POST'])
 def updateCustomer():
