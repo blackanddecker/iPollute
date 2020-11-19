@@ -13,7 +13,7 @@ def getFoodObjects(connection, data):
             sql = "CALL getFoodObjects({});".format(data['userId'])
             print(sql)
             cursor.execute(sql)
-            foods = connection.commit()
+            foods = cursor.fetchall()
         if len(foods)>0:
             return {"foodObjects" : foods }, 200
         else:

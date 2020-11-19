@@ -16,7 +16,7 @@ Calculate hours / costs properly
  11. Support Update / Delete buttons for history 
  13. Add weekly option 
  16. Add Validations if its email , number etc
- 17. Verify budget the first time 
+ 17. Verify budget the first time if user.EnergyTotal = 0 
  18. Customize pie chart
  21. Customize Filters
  19. Pie chart based in server 

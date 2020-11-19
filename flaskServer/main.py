@@ -1,7 +1,15 @@
 from flask import Flask, request
 from flask_cors import CORS, cross_origin 
 import pymysql.cursors
+import yaml
 
+from src.transports import getTransportObjects
+from src.foods import getFoodObjects
+from src.user import getUserDetails
+from src.user import deleteUser
+from src.user import updateUser
+
+db = yaml.safe_load(open('configs/local.yml'))
 
 app = Flask(__name__)
 
@@ -31,71 +39,71 @@ def getConnection():
 
 
 @app.route('/')
-def hello_world():
+def _hello_world():
     return 'Hello, World!'
 
 @app.route('/login')
-def login():
+def _login():
     return 
 
 @app.route('/signin')
-def login():
+def _signin():
     return 
 
 @app.route('/updateUser', methods=['POST'])
-def updateCustomer():
+def _updateCustomer():
     response, status = updateUser.updateUser(connection = getConnection(), data = request.get_json())
-    return jsonify(data=response), status
+    return response, status
 
 @app.route('/deleteUser', methods=['POST'])
-def deleteCustomer():
+def _deleteCustomer():
     response, status = deleteUser.deleteUser(connection = getConnection(), data = request.get_json())
     return response, status
 
 
-@app.route('/getUserDetails'), methods=['POST']
-def getUserDetails():
+@app.route('/getUserDetails', methods=['POST'])
+def _getUserDetails():
     response, status = getUserDetails.getUserDetails(connection = getConnection(), data = request.get_json())
     return response, status
 
 
 @app.route('/getTransportObjects', methods=['POST'])
-def getTransportObjects():
+def _getTransportObjects():
     response, status = getTransportObjects.getTransportObjects(connection = getConnection(), data = request.get_json())
     return response, status
 
 @app.route('/getFoodObjects', methods=['POST'])
-def getTransportObjects():
+def _getFoodObjects():
     response, status = getFoodObjects.getFoodObjects(connection = getConnection(), data = request.get_json())
     return response, status
 
 
 @app.route('/deleteEnergy', methods=['POST'])
-def deleteEnergy():
+def _deleteEnergy():
     response, status = deleteEnergy.deleteEnergy(connection = getConnection(), data = request.get_json())
     return response, status
 
 
 @app.route('/insertEnergy', methods=['POST'])
-def insertEnergy():
+def _insertEnergy():
     response, status = insertEnergy.insertEnergy(connection = getConnection(), data = request.get_json())
     return response, status
 
 @app.route('/updateEnergy', methods=['POST'])
-def updateEnergy():
+def _updateEnergy():
     response, status = updateEnergy.updateEnergy(connection = getConnection(), data = request.get_json())
     return response, status
 
 
 @app.route('/getEnergyHistory', methods=['POST'])
-def getEnergyHistory():
+def _getEnergyHistory():
     response, status = getEnergyHistory.getEnergyHistory(connection = getConnection(), data = request.get_json())
     return response, status
 
 
 @app.route('/getFilterOptions', methods=['POST'])
-def getFilterOptions():
-    response, status = getEnergyHistory.getEnergyHistory(connection = getConnection(), data = request.get_json())
+def _getFilterOptions():
+    response, status = getFilterOptions.getFilterOptions(connection = getConnection(), data = request.get_json())
     return response, status    
 
 if __name__ == '__main__':

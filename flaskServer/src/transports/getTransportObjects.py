@@ -2,7 +2,7 @@ import pymysql.cursors
 import flask
 from flask import Flask , request ,make_response ,jsonify
 
-def getTransportObjects(connection, data):
+def getTransportObjects(connection = '', data = {}):
     '''
     Get Transport Objects
     '''
@@ -13,7 +13,7 @@ def getTransportObjects(connection, data):
             sql = "CALL getTransportObjects({});".format(data['userId'])
             print(sql)
             cursor.execute(sql)
-            transports = connection.commit()
+            transports = cursor.fetchall()
         if len(transports)>0:
             return {"transportObjects" : transports }, 200
         else:

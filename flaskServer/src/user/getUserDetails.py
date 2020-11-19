@@ -13,7 +13,7 @@ def getUserDetails(connection, data):
             sql = "CALL getUserDetails({});".format(data['userId'])
             print(sql)
             cursor.execute(sql)
-            userDetails = connection.commit()
+            userDetails = cursor.fetchall()
         if len(userDetails)>0:
             return {"userDetails":userDetails[0], "success":True}, 200
         else:

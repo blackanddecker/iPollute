@@ -6,18 +6,22 @@ def updateUser(connection, data):
     '''
     Update User
     '''
+    print(data)
     if 'userId' not in data:
         return {'message':'userId missing!', 'success': False}, 400
     if 'email' not in data:
         return {'message':'Email missing!', 'success': False}, 400
+    if 'username' not in data:
+        return {'message':'Username missing!', 'success': False}, 400
     if 'password' not in data:
         return {'message':'Password missing', 'success': False}, 400
     if 'userEnergy' not in data:
         return {'message':'User Energy missing', 'success': False}, 400
     try:
         with connection.cursor() as cursor:
-            sql = "CALL updateUser({}, '{}', '{}', {}, @s);".format(
+            sql = "CALL updateUser({}, '{}', '{}', '{}', {}, @s);".format(
                 data['userId'], 
+                data['username'],
                 data['email'],
                 data['password'],
                 data['userEnergy']
