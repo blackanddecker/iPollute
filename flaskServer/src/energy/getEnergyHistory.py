@@ -10,19 +10,32 @@ def getEnergyHistory(connection, data):
         return {'message':'userId missing!', 'success': False}, 400
     try:
         with connection.cursor() as cursor:
-            sql = "CALL getEnergyHistory({});".format(data['userId'])
+            sql = "CALL getFoodEnergyHistory({});".format(data['userId'])
             print(sql)
             cursor.execute(sql)
-            history = connection.commit()
+            foodHistory = cursor.fetchall()
+
+            #calculate food cost
+            if len(foodHistory) > 0 : 
+                for i in range(0, len(foodHistory)):
+                    foodHistory[i]['cost'] = costFoodCalculations(foodHistory[i]['foodCost'] , foodHistory[i]['energyCost'] )
+
+        with connection.cursor() as cursor:
+            sql = "CALL getFoodEnergyHistory({});".format(data['userId'])
+            print(sql)
+            cursor.execute(sql)
+            transportHistory = cursor.fetchall()
         
-        if len(history)>0:
-            return {"history":history, "success":True}, 200
-        else:
-            return {"history":{}, "success":False}, 200
+            #calculate tranport cost
+            if len(transportHistory) > 0 : 
+                for i in range(0, len(transportHistory)):
+                    transportHistory[i]['cost'] = costFoodCalculations(transportHistory[i]['transportCost'] , transportHistory[i]['energyCost'] )
+
+            return {"foodHistory":foodHistory, "transportHistory":transportHistory, "success":True}, 200
 
     
     except Exception as e :
         print(e)
         import traceback
         traceback.print_exc()
-        return {"history":{}, "success":False}, 500
+        return {"history":[], "success":False}, 500

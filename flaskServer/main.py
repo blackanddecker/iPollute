@@ -9,6 +9,12 @@ from src.user import getUserDetails
 from src.user import deleteUser
 from src.user import updateUser
 
+from src.energy import insertEnergy
+from src.energy import deleteEnergy
+from src.energy import updateEnergy
+from src.energy import getEnergyHistory
+
+
 db = yaml.safe_load(open('configs/local.yml'))
 
 app = Flask(__name__)

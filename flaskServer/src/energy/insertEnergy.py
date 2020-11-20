@@ -2,6 +2,8 @@ import pymysql.cursors
 import flask
 from flask import Flask , request ,make_response ,jsonify
 
+from src.utils.costCalculations import costTransportCalculations, costFoodCalculations
+
 def insertEnergy(connection, data):
     '''
     Insert Energy
@@ -14,22 +16,27 @@ def insertEnergy(connection, data):
         return {'message':'transportId missing', 'success': False}, 400
     if 'cost' not in data:
         return {'message':'cost missing', 'success': False}, 400
-    
+    if 'datetime' not in data:
+        return {'message':'datetime missing', 'success': False}, 400
     try:
 
-        if foodId is not None:
-            energyCost = calculateFoodCost(foodId, cost)
-        elif transportId is not None:
-            energyCost = calculateTransportCost(transportId, cost)
+        if data['foodId'] is not None:
+            #energyCost = costFoodCalculations(data['foodId'] , data['cost'] )
+            data['transportId'] = "NULL"
+
+        elif data['transportId'] is not None:
+            #energyCost = costTransportCalculations(data['transportId'] , data['cost'] )
+            data['foodId'] = "NULL"
         else:
             return {'message': 'Wrong Inputs', 'success': False}, 200
 
         with connection.cursor() as cursor:
-            sql = "CALL insertEnergy({}, {}, {}, {}, @s);".format(
+            sql = "CALL insertEnergy({}, {}, {}, {},'{}');".format(
                 data['userId'], 
                 data['foodId'],
                 data['transportId'],
-                data['cost']
+                data['cost'],
+                data['datetime']
             )
             print(sql)
             cursor.execute(sql)

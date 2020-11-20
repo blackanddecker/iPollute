@@ -13,18 +13,10 @@ def getFilterOptions(connection, data):
             sql = "CALL getFilterOptions({});".format(data['userId'])
             print(sql)
             cursor.execute(sql)
-            filters = connection.commit()
+            filters = cursor.fetchall()
         
-        filters = { ,
-        "dateRangeMin":"2020-04-01",
-        "dateRangeMax":"2020-07-01",
-        "HoursMin":0, 
-        "HoursMax":100,
-        "CostMin":0, 
-        "CostMax":50
-          }
         if len(filters)>0:
-            return {"history":filters, "success":True}, 200
+            return {"history":filters[0], "success":True}, 200
         else:
             return {"history":{}, "success":False}, 200
 
