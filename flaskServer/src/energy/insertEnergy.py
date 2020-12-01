@@ -1,8 +1,8 @@
 import pymysql.cursors
 import flask
 from flask import Flask , request ,make_response ,jsonify
-
 from src.utils.costCalculations import costTransportCalculations, costFoodCalculations
+
 
 def insertEnergy(connection, data):
     '''
@@ -21,33 +21,29 @@ def insertEnergy(connection, data):
     try:
 
         if data['foodId'] is not None:
-            #energyCost = costFoodCalculations(data['foodId'] , data['cost'] )
+            energyCost = costFoodCalculations(5 , data['cost'] )
             data['transportId'] = "NULL"
 
         elif data['transportId'] is not None:
-            #energyCost = costTransportCalculations(data['transportId'] , data['cost'] )
+            energyCost = costTransportCalculations(5, data['cost'] )
             data['foodId'] = "NULL"
         else:
             return {'message': 'Wrong Inputs', 'success': False}, 200
 
         with connection.cursor() as cursor:
-            sql = "CALL insertEnergy({}, {}, {}, {},'{}');".format(
+            sql = "CALL insertEnergy({}, {}, {}, {},'{}', {});".format(
                 data['userId'], 
                 data['foodId'],
                 data['transportId'],
                 data['cost'],
-                data['datetime']
+                data['datetime'],
+                energyCost
             )
             print(sql)
             cursor.execute(sql)
             result = connection.commit()
-            cursor.execute('select @s;')
-            check = cursor.fetchall()
 
-        if check[0]['@s'] == 1:
             return {'message': 'Add Energy Succefully!', 'success': True}, 200
-        else:
-            return {'message':'Error adding Energy', 'success': False}, 200
     
     except Exception as e :
         print(e)

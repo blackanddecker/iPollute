@@ -16,13 +16,13 @@ def getFilterOptions(connection, data):
             filters = cursor.fetchall()
         
         if len(filters)>0:
-            return {"history":filters[0], "success":True}, 200
+            return {"filters":filters[0], "success":True}, 200
         else:
-            return {"history":{}, "success":False}, 200
+            return {"filters":{}, "success":False}, 200
 
     
     except Exception as e :
         print(e)
         import traceback
         traceback.print_exc()
-        return {"history":{}, "success":False}, 500
+        return {"filters":{}, "success":False}, 500

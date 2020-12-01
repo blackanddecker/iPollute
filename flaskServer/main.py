@@ -2,6 +2,8 @@ from flask import Flask, request
 from flask_cors import CORS, cross_origin 
 import pymysql.cursors
 import yaml
+import jwt
+from flask_bcrypt import Bcrypt 
 
 from src.transports import getTransportObjects
 from src.foods import getFoodObjects
@@ -13,11 +15,17 @@ from src.energy import insertEnergy
 from src.energy import deleteEnergy
 from src.energy import updateEnergy
 from src.energy import getEnergyHistory
+from src.energy import getUserEnergy
 
+from src import getFilterOptions
+
+from src.user import login 
 
 db = yaml.safe_load(open('configs/local.yml'))
 
 app = Flask(__name__)
+bcrypt = Bcrypt(app)
+app.config['SECRET_KEY'] = db['SECRET_KEY']
 
 cors = CORS(app, resorces={r'/*': {"origins": '*'}})
 app.config['CORS_HEADER'] = 'Content-Type'
@@ -48,13 +56,15 @@ def getConnection():
 def _hello_world():
     return 'Hello, World!'
 
-@app.route('/login')
-def _login():
-    return 
 
 @app.route('/signin')
 def _signin():
     return 
+
+@app.route('/login' , methods=['POST'])
+def _login():
+    response, status = login.login(connection = getConnection(), data = request.get_json(), key = app.config['SECRET_KEY'], bcrypt = bcrypt)
+    return response, status
 
 @app.route('/updateUser', methods=['POST'])
 def _updateCustomer():
@@ -100,6 +110,10 @@ def _updateEnergy():
     response, status = updateEnergy.updateEnergy(connection = getConnection(), data = request.get_json())
     return response, status
 
+@app.route('/getUserEnergy', methods=['POST'])
+def _getUserEnergy():
+    response, status = getUserEnergy.getUserEnergy(connection = getConnection(), data = request.get_json())
+    return response, status
 
 @app.route('/getEnergyHistory', methods=['POST'])
 def _getEnergyHistory():

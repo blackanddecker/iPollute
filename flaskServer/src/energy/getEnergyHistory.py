@@ -1,6 +1,7 @@
 import pymysql.cursors
 import flask
 from flask import Flask , request ,make_response ,jsonify
+from src.utils.costCalculations import costTransportCalculations, costFoodCalculations
 
 def getEnergyHistory(connection, data):
     '''
@@ -15,21 +16,12 @@ def getEnergyHistory(connection, data):
             cursor.execute(sql)
             foodHistory = cursor.fetchall()
 
-            #calculate food cost
-            if len(foodHistory) > 0 : 
-                for i in range(0, len(foodHistory)):
-                    foodHistory[i]['cost'] = costFoodCalculations(foodHistory[i]['foodCost'] , foodHistory[i]['energyCost'] )
 
         with connection.cursor() as cursor:
-            sql = "CALL getFoodEnergyHistory({});".format(data['userId'])
+            sql = "CALL getTransportEnergyHistory({});".format(data['userId'])
             print(sql)
             cursor.execute(sql)
             transportHistory = cursor.fetchall()
-        
-            #calculate tranport cost
-            if len(transportHistory) > 0 : 
-                for i in range(0, len(transportHistory)):
-                    transportHistory[i]['cost'] = costFoodCalculations(transportHistory[i]['transportCost'] , transportHistory[i]['energyCost'] )
 
             return {"foodHistory":foodHistory, "transportHistory":transportHistory, "success":True}, 200
 

@@ -11,27 +11,27 @@ Calculate hours / costs properly
  2. Add logout 
 
  6. Add News Tab Feature
- 8. Fix submit button for my energy
  10. Add friends option ? 
- 11. Support Update / Delete buttons for history 
  13. Add weekly option 
  16. Add Validations if its email , number etc
  17. Verify budget the first time if user.EnergyTotal = 0 
- 18. Customize pie chart
  21. Customize Filters
- 19. Pie chart based in server 
  20. Filters work properly
  22. Add images of facebook to hyperlink to my profile
  23. Add progress bar 
- 24  Add food emissions
  25. Work offline - use storage
  26. Push notifications 
  27. Create pull to refresh
- 28. Delete User
+ 28. Finish About
+ 29. Finish Settings
+ 30. Finish Filters
+ 31. Finish history
+ 32. Finish Main
 
 
 
-
+OK 11. Support Update / Delete buttons for history 
+OK 28. Delete User
 OK 12. Customize Settings
 OK 15. Set up everything in github
 OK 3. Add filters based on names
@@ -41,6 +41,10 @@ OK  7. Add Update / Delete buttons for history
 ΟΚ  5. Update About with communication info and version 
 OK  4. Add pie chart ( for sumarizing costs)
 OK  14. Add "bugdet" in settings
+OK 24  Add food emissions
+OK 19. Pie chart based in server 
+OK 18. Customize pie chart
+OK 8. Fix submit button for my energy
 
 
 

@@ -162,7 +162,9 @@ const AboutNavigator = createStackNavigator(
 
 const SettingsNavigator = createStackNavigator(
   {
-    Settings: SettingsScreen
+    Settings: SettingsScreen,
+    Login: LoginScreen
+
   },
   {
     navigationOptions: {
@@ -175,7 +177,8 @@ const SettingsNavigator = createStackNavigator(
 
 const LoginNavigator = createStackNavigator(
   {
-    Login: LoginScreen
+    Login: LoginScreen,
+    Settings: SettingsScreen
   },
   {
     navigationOptions: {

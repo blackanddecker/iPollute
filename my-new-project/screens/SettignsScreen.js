@@ -8,7 +8,12 @@ import Colors from '../constants/Colors';
 import Modal from 'react-native-modal';
 
 class SettingsScreen extends Component {
-
+    constructor(props){
+        super(props);
+ 
+        console.log('passed params: ', props.navigation.state.userId)
+ 
+     }
     state = {
         userId: -1,
         username : '',

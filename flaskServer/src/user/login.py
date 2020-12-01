@@ -6,7 +6,7 @@ import datetime
 import traceback
 
 
-def login(request , connection , key , bcrypt):
+def login(connection, data, key , bcrypt):
     '''
     Check for 400 error
     Check database for password and email 
@@ -15,7 +15,7 @@ def login(request , connection , key , bcrypt):
     data = request.get_json()
     #check for 400 error
     if request.method != 'POST':
-        return '', 405
+        return 'Wrong method', 405
     if 'email' not in data:
         return jsonify({'success': False, 'message':'Incorrect email or password!'}), 400
     if 'password' not in data:
@@ -31,9 +31,9 @@ def login(request , connection , key , bcrypt):
         if len(result) > 0 :
             auth = request.authorization
             t2 = result[0]['password'].encode('utf-8')
-            check = bcrypt.check_password_hash(result[0]['password'],data['password'] )
-
-            if check == True:
+            #check = bcrypt.check_password_hash(result[0]['password'],data['password'] )
+            print(t2, data['password'])
+            if result[0]['password'] == data['password']:
                 with connection.cursor() as cursor:
                     sql = "CALL login('{}', '{}','{}', @s)".format(data['email'] , result[0]['password'], datetime.datetime.now())
                     #print(sql)
@@ -50,17 +50,17 @@ def login(request , connection , key , bcrypt):
                         result = cursor.fetchall()
   
                         token = jwt.encode({
-                            'sub':result[0]['user_id'], , 'lastName':result[0]['user_lastName'], 'iat':datetime.datetime.utcnow()+datetime.timedelta(minutes =30)} ,
+                            'sub':result[0]['id'], 'username':result[0]['username'], 'iat':datetime.datetime.utcnow()+datetime.timedelta(minutes =30)} ,
                              key , algorithm='HS256')
 
                         #with connection.cursor() as cursor:
-                        check_token = 0
-                        sql = "CALL update_check_token({}, {})".format(result[0]['user_id'], check_token)
-                        #print(sql)
-                        cursor.execute(sql)
-                        connection.commit()
+                        # check_token = 0
+                        # sql = "CALL update_check_token({}, {})".format(result[0]['id'], check_token)
+                        # #print(sql)
+                        # cursor.execute(sql)
+                        # connection.commit()
 
-                        return jsonify({'success': True, 'message': 'You have successfully logged in' ,'token':token.decode('UTF-8') , 'user':{'email': data['email']}}) , 200
+                        return jsonify({'success': True, 'message': 'You have successfully logged in' ,'token':token.decode('UTF-8') , 'user':{'email': data['email'], 'id': result[0]['id']}}) , 200
 
                     else:            
                         return jsonify({'success': False, 'message':'Incorrect email or password!'}), 401 
