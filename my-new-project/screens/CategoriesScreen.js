@@ -16,6 +16,8 @@ import HeaderButton from '../components/HeaderButton';
 import Colors from '../constants/Colors';
 import { format } from "date-fns";
 
+import BaseUrl from '../constants/Url';
+
 import {
     PieChart,
     ProgressChart
@@ -26,15 +28,16 @@ class CategoriesScreen extends Component {
     state = {
         userId: -1,
         //insert energy variables
-        cost: '',
-        food:'',
-        transport:'',
+        energyTypeId: '',
+        userCost:'',
+        energyItemId:'',
         
         // energy variables
         transportData: [],
         foodData: [],
-        
-        
+        electricityData: [],
+        recycleData : [],
+
         // pie chart variables
         totalFoodCost : 0,
         totalTransportCost: 0, 
@@ -45,8 +48,10 @@ class CategoriesScreen extends Component {
         isFoodLoading: true,
         isDisabled: true,
         isTransportModalVisible: false,
-        isFoodModalVisible: false
-        
+        isFoodModalVisible: false,
+        isRecycleModalVisible:false,
+        isElectricityModalVisible:false
+
     }
     
     
@@ -55,7 +60,7 @@ class CategoriesScreen extends Component {
         // const { navigation } = this.props;
         // this.setState({ userId: navigation.getParam('userId', '-1') });
 
-        fetch('http://192.168.1.4:5000/getTransportObjects', {
+        fetch(BaseUrl+'getTransportObjects', {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
@@ -80,7 +85,7 @@ class CategoriesScreen extends Component {
             
         });
         
-        fetch('http://192.168.1.4:5000/getFoodObjects', {
+        fetch(BaseUrl+'getFoodObjects', {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
@@ -106,7 +111,7 @@ class CategoriesScreen extends Component {
         });
         
         
-        fetch('http://192.168.1.4:5000/getUserEnergy', {
+        fetch(BaseUrl+'getUserEnergy', {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
@@ -143,17 +148,17 @@ class CategoriesScreen extends Component {
         
         var formattedDate = format(curDate, 'yyyy-MM-dd HH:mm:ss');
         console.log("insert energy:", this.state)
-        fetch('http://192.168.1.4:5000/insertEnergy', {
+        fetch(BaseUrl+'insertEnergy', {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
             },
             method: 'POST',
             body: JSON.stringify({
-                userId: this.state.userId,
-                foodId: Number(this.state.transport),
-                transportId: Number(this.state.food),
-                cost: Number(this.state.cost),
+                userId: 1,
+                userCost: Number(this.state.userCost),
+                energyItemId: Number(this.state.energyItemId),
+                energyTypeId: Number(this.state.energyTypeId),
                 datetime: formattedDate
             })
         })
@@ -161,7 +166,7 @@ class CategoriesScreen extends Component {
         .then((responseJson) => {
             console.log(responseJson);
             if(responseJson['success'] == true){
-                alert("Insert Order Succefully");
+                alert(responseJson['message']);
                 this.closeTransportModal()
                 this.closeFoodModal()
             }
@@ -175,9 +180,9 @@ class CategoriesScreen extends Component {
         });
     }
     
-    updateTransport = (transport) => {this.setState({ transport: transport, food: '' })}
-    updateFood = (food) => {this.setState({ food: food, transport: '' })}
-    updateCost = (cost) => {this.setState({ cost: cost })}
+    updateTransport = (transport) => {this.setState({ energyTypeId: 1, energyItemId: transport })}
+    updateFood = (food) => {this.setState({ energyTypeId: 0, energyItemId: food })}
+    updateCost = (cost) => {this.setState({ userCost32: cost })}
     
     openTransportModal = () =>{this.setState({isTransportModalVisible:true})}
     toggleTransportModal = () =>{this.setState({isTransportModalVisible:!this.state.isTransportModalVisible})}
@@ -188,6 +193,11 @@ class CategoriesScreen extends Component {
     closeFoodModal = () =>{this.setState({isFoodModalVisible:false})}
     
     
+    openRecycleModal = () =>{this.setState({isRecycleModalVisible:true})}
+    toggleRecycleModal = () =>{this.setState({isRecycleModalVisible:!this.state.isRecycleModalVisible})}
+    closeRecycleModal = () =>{this.setState({isFoodModalVisible:false})}
+
+
     render() {
 
 
@@ -205,8 +215,8 @@ class CategoriesScreen extends Component {
         
         if(!this.state.loading) {
             return (
-                <View >
-                <ProgressChart
+                <View style={styles.centeredView}>
+                    <ProgressChart
                     data={data}
                     width={360}
                     height={220}
@@ -214,81 +224,154 @@ class CategoriesScreen extends Component {
                     />
 
 
-                <View style={styles.inputLabels}>
-                <Text> </Text>
-                <TouchableOpacity    onPress={()=>this.openTransportModal()}    underlayColor="white">
-                    <View style={styles.button}>
-                        <View style={styles.iconsStyles}>
-                            <Ionicons name="ios-add-circle-outline" size={24} color="white" />
-                        </View>
-                        <Text style={styles.buttonText}> Transport Emission</Text>
-                    </View>
-                </TouchableOpacity>
-                <Text> </Text>
-                <TouchableOpacity    onPress={()=>this.openFoodModal()}    underlayColor="white">
-                    <View style={styles.button}>
-                        <View style={styles.iconsStyles}>
-                            <Ionicons name="ios-add-circle-outline" size={24} color="white" />
-                        </View>
-                        <Text style={styles.buttonText}> Food Emission</Text>
-                    </View>
-                </TouchableOpacity>
-                </View>
-                
-                
-                
-                
-                <View>
-                    <Modal animationIn="slideInUp" 
-                            animationOut="slideOutDown" 
-                            onBackdropPress={()=>this.closeTransportModal()}
-                            onSwipeComplete={()=>this.closeTransportModal()} 
-                            swipeDirection="right" 
-                            isVisible={this.state.isTransportModalVisible} 
-                            width="90%"
-                            max-height="40%"
-                            style={{backgroundColor:'white'}}>
-
-                    <View style={styles.modalView}>           
-                        <Text style = {styles.title}>Add Transport Emission </Text>
-                        <Picker selectedValue = {this.state.transport} 
-                            onValueChange = {this.updateTransport} 
-                            style = {styles.input}>
-                                {this.state.transportData.map((transports, id) => {
-                                    return <Picker.Item 
-                                        value={transports.id} 
-                                        label={transports.description}
-                                        key={transports.id}    /> 
-                                        }
-                                    )}
-                        </Picker>     
-                        <Text style = {styles.text}>Add Km: </Text>
-                        <TextInput style = {styles.input}
-                            underlineColorAndroid = "transparent"
-                            placeholder = "0.0 km"
-                            placeholderTextColor = {Colors.primaryColor}
-                            autoCapitalize = "none"
-                            onChangeText = {this.updateCost}/>         
-                    </View>
-                    
-                    
-                    <View style={{ flex: 1,justifyContent:'center',position:'absolute',bottom:0}}>
-                            <View style={{flexDirection:'row',}}>
-                                <TouchableOpacity style={{backgroundColor:'red',width:'50%'}} onPress={()=>this.closeTransportModal()}>
-                                    <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={{backgroundColor:'green',width:'50%'}} onPress={()=>this.insertEnergy()}>
-                                    <Text style={{color:'white',textAlign:'center',padding:10}}>Ok</Text>
-                                </TouchableOpacity>
+                    <View style={styles.inputLabels}>
+                        <Text> </Text>
+                        <TouchableOpacity    onPress={()=>this.openTransportModal()}    underlayColor="white">
+                            <View style={styles.button}>
+                                <View style={styles.iconsStyles}>
+                                    <Ionicons name="ios-add-circle-outline" size={24} color="white" />
+                                </View>
+                                <Text style={styles.buttonText}> Transport Emission</Text>
                             </View>
-                        </View>
-                    </Modal>
+                        </TouchableOpacity>
+                        <Text> </Text>
+                        <TouchableOpacity    onPress={()=>this.openFoodModal()}    underlayColor="white">
+                            <View style={styles.button}>
+                                <View style={styles.iconsStyles}>
+                                    <Ionicons name="ios-add-circle-outline" size={24} color="white" />
+                                </View>
+                                <Text style={styles.buttonText}> Food Emission</Text>
+                            </View>
+                        </TouchableOpacity>
+                        <Text> </Text>
 
-                </View>
+                        <TouchableOpacity    onPress={()=>this.openHouseModal()}    underlayColor="white">
+                            <View style={styles.button}>
+                                <View style={styles.iconsStyles}>
+                                    <Ionicons name="ios-add-circle-outline" size={24} color="white" />
+                                </View>
+                                <Text style={styles.buttonText}> Electricity </Text>
+                            </View>
+                        </TouchableOpacity>
+
+                        <Text> </Text>
+
+                        <TouchableOpacity    onPress={()=>this.openRecycleModal()}    underlayColor="white">
+                            <View style={styles.buttonRecycle}>
+                                <View style={styles.iconsStyles}>
+                                    <Ionicons name="ios-add-circle-outline" size={24} color="white" />
+                                </View>
+                                <Text style={styles.buttonText}> Recycle</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+
+                
+                
+                    <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={this.state.isTransportModalVisible} 
+                        >
+                            <View style={styles.centeredView}>
+                                <View style={styles.modalView}>
+                                    <Text style = {styles.title}>Add Transport Emission </Text>
+                                        <Picker selectedValue = {this.state.transport} 
+                                            onValueChange = {this.updateTransport} 
+                                            style = {styles.input}>
+                                                {this.state.transportData.map((transports, id) => {
+                                                    return <Picker.Item 
+                                                        value={transports.id} 
+                                                        label={transports.description}
+                                                        key={transports.id}    /> 
+                                                        }
+                                                    )}
+                                        </Picker>     
+                                        <Text style = {styles.text}>Add Kilometers done: </Text>
+                                        <TextInput style = {styles.input}
+                                            underlineColorAndroid = "transparent"
+                                            placeholder = "0.0"
+                                            autoCapitalize = "none"
+                                            onChangeText = {this.updateCost}/>         
+                            
+                            
+                                    <View style={{flexDirection:'row',}}>
+                                        <TouchableOpacity style={{backgroundColor:'red',width:'50%'}} onPress={()=>this.closeTransportModal()}>
+                                            <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity style={{backgroundColor:'green',width:'50%'}} onPress={()=>this.insertEnergy()}>
+                                            <Text style={{color:'white',textAlign:'center',padding:10}}>Ok</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+
+                            </View>
+                        </Modal>
 
 
-                <View>
-                    <Modal animationIn="slideInUp" 
+
+
+
+
+
+                        <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={this.state.isFoodModalVisible} 
+                        >
+                            <View style={styles.centeredView}>
+                                <View style={styles.modalView}>
+                                        <Text style = {styles.text}>Choose Food </Text>
+
+                                        <Picker selectedValue = {this.state.food} 
+                                                onValueChange = {this.updateFood} 
+                                                style = {styles.input}>
+                                                    {this.state.foodData.map((foods, id) => {
+                                                        return <Picker.Item 
+                                                            value={foods.id} 
+                                                            label={foods.description}
+                                                            key={foods.id}    /> 
+                                                            
+                                                            }
+                                                            )}
+                                        </Picker>  
+                                        <Text style = {styles.text}>Add Kilograms of Food: </Text>
+                                        <TextInput style = {styles.input}
+                                            underlineColorAndroid = "transparent"
+                                            placeholder = "0.0 km"
+                                            placeholderTextColor = {Colors.primaryColor}
+                                            autoCapitalize = "none"
+                                            onChangeText = {this.updateCost}/>         
+                            
+                            
+                                    <View style={{flexDirection:'row',}}>
+                                        <TouchableOpacity style={{backgroundColor:'red',width:'50%'}} onPress={()=>this.closeFoodModal()}>
+                                            <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity style={{backgroundColor:'green',width:'50%'}} onPress={()=>this.insertEnergy()}>
+                                            <Text style={{color:'white',textAlign:'center',padding:10}}>Ok</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                                
+                            </View>
+                        </Modal>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   {/*  <Modal animationIn="slideInUp" 
                             animationOut="slideOutDown" 
                             onBackdropPress={()=>this.closeFoodModal()}
                             onSwipeComplete={()=>this.closeFoodModal()} 
@@ -297,11 +380,59 @@ class CategoriesScreen extends Component {
                             width="90%"
                             max-height="40%"
                             style={{backgroundColor:'white'}}>
+                        <View style={styles.modalView}>           
+                            <Text style = {styles.title}>Add Food Emission </Text>
+
+                            <Text style = {styles.text}>Choose Food </Text>
+
+                            <Picker selectedValue = {this.state.food} 
+                                    onValueChange = {this.updateFood} 
+                                    style = {styles.input}>
+                                        {this.state.foodData.map((foods, id) => {
+                                            return <Picker.Item 
+                                                value={foods.id} 
+                                                label={foods.description}
+                                                key={foods.id}    /> 
+                                                
+                                                }
+                                                )}
+                            </Picker>
+
+                            <Text style = {styles.text}>Add Kg  </Text>
+
+                            <TextInput style = {styles.input}
+                                underlineColorAndroid = "transparent"
+                                placeholder = "0.0 kg"
+                                placeholderTextColor = {Colors.primaryColor}
+                                autoCapitalize = "none"
+                                onChangeText = {this.updateCost}/>         
+
+                                <View style={{ flex: 1,justifyContent:'center',position:'absolute',bottom:0}}>
+                                    <View style={{flexDirection:'row',}}>
+                                        <TouchableOpacity style={{backgroundColor:'red',width:'50%'}} onPress={()=>this.closeFoodModal()}>
+                                            <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity style={{backgroundColor:'green',width:'50%'}} onPress={()=>this.insertEnergy()}>
+                                            <Text style={{color:'white',textAlign:'center',padding:10}}>Ok</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            </View>
+                    </Modal>
+
+                    <Modal animationIn="slideInUp" 
+                            animationOut="slideOutDown" 
+                            onBackdropPress={()=>this.closeRecycleModal()}
+                            onSwipeComplete={()=>this.closeRecycleModal()} 
+                            swipeDirection="right" 
+                            isVisible={this.state.isRecycleModalVisible} 
+                            width="90%"
+                            max-height="40%"
+                            style={{backgroundColor:'white'}}>
+
                     <View style={styles.modalView}>           
-                        <Text style = {styles.title}>Add Food Emission </Text>
-
-                        <Text style = {styles.text}>Choose Food </Text>
-
+                        <Text style = {styles.title}>Choose Recycling Type: </Text>
+                        
                         <Picker selectedValue = {this.state.food} 
                                 onValueChange = {this.updateFood} 
                                 style = {styles.input}>
@@ -315,29 +446,46 @@ class CategoriesScreen extends Component {
                                             )}
                         </Picker>
 
-                        <Text style = {styles.text}>Add Kg  </Text>
 
                         <TextInput style = {styles.input}
                             underlineColorAndroid = "transparent"
-                            placeholder = "0.0 kg"
+                            placeholder = "0.0 km"
                             placeholderTextColor = {Colors.primaryColor}
                             autoCapitalize = "none"
                             onChangeText = {this.updateCost}/>         
-
-                            <View style={{ flex: 1,justifyContent:'center',position:'absolute',bottom:0}}>
-                                <View style={{flexDirection:'row',}}>
-                                    <TouchableOpacity style={{backgroundColor:'red',width:'50%'}} onPress={()=>this.closeFoodModal()}>
-                                        <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={{backgroundColor:'green',width:'50%'}} onPress={()=>this.insertEnergy()}>
-                                        <Text style={{color:'white',textAlign:'center',padding:10}}>Ok</Text>
-                                    </TouchableOpacity>
-                                </View>
+                    </View>
+                    
+                    
+                    <View style={{ flex: 1,justifyContent:'center',position:'absolute',bottom:0}}>
+                            <View style={{flexDirection:'row',}}>
+                                <TouchableOpacity style={{backgroundColor:'red',width:'50%'}} onPress={()=>this.closeRecycleModal()}>
+                                    <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={{backgroundColor:'green',width:'50%'}} onPress={()=>this.insertEnergy()}>
+                                    <Text style={{color:'white',textAlign:'center',padding:10}}>Ok</Text>
+                                </TouchableOpacity>
                             </View>
                         </View>
                     </Modal>
 
-                </View>
+                </View> */}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 </View>
 
             )
@@ -366,25 +514,19 @@ CategoriesScreen.navigationOptions = navData => {
 };
 
 const styles = StyleSheet.create({
-    screen: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'flex-start'
-    },
-    container: {
-            flex:1,
 
-    },
     title:{
         textAlign: 'center',
         fontSize: 20,
         fontWeight: 'bold'
     },
     input: {
-            margin: 5,
+            margin: 15,
             height: 30,
             borderColor: Colors.primaryColor,
-            borderWidth: 1
+            borderColor: 'black', 
+            borderWidth: 1 ,
+            color: 'black'
     },
     inputLabels:{
         justifyContent: 'flex-start',
@@ -403,13 +545,7 @@ const styles = StyleSheet.create({
     submitButtonText:{
             color: 'white'
     },
-    modal: {
-        flex: 1,
-        width: 300,
-        height: 300,
-        alignItems: 'center',
-        backgroundColor: '#f7021a',
- },
+
  button: {
 
     display: 'flex',
@@ -433,8 +569,51 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         padding: 20,
         color: 'white'
-    }
+    },
 
+    buttonRecycle: {
+
+        display: 'flex',
+        flexDirection: 'row',
+        height: 60,
+        borderRadius: 6,
+        alignItems: 'center',
+        width: '100%',
+        paddingLeft:20,
+        backgroundColor: '#2AC062',
+        shadowColor: '#2AC062',
+        shadowOpacity: 0.5,
+        shadowOffset: { 
+            height: 10, 
+            width: 0 
+        },
+        shadowRadius: 25,
+        backgroundColor:    Colors.thirdBlueColor
+        },
+        buttonText: {
+            textAlign: 'center',
+            padding: 20,
+            color: 'white'
+        },
+        centeredView: {
+            flex: 1,
+            justifyContent: "center",
+            marginTop: 22
+          },
+        modalView: {
+            margin: 20,
+            backgroundColor: "white",
+            borderRadius: 20,
+            padding: 35,
+            shadowColor: "#000",
+            shadowOffset: {
+              width: 0,
+              height: 2
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 3.84,
+            elevation: 5
+          },
 
 });
 

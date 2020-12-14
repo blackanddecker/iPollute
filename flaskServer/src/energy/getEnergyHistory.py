@@ -1,7 +1,7 @@
 import pymysql.cursors
 import flask
 from flask import Flask , request ,make_response ,jsonify
-from src.utils.costCalculations import costTransportCalculations, costFoodCalculations
+from src.utils.costCalculations import costCalculations
 
 def getEnergyHistory(connection, data):
     '''
@@ -23,7 +23,7 @@ def getEnergyHistory(connection, data):
             cursor.execute(sql)
             transportHistory = cursor.fetchall()
 
-            return {"foodHistory":foodHistory, "transportHistory":transportHistory, "success":True}, 200
+            return {"history":transportHistory, "success":True}, 200
 
     
     except Exception as e :

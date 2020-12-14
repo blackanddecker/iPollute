@@ -6,6 +6,7 @@ def deleteEnergy(connection, data):
     '''
     Delete Energy
     '''
+    print(data)
     if 'userId' not in data:
         return {'message':'userId missing!', 'success': False}, 400
     if 'energyId' not in data:

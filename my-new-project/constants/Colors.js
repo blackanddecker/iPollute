@@ -1,4 +1,5 @@
 export default {
   primaryColor: 'green',
-  accentColor: 'green'
+  accentColor: 'green',
+  thirdBlueColor: 'blue'
 };

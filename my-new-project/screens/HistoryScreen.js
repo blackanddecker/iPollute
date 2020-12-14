@@ -15,6 +15,10 @@ class HistoryScreen extends Component {
   }
 
   componentDidMount = () => {
+
+    const { navigation } = this.props;
+    const userId = navigation.getParam('userId', '-1');
+
     fetch('http://192.168.1.4:5000/getEnergyHistory', {
       headers: {
         'Accept': 'application/json',
@@ -46,12 +50,11 @@ class HistoryScreen extends Component {
       });
     }
     
-
-
     render() {
       console.log("FoodData",this.state.foodData)
       if(this.state.isLoading == false) {
         return (
+          
             <MealList list={this.state.transportData, this.state.foodData} />
         )
       }

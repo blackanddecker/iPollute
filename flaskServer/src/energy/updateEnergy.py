@@ -2,7 +2,7 @@ import pymysql.cursors
 import flask
 from flask import Flask , request ,make_response ,jsonify
 
-from src.utils.costCalculations import costTransportCalculations, costFoodCalculations
+from src.utils.costCalculations import costCalculations
 
 def insertEnergy(connection, data):
     '''

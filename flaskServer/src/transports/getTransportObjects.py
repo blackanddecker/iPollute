@@ -15,6 +15,9 @@ def getTransportObjects(connection = '', data = {}):
             cursor.execute(sql)
             transports = cursor.fetchall()
         if len(transports)>0:
+            for i in range(len(transports)):
+                transports[i]['typeDescription'] = 'transport'
+                transports[i]['energyType'] = 1
             return {"transportObjects" : transports }, 200
         else:
             return {"transportObjects" : [] }, 200
