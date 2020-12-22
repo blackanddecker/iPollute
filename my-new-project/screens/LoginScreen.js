@@ -5,6 +5,7 @@ import FormTextInput from "../components/FormTextInput";
 import imageLogo from "../assets/favicon.png";
 import colors from '../constants/Colors';
 import strings from "../config/strings";
+import BaseUrl from '../constants/Url';
 
 
 
@@ -42,7 +43,7 @@ class LoginScreen extends Component {
 
   handleLoginPress = () => {
     
-    fetch('http://192.168.1.4:5000/login', {
+    fetch(BaseUrl+'login', {
     headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',

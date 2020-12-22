@@ -11,7 +11,6 @@ Calculate hours / costs properly
  2. Add logout 
 
  6. Add News Tab Feature
- 10. Add friends option ? 
  13. Add weekly option 
  16. Add Validations if its email , number etc
  17. Verify budget the first time if user.EnergyTotal = 0 
@@ -27,9 +26,18 @@ Calculate hours / costs properly
  30. Finish Filters
  31. Finish history
  32. Finish Main
+ 35. add recycled objects ( bycycle, on foot, foods from thir garden or farm ) 
+ 36. Add total number of kg CO2
+ 37. Live Geolocation weather / C02 statistics 
+ 38. Add Statistics page 
+ 39. History By date
+
+ 40. https://www.iqair.com/air-pollution-data-api
+     https://docs.openaq.org/
 
 
 
+OK 33. Add favorite food , transport
 OK 11. Support Update / Delete buttons for history 
 OK 28. Delete User
 OK 12. Customize Settings

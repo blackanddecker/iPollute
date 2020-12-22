@@ -6,6 +6,7 @@ import HeaderButton from '../components/HeaderButton';
 import { AntDesign } from '@expo/vector-icons'; 
 import Colors from '../constants/Colors';
 import Modal from 'react-native-modal';
+import BaseUrl from '../constants/Url';
 
 class SettingsScreen extends Component {
     constructor(props){
@@ -18,14 +19,18 @@ class SettingsScreen extends Component {
         userId: -1,
         username : '',
         email: '',
-        energyTotal: 0,
+        userEnergy: 0,
         isLoading: true,
         password:'',
+        favFood: '',
+        favTransport: '',
         isUsernameModalVisible: false,
         isPasswordModalVisible: false,
         isDeleteAccountModalVisible:false,
         isEnergyModalVisible:false,
-        isEmailModalVisible:false
+        isEmailModalVisible:false,
+        isFavFoodVisible:false,
+        isFavTransportVisible:false
 
     }
 
@@ -39,7 +44,7 @@ class SettingsScreen extends Component {
 
         console.log("Get param after set state:", this.state.userId);
 
-        fetch('http://192.168.1.4:5000/getUserDetails', {
+        fetch(BaseUrl+'getUserDetails', {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
@@ -58,6 +63,8 @@ class SettingsScreen extends Component {
                     username: responseJson['userDetails']['username'],
                     userEnergy: responseJson['userDetails']['energyTotal'],
                     password: responseJson['userDetails']['password'],
+                    favFood: responseJson['userDetails']['favFood'],
+                    favTransport: responseJson['userDetails']['favTransport'],
                     isLoading: !this.state.isLoading })
                 console.log(this.state);
                 
@@ -85,27 +92,51 @@ class SettingsScreen extends Component {
         openDeleteAccountModal = () =>{this.setState({isDeleteAccountModalVisible:true})}
         toggleDeleteAccountModal = () =>{this.setState({isDeleteAccountModalVisible:!this.state.isDeleteAccountModalVisible})}
         closeDeleteAccountModal = () =>{this.setState({isDeleteAccountModalVisible:false})}
-        //Update Email
-        openModal = () =>{this.setState({isModalVisible:true})}
-        toggleModal = () =>{this.setState({isModalVisible:!this.state.isModalVisible})}
-        closeModal = () =>{this.setState({isModalVisible:false})}
+
         //Update Energy
         openEnergyModal = () =>{this.setState({isEnergyModalVisible:true})}
         toggleEnergyModal = () =>{this.setState({isEnergyModalVisible:!this.state.isEnergyModalVisible})}
         closeEnergyModal = () =>{this.setState({isEnergyModalVisible:false})}
 
+        //Update Fav Food
+        openFavFoodModal = () =>{this.setState({isFavFoodVisible:true})}
+        toggleFavFoodModal = () =>{this.setState({isFavFoodVisible:!this.state.isFavFoodVisible})}
+        closeFavFoodModal = () =>{this.setState({isFavFoodVisible:false})}
+
+
+        //Update Fav Transport
+        openFavTransportModal = () =>{this.setState({isFavTransportVisible:true})}
+        toggleFavTransportModal = () =>{this.setState({isFavTransportVisible:!this.state.isFavTransportVisible})}
+        closeFavTransportModal = () =>{this.setState({isFavTransportVisible:false})}
 
         updateUsername = (username) => {
             this.setState({ username: username })
         }
 
+        updatePassword = (password) => {
+            this.setState({ password: password })
+        }
 
+        updateEmail = (email) => {
+            this.setState({ email: email })
+        }
 
+        updateUserEnergy = (userEnergy) => {
+            this.setState({ userEnergy: userEnergy })
+        }
+
+        updateFavFood = (favFood) => {
+            this.setState({ favFood: favFood })
+        }
+
+        updateFavTransport = (favTransport) => {
+            this.setState({ favTransport: favTransport })
+        }
 
         updateSettings = (userId, username, email, password, energyTotal) => {
             alert(userId+'username: ' + username + ' email: ' + email +' energyTotal: ' + energyTotal+ 'password:'+ password)
             
-            fetch('http://192.168.1.4:5000/updateUser', {
+            fetch(BaseUrl+'updateUser', {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
@@ -143,10 +174,6 @@ class SettingsScreen extends Component {
                 });
         }
         
-
-
-
-
         deleteUser = (userId) => {
             alert("userId:", userId)
             
@@ -180,349 +207,252 @@ class SettingsScreen extends Component {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         render() {
             console.log("In render:",this.props.navigation.state.params);
 
-            // if(!this.state.loading) {
+            if(!this.state.loading) {
                 return (
-                <View    style = {styles.screen}>
+                    <View style={styles.centeredView}>
+                        <View style={styles.inputLabels}>
+                            <TouchableOpacity    onPress={()=>this.openUsernameModal()}    underlayColor="white">
+                                <View style={styles.button}>
+                                    <AntDesign name="arrowright" size={24} color="black" />
+                                    <Text style={styles.buttonText}> Update Username</Text>
+                                </View>
+                            </TouchableOpacity>
 
-                <View style={styles.inputLabels}>
-                <Text> </Text>
+                            
+                            <TouchableOpacity    onPress={()=>this.openPasswordModal()}    underlayColor="black">
+                                <View style={styles.button}>
+                                    <AntDesign name="arrowright" size={24} color="black" />
+                                    <Text style={styles.buttonText}> Update Password</Text>
+                                </View>
+                            </TouchableOpacity>
+                            
+                            <TouchableOpacity    onPress={()=>this.openEmailModal()}    underlayColor="black">
+                                <View style={styles.button}>
+                                    <AntDesign name="arrowright" size={24} color="black" />
+                                    <Text style={styles.buttonText}> Update Email</Text>
+                                </View>
+                            </TouchableOpacity>
+                            
+                            <TouchableOpacity    onPress={()=>this.openFavFoodModal()}    underlayColor="black">
+                                <View style={styles.button}>
+                                    <AntDesign name="arrowright" size={24} color="black" />
+                                    <Text style={styles.buttonText}> Update Favorite Food</Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity    onPress={()=>this.openFavTransportModal()}    underlayColor="black">
+                                <View style={styles.button}>
+                                    <AntDesign name="arrowright" size={24} color="black" />
+                                    <Text style={styles.buttonText}> Update Favorite Transport</Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity    onPress={()=>this.openEnergyModal()}    underlayColor="black">
+                                <View style={styles.button}>
+                                    <AntDesign name="arrowright" size={24} color="black" />
+                                    <Text style={styles.buttonText}> Update User Energy</Text>
+                                </View>
+                            </TouchableOpacity>
+                            
+                            <TouchableOpacity    onPress={()=>this.openDeleteAccountModal()}    underlayColor="black">
+                                <View style={styles.button}>
+                                    <AntDesign name="arrowright" size={24} color="black" />
+                                    <Text style={styles.buttonText}> Delete Account</Text>
+                                </View>
+                            </TouchableOpacity>
 
-                <TouchableOpacity    onPress={()=>this.openUsernameModal()}    underlayColor="white">
-                    <View style={styles.button}>
-                        <AntDesign name="arrowright" size={24} color="black" />
-                        <Text style={styles.buttonText}> Update Username</Text>
+                        </View>
+                        
+
+                        <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={this.state.isUsernameModalVisible} 
+                        >
+                            <View style={styles.centeredView}>
+                                <View style={styles.modalView}>
+                                    <Text style = {styles.title}>Update Username </Text>
+                                        
+                                    <TextInput style = {styles.input}
+                                        underlineColorAndroid = "transparent"
+                                        placeholder = {this.state.username}
+                                        autoCapitalize = "none"
+                                        onChangeText = {this.updateUsername}/>         
+                            
+                            
+                                    <View style={{flexDirection:'row',}}>
+                                        <TouchableOpacity style={{backgroundColor:'red',width:'50%'}} onPress={()=>this.closeUsernameModal()}>
+                                            <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity style={{backgroundColor:'green',width:'50%'}} onPress={()=>this.updateSettings()}>
+                                            <Text style={{color:'white',textAlign:'center',padding:10}}>Ok</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+
+                            </View>
+                        </Modal>
+
+
+
+                        <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={this.state.isEmailModalVisible} 
+                        >
+                            <View style={styles.centeredView}>
+                                <View style={styles.modalView}>
+                                    <Text style = {styles.title}>Update Email </Text>
+                                        
+                                    <TextInput style = {styles.input}
+                                        underlineColorAndroid = "transparent"
+                                        placeholder = {this.state.email}
+                                        autoCapitalize = "none"
+                                        onChangeText = {this.updateEmail}/>         
+                            
+                            
+                                    <View style={{flexDirection:'row',}}>
+                                        <TouchableOpacity style={{backgroundColor:'red',width:'50%'}} onPress={()=>this.closeEmailModal()}>
+                                            <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity style={{backgroundColor:'green',width:'50%'}} onPress={()=>this.updateSettings()}>
+                                            <Text style={{color:'white',textAlign:'center',padding:10}}>Ok</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+
+                            </View>
+                        </Modal>
+
+
+                        <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={this.state.isFavFoodVisible} 
+                        >
+                            <View style={styles.centeredView}>
+                                <View style={styles.modalView}>
+                                    <Text style = {styles.title}>Update Favorite Food </Text>
+                                        
+                                    <TextInput style = {styles.input}
+                                        underlineColorAndroid = "transparent"
+                                        placeholder = {this.state.email}
+                                        autoCapitalize = "none"
+                                        onChangeText = {this.updateFavFood}/>         
+                            
+                            
+                                    <View style={{flexDirection:'row',}}>
+                                        <TouchableOpacity style={{backgroundColor:'red',width:'50%'}} onPress={()=>this.closeFavFoodModal()}>
+                                            <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity style={{backgroundColor:'green',width:'50%'}} onPress={()=>this.updateSettings()}>
+                                            <Text style={{color:'white',textAlign:'center',padding:10}}>Ok</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+
+                            </View>
+                        </Modal>
+
+
+
+                        <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={this.state.isFavTransportVisible} 
+                        >
+                            <View style={styles.centeredView}>
+                                <View style={styles.modalView}>
+                                    <Text style = {styles.title}>Update Favorite Transport </Text>
+                                        
+                                    <TextInput style = {styles.input}
+                                        underlineColorAndroid = "transparent"
+                                        placeholder = {this.state.email}
+                                        autoCapitalize = "none"
+                                        onChangeText = {this.updateFavTransport}/>         
+                            
+                            
+                                    <View style={{flexDirection:'row',}}>
+                                        <TouchableOpacity style={{backgroundColor:'red',width:'50%'}} onPress={()=>this.closeFavTransportModal()}>
+                                            <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity style={{backgroundColor:'green',width:'50%'}} onPress={()=>this.updateSettings()}>
+                                            <Text style={{color:'white',textAlign:'center',padding:10}}>Ok</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+
+                            </View>
+                        </Modal>
+
+
+
+                        <Modal
+                            animationType="slide"
+                            transparent={true}
+                            visible={this.state.isEnergyModalVisible} 
+                        >
+                            <View style={styles.centeredView}>
+                                <View style={styles.modalView}>
+                                    <Text style = {styles.title}>Update User Energy </Text>
+                                        
+                                    <TextInput style = {styles.input}
+                                        underlineColorAndroid = "transparent"
+                                        placeholder = {this.state.email}
+                                        autoCapitalize = "none"
+                                        onChangeText = {this.updateUserEnergy}/>         
+                            
+                            
+                                    <View style={{flexDirection:'row',}}>
+                                        <TouchableOpacity style={{backgroundColor:'red',width:'50%'}} onPress={()=>this.closeEnergyModal()}>
+                                            <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity style={{backgroundColor:'green',width:'50%'}} onPress={()=>this.updateSettings()}>
+                                            <Text style={{color:'white',textAlign:'center',padding:10}}>Ok</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+
+                            </View>
+                        </Modal>
+
+
+
+                        <Modal
+                            animationType="slide"
+                            transparent={true}
+                            visible={this.state.isDeleteAccountModalVisible} 
+                        >
+                            <View style={styles.centeredView}>
+                                <View style={styles.modalView}>
+                                    <Text style = {styles.title}>Do you want to delete your account ?  </Text>
+                                             
+                            
+                                    <View style={{flexDirection:'row',}}>
+                                        <TouchableOpacity style={{backgroundColor:'red',width:'50%'}} onPress={()=>this.closeDeleteAccountModal()}>
+                                            <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity style={{backgroundColor:'green',width:'50%'}} onPress={()=>this.deleteUser()}>
+                                            <Text style={{color:'white',textAlign:'center',padding:10}}>Ok</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+
+                            </View>
+                        </Modal>
+
+
+
+
+
                     </View>
-                </TouchableOpacity>
-
-                <Text> </Text>
-                <TouchableOpacity    onPress={()=>this.openPasswordModal()}    underlayColor="black">
-                    <View style={styles.button}>
-                        <AntDesign name="arrowright" size={24} color="black" />
-                        <Text style={styles.buttonText}> Update Password</Text>
-                    </View>
-                </TouchableOpacity>
-                <Text> </Text>
-                <TouchableOpacity    onPress={()=>this.openEmailModal()}    underlayColor="black">
-                    <View style={styles.button}>
-                        <AntDesign name="arrowright" size={24} color="black" />
-                        <Text style={styles.buttonText}> Update Email</Text>
-                    </View>
-                </TouchableOpacity>
-                <Text> </Text>
-                <TouchableOpacity    onPress={()=>this.openEnergyModal()}    underlayColor="black">
-                    <View style={styles.button}>
-                        <AntDesign name="arrowright" size={24} color="black" />
-                        <Text style={styles.buttonText}> Update Total Energy</Text>
-                    </View>
-                </TouchableOpacity>
-                <Text> </Text>
-                <TouchableOpacity    onPress={()=>this.openDeleteAccountModal()}    underlayColor="black">
-                    <View style={styles.button}>
-                        <AntDesign name="arrowright" size={24} color="black" />
-                        <Text style={styles.buttonText}> Delete Account</Text>
-                    </View>
-                </TouchableOpacity>
-                </View>
-         
-         
-         
-         
-         
-         {/* USERNAME MODAL */}
-         
-         <View>
-            <Modal animationIn="slideInUp" 
-                animationOut="slideOutDown" 
-                onBackdropPress={()=>this.closeUsernameModal()}
-                onSwipeComplete={()=>this.closeUsernameModal()} 
-                swipeDirection="right" 
-                isVisible={this.state.isUsernameModalVisible} 
-                style={{backgroundColor:'white'}}>
-
-                <Text style = {styles.text}>Update Username </Text>
-                <TextInput style = {styles.input}
-                    underlineColorAndroid = "transparent"
-                    placeholder = {this.state.username}
-                    autoCapitalize = "none"
-                    onChangeText = {this.updateUsername}/> 
-
-
-                <View style={{justifyContent:'center',}}>
-                    <View style={{flexDirection:'row',}}>
-                        <TouchableOpacity style={{backgroundColor:'red',width:'50%'}} onPress={()=>this.closeUsernameModal()}>
-                            <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity 
-                        style={{backgroundColor:'green',width:'50%'}} 
-                        onPress={()=>this.updateSettings(
-                            this.state.userId,
-                            this.state.username,
-                            this.state.email,
-                            this.state.password,
-                            this.state.energyTotal)} >
-                            <Text style={{color:'white',textAlign:'center',padding:10}}>Save</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-
-              </Modal>
-          </View>
-
-
-
-         {/* EMAIL MODAL */}
-
-
-
-          <View>
-            <Modal animationIn="slideInUp" 
-                animationOut="slideOutDown" 
-                onBackdropPress={()=>this.closeEmailModal()}
-                onSwipeComplete={()=>this.closeEmailModal()} 
-                swipeDirection="right" 
-                isVisible={this.state.isEmailModalVisible} 
-                width="90%"
-                max-height="40%"
-                style={{backgroundColor:'white'}}>
-
-                <Text style = {styles.text}>Update Email </Text>
-                <TextInput style = {styles.input}
-                    underlineColorAndroid = "transparent"
-                    placeholder = {this.state.email}
-                    // placeholderTextColor = {Colors.primaryColor}
-                    autoCapitalize = "none"
-                    onChangeText = {this.email}/> 
-
-                <View style={{ justifyContent:'center' }}>
-                    <View style={{flexDirection:'row',}}>
-                        <TouchableOpacity style={{backgroundColor:'red',width:'50%'}} onPress={()=>this.closeEmailModal()}>
-                            <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity 
-                          style={{backgroundColor:'green',width:'50%'}} 
-                          onPress={()=>this.updateSettings(
-                            this.state.userId,
-                            this.state.username,
-                            this.state.email,
-                            this.state.password,
-                            this.state.energyTotal)} >
-                            <Text style={{color:'white',textAlign:'center',padding:10}}>Save</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-              </Modal>
-          </View>
-
-
-
-         {/* PASSWORD MODAL */}
-
-
-
-         <View>
-            <Modal animationIn="slideInUp" 
-                animationOut="slideOutDown" 
-                onBackdropPress={()=>this.closePasswordModal()}
-                onSwipeComplete={()=>this.closePasswordModal()} 
-                swipeDirection="right" 
-                isVisible={this.state.isPasswordModalVisible} 
-                width="90%"
-                max-height="40%"
-                style={{backgroundColor:'white'}}>
-
-                <Text style = {styles.text}>Update Password </Text>
-                <TextInput style = {styles.input}
-                    underlineColorAndroid = "transparent"
-                    placeholder = {this.state.username}
-                    // placeholderTextColor = {Colors.primaryColor}
-                    autoCapitalize = "none"
-                    onChangeText = {this.password}/> 
-                <Text style = {styles.text}>Update Password Again </Text>
-                <TextInput style = {styles.input}
-                    underlineColorAndroid = "transparent"
-                    // placeholderTextColor = {Colors.primaryColor}
-                    autoCapitalize = "none"
-                    onChangeText = {this.password}/> 
-
-                <View style={{ flex: 1,justifyContent:'center',position:'absolute',bottom:0}}>
-                    <View style={{flexDirection:'row',}}>
-                        <TouchableOpacity style={{backgroundColor:'red',width:'50%'}} onPress={()=>this.closePasswordModal()}>
-                            <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity 
-                          style={{backgroundColor:'green',width:'50%'}} 
-                          onPress={()=>this.updateSettings(
-                            this.state.userId,
-                            this.state.username,
-                            this.state.email,
-                            this.state.password,
-                            this.state.energyTotal)} >
-                            <Text style={{color:'white',textAlign:'center',padding:10}}>Save</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-              </Modal>
-          </View>
-
-
-         {/* ENERGY MODAL */}
-
-
-
-         <View>
-            <Modal animationIn="slideInUp" 
-                animationOut="slideOutDown" 
-                onBackdropPress={()=>this.closeEnergyModal()}
-                onSwipeComplete={()=>this.closeEnergyModal()} 
-                swipeDirection="right" 
-                isVisible={this.state.isEnergyModalVisible} 
-                width="90%"
-                max-height="40%"
-                style={{backgroundColor:'white'}}>
-
-                <Text style = {styles.text}>Update Energy </Text>
-                <TextInput style = {styles.input}
-                    underlineColorAndroid = "transparent"
-                    placeholder = {this.state.username}
-                    // placeholderTextColor = {Colors.primaryColor}
-                    autoCapitalize = "none"
-                    onChangeText = {this.energy}/> 
-
-                <View style={{ flex: 1,justifyContent:'center',position:'absolute',bottom:0}}>
-                    <View style={{flexDirection:'row',}}>
-                        <TouchableOpacity style={{backgroundColor:'red',width:'50%'}} onPress={()=>this.closeEnergyModal()}>
-                            <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity 
-                          style={{backgroundColor:'green',width:'50%'}} 
-                          onPress={()=>this.updateSettings(
-                            this.state.userId,
-                            this.state.username,
-                            this.state.email,
-                            this.state.password,
-                            this.state.energyTotal)} >
-                            <Text style={{color:'white',textAlign:'center',padding:10}}>Save</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-              </Modal>
-          </View>
-
-
-
-
-
-
-
-
-
-         {/* DELETE MODAL */}
-
-
-
-         <View>
-            <Modal animationIn="slideInUp" 
-                animationOut="slideOutDown" 
-                onBackdropPress={()=>this.closeDeleteAccountModal()}
-                onSwipeComplete={()=>this.closeDeleteAccountModal()} 
-                swipeDirection="right" 
-                isVisible={this.state.isDeleteAccountModalVisible} 
-                width="90%"
-                max-height="40%"
-                style={{backgroundColor:'white'}}>
-                <Text style = {styles.text}>Are you sure you want to delete your account ??</Text>
-                <View style={{ flex: 1,justifyContent:'center',position:'absolute',bottom:0}}>
-                    <View style={{flexDirection:'row',}}>
-                        <TouchableOpacity style={{backgroundColor:'red',width:'50%'}} onPress={()=>this.closeDeleteAccountModal()}>
-                            <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity 
-                          style={{backgroundColor:'green',width:'50%'}} 
-                          onPress={()=>this.deleteUser(
-                            this.state.userId)} >
-                            <Text style={{color:'white',textAlign:'center',padding:10}}>Save</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-              </Modal>
-          </View>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        </View>
-
-        
 
                 )
-            // }
-            // else{
-            //     return (
-            //         <ActivityIndicator size={"large"} ></ActivityIndicator>)
-            // }
+            }
+            else {
+                return(<ActivityIndicator size={"large"} ></ActivityIndicator>)
+            }
         }
 
     // return <MealList listData={favMeals} navigation={props.navigation} />;
@@ -559,16 +489,19 @@ const styles = StyleSheet.create({
         fontFamily: 'open-sans-bold',
         fontSize: 12,
         margin: 20,
-        textAlign: 'center'
+        textAlign: 'center',
+        justifyContent: 'flex-start',
+        alignSelf: 'stretch'
     },
     input:{
-        width: "75%",
+        width: "100%",
         zIndex: 2,
-        borderWidth:1
+        borderWidth:1,
+        marginBottom:10
     },
 
     button: {
-
+        marginBottom: 15,
         display: 'flex',
         flexDirection: 'row',
         height: 50,
@@ -597,7 +530,26 @@ const styles = StyleSheet.create({
             marginTop: 20,
             alignSelf: 'stretch',
             // justifyContent: 'center'
-    }
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        marginTop: 22
+      },
+    modalView: {
+        margin: 20,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5
+      },
 });
 
 export default SettingsScreen;

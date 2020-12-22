@@ -10,20 +10,43 @@ def getEnergyHistory(connection, data):
     if 'userId' not in data:
         return {'message':'userId missing!', 'success': False}, 400
     try:
+        history = []
+        totalCo2 = 0 
+        totalRecycledCo2 = 0
+        totalCo2Reduced = 0 
         with connection.cursor() as cursor:
             sql = "CALL getFoodEnergyHistory({});".format(data['userId'])
             print(sql)
             cursor.execute(sql)
-            foodHistory = cursor.fetchall()
-
-
-        with connection.cursor() as cursor:
+            transportHistory = cursor.fetchall()
+            history +=transportHistory
+            
             sql = "CALL getTransportEnergyHistory({});".format(data['userId'])
             print(sql)
             cursor.execute(sql)
             transportHistory = cursor.fetchall()
+            history +=transportHistory
 
-            return {"history":transportHistory, "success":True}, 200
+            sql = "CALL getElectricityEnergyHistory({});".format(data['userId'])
+            print(sql)
+            cursor.execute(sql)
+            transportHistory = cursor.fetchall()
+            history +=transportHistory
+
+            sql = "CALL getRecycledEnergyHistory({});".format(data['userId'])
+            print(sql)
+            cursor.execute(sql)
+            transportHistory = cursor.fetchall()
+            history +=transportHistory
+
+            for item in history: 
+                print(item)
+                totalCo2 += item['totalCost'] 
+                totalRecycledCo2 += item['totalCost']  
+                totalCo2Reduced += item['totalCost'] 
+
+            print(history)
+            return {"history":history, "success":True,    "totalStats": {"totalCo2": totalCo2, "totalRecycledCo2":totalRecycledCo2,  "totalCo2Reduced":totalCo2Reduced} }, 200
 
     
     except Exception as e :

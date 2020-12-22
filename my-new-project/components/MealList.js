@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, Text, View, FlatList,  TextInput, Modal, TouchableHighlight, TouchableOpacity  } from 'react-native';
+import {StyleSheet, Text, View, FlatList,  TextInput, Modal, TouchableHighlight, RefreshControl, TouchableOpacity,SafeAreaView, ScrollView   } from 'react-native';
 import { AntDesign } from '@expo/vector-icons'; 
 import { MaterialIcons } from '@expo/vector-icons'; 
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
@@ -7,6 +7,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
 
 import MealItem from './MealItem';
+import BaseUrl from '../constants/Url';
 
 class MealList extends Component {
   constructor(props) {
@@ -18,7 +19,9 @@ class MealList extends Component {
         inputText: '',
         editedItem: 0, 
         deletedItem : '',
-        userId :1
+        updatedItem: '',
+        userId :1,
+        refreshing: false
         };
   }
 
@@ -31,16 +34,23 @@ class MealList extends Component {
   closeDeleteModal = () =>{this.setState({isDeleteModalVisible:false})}
 
 
+//   _onRefresh = () => {
+//     this.setState({refreshing: true});
+//     fetchData().then(() => {
+//       this.setState({refreshing: false});
+//     });
+//   }
+
   deleteEnergy = (userId, energy) => {
     console.log("Set Deleted item :", energy)
-    fetch('http://192.168.1.4:5000/deleteEnergy', {
+    fetch(BaseUrl+'deleteEnergy', {
     headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-        userId: userId,
-        energyId: energy
+        userId: this.state.userId,
+        energyId: this.state.deletedItem
     }),
     method: 'POST'
     })
@@ -50,7 +60,7 @@ class MealList extends Component {
         if(responseJson['success'] == true){
             alert("Energy Deleted Succefully");
             this.closeDeleteModal()
-        }
+            }
         else{
             alert("Energy deleted Failed", userId, energy);
         }
@@ -71,10 +81,17 @@ class MealList extends Component {
   }
   
   setDeletedItem = (item) => {
-
     console.log("In:", item)
     this.setState({deletedItem: item.energyId}, () =>{
         this.setState({isDeleteModalVisible:true})
+    });
+  }
+
+
+  setUpdateItem = (item) => {
+    console.log("In:", item)
+    this.setState({updatedItem: item.energyId}, () =>{
+        this.setState({isUpdateModalVisible:true})
     });
   }
 
@@ -101,17 +118,21 @@ class MealList extends Component {
     else if (item.transportDescription === 'train'){
       itemIcon = <MaterialIcons name="train" size={24} color= {Colors.primaryColor} />
     }
-    else if (item.transportDescription === 'bus'){
+    else if (item.itemId === 4 && item.energyType === 1){
       itemIcon = <MaterialIcons name="directions-bus" size={24} color={Colors.primaryColor} />    }
     
-    else if (item.transportDescription === 'aeroplane'){
+    else if (item.itemId === 1 && item.energyType === 1){
       itemIcon = <FontAwesome name="plane" size={24} color= {Colors.primaryColor} />
     }
-    else if (item.foodDescription !== undefined ){
+    else if (item.energyType === 0 ){
         itemIcon = <MaterialCommunityIcons name="food" size={24} color= {Colors.primaryColor} />
       }
-    
-
+    else if (item.energyType === 2 ){
+        itemIcon = <MaterialCommunityIcons name="recycle" size={24} color= {Colors.primaryColor} />
+    }    
+    else if (item.energyType === 3 ){
+        itemIcon = <MaterialCommunityIcons name="power" size={24} color= {Colors.primaryColor} />
+    }
     var stringCost = "Energy"
     if (item.foodDescription !== undefined ){
         stringCost = "Total kg used: "
@@ -122,24 +143,24 @@ class MealList extends Component {
     return (
 
             <View style={styles.item} >
-                
+                        
                 <View style={styles.marginLeft}>
                     {itemIcon}
 
                 </View>
                 <View style = {styles.itemTexts}>
                     <Text style={styles.text}> Date: {item.energyDate} </Text>
-                    <Text style={styles.text}> {stringCost} {item.energyCost}</Text> 
-                    <Text style={styles.text}> Total Co2 produced: {item.cost} </Text>
+                    <Text style={styles.text}> {stringCost} {item.userCost}</Text> 
+                    <Text style={styles.text}> Total Co2 produced: {item.totalCost} </Text>
                 </View>
                 
                 <View style={styles.iconStyles}>
                     <TouchableHighlight onPress={()=>this.openUpdateModal()}>
-                        <MaterialIcons name="change-history" size={30} color={Colors.primaryColor} />
+                        <MaterialIcons name="update" size={25} color={Colors.primaryColor} />
                     </TouchableHighlight>
 
                     <TouchableHighlight onPress={ ()=>this.setDeletedItem(item)}>
-                        <MaterialIcons name="delete" size={30} color={Colors.primaryColor} />
+                        <MaterialIcons name="delete" size={25} color={Colors.primaryColor} />
                     </TouchableHighlight>
 
                 </View>
@@ -149,48 +170,88 @@ class MealList extends Component {
 
   render() {
       console.log("State data", this.state.data)
-
+      var dataList = this.props['list'].sort((a, b) => { 
+        console.log(Date.parse(b.energyDate) , (a.energyDate))  
+        return Date.parse(b.energyDate) - Date.parse(a.energyDate); 
+    })
+      
     return (
-        <View style={styles.contentContainer}>
+        <SafeAreaView style={styles.contentContainer}>
+            
             <FlatList 
-                data={this.props['list']}
+                refreshControl={
+                    <RefreshControl
+                    refreshing={this.props.refreshing}
+                    onRefresh={this.props._handleRefresh}
+                    />
+                }
+                data={dataList}
                 renderItem={this.renderItem}
                 keyExtractor={(item) => item.energyId.toString()}
             />
 
             {  this.state.isDeleteModalVisible &&
                 
-                <View>
-                    <Modal animationIn="slideInUp" 
-                        animationOut="slideOutDown" 
-                        onBackdropPress={()=>this.closeDeleteModal()}
-                        onSwipeComplete={()=>this.closeDeleteModal()} 
-                        swipeDirection="right" 
-                        isVisible={this.state.isDeleteModalVisible} 
-                        width="90%"
-                        max-height="40%"
-                        style={{backgroundColor:'white'}}>
-
-                    <View style={styles.modalView}>           
-                        <Text style = {styles.title}>Are you sure, you wan to delete it ?  </Text>       
-                    </View>
-                                
-                    <View style={{ flex: 1,justifyContent:'center',position:'absolute',bottom:0}}>
-                            <View style={{flexDirection:'row',}}>
-                                <TouchableOpacity style={{backgroundColor:'red',width:'50%'}} onPress={()=>this.closeDeleteModal()}>
-                                    <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={{backgroundColor:'green',width:'50%'}} onPress={() => {this.deleteEnergy(this.state.userId, this.state.deletedItem)}}>
-                                    <Text style={{color:'white',textAlign:'center',padding:10}}>Ok</Text>
-                                </TouchableOpacity>
-                            </View>
+                <Modal
+                animationType="slide"
+                transparent={true}
+                visible={this.state.isDeleteAccountModalVisible} 
+                >
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <Text style = {styles.title}>Do you want to delete this action ? </Text>
+                                 
+                
+                        <View style={{flexDirection:'row',}}>
+                            <TouchableOpacity style={{backgroundColor:'red',width:'50%'}} onPress={()=>this.closeDeleteModal()}>
+                                <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={{backgroundColor:'green',width:'50%'}} onPress={()=>this.deleteEnergy()}>
+                                <Text style={{color:'white',textAlign:'center',padding:10}}>Ok</Text>
+                            </TouchableOpacity>
                         </View>
-                    </Modal>
+                    </View>
 
                 </View>
+            </Modal>
             }
-                            
-            </View>
+
+            {  this.state.isUpdateModalVisible &&
+                
+                <Modal
+                animationType="slide"
+                transparent={true}
+                visible={this.state.isUpdateModalVisible} 
+                >
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <Text style = {styles.title}>Update Action</Text>
+                                 
+                
+                        <Text style = {styles.text}>How Many: </Text>
+
+                        <TextInput style = {styles.input}
+                            underlineColorAndroid = "transparent"
+                            placeholder = "0.0"
+                            placeholderTextColor = "black"
+                            autoCapitalize = "none"
+                            onChangeText = {this.updateCost}/>  
+                             
+                        <View style={{flexDirection:'row',}}>
+                            <TouchableOpacity style={{backgroundColor:'red',width:'50%'}} onPress={()=>this.closeUpdateModal()}>
+                                <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={{backgroundColor:'green',width:'50%'}} onPress={()=>this.deleteUser()}>
+                                <Text style={{color:'white',textAlign:'center',padding:10}}>Ok</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+
+                </View>
+            </Modal>
+            }
+
+            </SafeAreaView>
     )
   }
 };
@@ -205,14 +266,45 @@ const styles = StyleSheet.create({
     headerText: {
         fontSize: 20,
     },
+    title: {
+        fontFamily: 'open-sans-bold',
+        fontSize: 12,
+        margin: 20,
+        textAlign: 'center',
+        justifyContent: 'flex-start',
+        alignSelf: 'stretch'
+    },
     contentContainer: {
         backgroundColor: 'white',
     },
-    item: {
-        flexDirection: 'row',
-        marginVertical: 8
+    // item: {
+    //     flexDirection: 'row',
+    //     marginVertical: 8
 
-    },
+    // },
+    item: {
+        marginBottom: 5,
+        display: 'flex',
+        flexDirection: 'row',
+        height: 50,
+        borderRadius: 9,
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        width: '100%',
+        backgroundColor: '#F8F8FF',
+        shadowColor: '#2AC062',
+        shadowOpacity: 0.5,
+        shadowOffset: { 
+            height: 10, 
+            width: 0 
+        },
+        shadowRadius: 25
+        },
+        buttonText: {
+            textAlign: 'left',
+            padding: 20,
+            color: 'black'
+        },
     itemTexts: {
         flexDirection: 'column',
         borderBottomColor: 'grey',
@@ -247,18 +339,32 @@ const styles = StyleSheet.create({
         borderColor: 'gray', 
         fontSize: 8,
     },
-    modalView: {
-        flex: 1, 
-        backgroundColor: 'white',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
+
     touchableHighlight: {
         backgroundColor: 'white', 
         marginVertical: 10,
         alignSelf: 'stretch',
         alignItems: 'center',
-    } 
+    } ,
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        marginTop: 22
+      },
+    modalView: {
+        margin: 20,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5
+      },
 });
       
 export default MealList;

@@ -15,10 +15,11 @@ def getUserEnergy(connection, data):
             cursor.execute(sql)
             energy = cursor.fetchall()[0]
             print(energy)
-            if energy['totalTransportCost'] is None:
-                energy['totalTransportCost'] = 0 
-            if energy['totalFoodCost'] is None:
-                energy['totalFoodCost'] = 0 
+
+            
+            
+            
+            
             return {"userEnergy":energy, "success":True}, 200
 
     

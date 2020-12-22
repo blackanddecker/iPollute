@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useCallback, Component } from 'react';
-import { View, Text, StyleSheet, Switch, Platform} from 'react-native';
+import { View, Text, StyleSheet, Switch, Platform, TouchableOpacity} from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { Slider } from 'react-native-elements';
 import DatePicker from 'react-native-datepicker'
+import { AntDesign } from '@expo/vector-icons'; 
 
 import HeaderButton from '../components/HeaderButton';
 import Colors from '../constants/Colors';
+import BaseUrl from '../constants/Url';
 
 
 class FiltersScreen extends Component {
@@ -27,7 +29,7 @@ class FiltersScreen extends Component {
     }
 
     componentDidMount = () => {
-            fetch('http://192.168.1.4:5000/getFilterOptions', {
+            fetch(BaseUrl+'getFilterOptions', {
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json',
@@ -47,6 +49,8 @@ class FiltersScreen extends Component {
                     minKm: responseJson['filters']['minKm'],
                     minKg: responseJson['filters']['minKg'], 
                     maxKg: responseJson['filters']['maxKg'], 
+                    currentKg:responseJson['filters']['minKg'],
+                    currentKm:responseJson['filters']['minKm'],
                     transports: [],
                     foods: [],
                     isLoading: !this.state.isLoading })
@@ -86,7 +90,9 @@ class FiltersScreen extends Component {
     //     navigation.setParams({ save: saveFilters });
     // }, [saveFilters]);
 
-
+    saveFilters = () => {
+        console.log("SaveFilters",state)
+    }
 
     updateMinCurrentDate = (minCurrentDate) => {
         this.setState({ minCurrentDate: minCurrentDate })
@@ -95,17 +101,19 @@ class FiltersScreen extends Component {
         this.setState({ maxCurrentDate: maxCurrentDate })
     }
 
-    updateCurrentKm = (minKm) => {
-        this.setState({ minKm: minKm })
+    updateCurrentKm = (currentKm) => {
+        this.setState({ currentKm: currentKm })
     }
-    updateCurrentKg = (maxKg) => {
-        this.setState({ maxKg: maxKg })
+    updateCurrentKg = (currentKg) => {
+        this.setState({ currentKg: currentKg })
     }
 
     render() {
         return (
             <View style={styles.screen}>
                 <View style={styles.component}>
+                    <Text style={styles.text}>Select Start Date</Text>
+
                     <DatePicker
                         style={{width: 300}}
                         date={this.state.minCurrentDate}
@@ -119,20 +127,20 @@ class FiltersScreen extends Component {
                         onDateChange={this.updateMinCurrentDate}
                     />
                 </View>
-            <View style={styles.component}>
-
-                <DatePicker
-                    style={{width: 300}}
-                    date={this.state.maxCurrentDate}//{this.state.date}
-                    mode="date"
-                    placeholder="select date"
-                    format="YYYY-MM-DD"
-                    minDate={this.state.minDate}
-                    maxDate={this.state.maxDate}
-                    confirmBtnText="Confirm"
-                    cancelBtnText="Cancel"
-                    onDateChange={this.updateMaxCurrentDate}
-                    />    
+                <View style={styles.component}>
+                    <Text style={styles.text}>Select End Date</Text>
+                    <DatePicker
+                        style={{width: 300}}
+                        date={this.state.maxCurrentDate}//{this.state.date}
+                        mode="date"
+                        placeholder="select date"
+                        format="YYYY-MM-DD"
+                        minDate={this.state.minDate}
+                        maxDate={this.state.maxDate}
+                        confirmBtnText="Confirm"
+                        cancelBtnText="Cancel"
+                        onDateChange={this.updateMaxCurrentDate}
+                        />    
                 </View>
 
                 <View style={styles.component}>
@@ -153,22 +161,28 @@ class FiltersScreen extends Component {
                     </View>
                 </View>
 
-            <View style={styles.component}>
-                <Text style={styles.text}>Transport Km: {this.state.currentKm}</Text>
-                <View style={styles.slider}>
+                <View style={styles.component}>
+                    <Text style={styles.text}>Transport Km: {this.state.currentKm}</Text>
+                    <View style={styles.slider}>
 
-                    <Slider
-                        value={this.currentKm}
-                        onValueChange={this.updateCurrentKm}
-                        maximumValue={this.state.maxKm}
-                        minimumValue={this.state.minKm}
-                        step={5}
-                        trackStyle={{ height: 10, backgroundColor: 'transparent' }}
-                        thumbStyle={{ height: 20, width: 20, backgroundColor: Colors.primaryColor }}
-                    />
+                        <Slider
+                            value={this.currentKm}
+                            onValueChange={this.updateCurrentKm}
+                            maximumValue={this.state.maxKm}
+                            minimumValue={this.state.minKm}
+                            step={5}
+                            trackStyle={{ height: 10, backgroundColor: 'transparent' }}
+                            thumbStyle={{ height: 20, width: 20, backgroundColor: Colors.primaryColor }}
+                        />
+                    </View>
                 </View>
-                </View>
-            </View>
+
+                <TouchableOpacity    onPress={()=>this.saveFilters()} underlayColor="white">
+                    <View style={styles.SaveButton}>
+                        <Text style={styles.buttonText}> Save </Text>
+                    </View>
+                </TouchableOpacity>
+        </View>
         )
 
     }
@@ -200,15 +214,6 @@ FiltersScreen.navigationOptions = navData => {
                     }}
                 />
             </HeaderButtons>
-        ),
-        headerRight:(
-            <HeaderButtons HeaderButtonComponent={HeaderButton}>
-                <Item
-                    title="Save"
-                    iconName="ios-save"
-                    onPress={navData.navigation.getParam('save')}
-                />
-            </HeaderButtons>
         )
     };
 };
@@ -216,32 +221,64 @@ FiltersScreen.navigationOptions = navData => {
 const styles = StyleSheet.create({
     screen: {
 
-        flex: 1,
-        alignItems: 'center',
-        marginBottom: 15,
+        marginTop: 15,
         position: 'relative',
-        justifyContent: 'center',
-        padding: 5,
-        backgroundColor: '#ffffff',
-    },
-
-    filterContainer: {
-        flexDirection: 'row',
-        alignItems: 'stretch',
-        marginVertical: 15
-    },
-    sameRow:{
-        flex:1,
-        flexDirection:'row'
+        backgroundColor: '#ffffff'
     },
     text: {
         height: 30
     },
+
+    SaveButton: {
+
+        display: 'flex',
+        flexDirection: 'row',
+        height: 60,
+        borderRadius: 6,
+        alignItems: 'center',
+        width: '100%',
+        paddingLeft:20,
+        backgroundColor: '#2AC062',
+        shadowColor: '#2AC062',
+        shadowOpacity: 0.5,
+        shadowOffset: { 
+            height: 10, 
+            width: 0 
+        },
+        shadowRadius: 25,
+        backgroundColor:    Colors.thirdBlueColor
+        },
+    buttonText: {
+        textAlign: 'center',
+        padding: 20,
+        color: 'white'
+    },
     component: {
-        borderRadius: 8,
         paddingLeft: 25,
         alignSelf: 'stretch',
         // justifyContent: 'center'
+
+        marginBottom: 15,
+        display: 'flex',
+        flexDirection: 'column',
+        height: 70,
+        borderRadius: 6,
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        width: '100%',
+        backgroundColor: '#F8F8FF',
+        shadowColor: '#2AC062',
+        shadowOpacity: 0.5,
+        shadowOffset: { 
+            height: 10, 
+            width: 0 
+        },
+        shadowRadius: 25
+        },
+        buttonText: {
+            textAlign: 'left',
+            padding: 20,
+            color: 'black'
     },
     slider:{
         width:"75%"

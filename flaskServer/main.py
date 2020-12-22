@@ -16,6 +16,7 @@ from src.energy import deleteEnergy
 from src.energy import updateEnergy
 from src.energy import getEnergyHistory
 from src.energy import getUserEnergy
+from src.energy import getEnergyObjects
 
 from src import getFilterOptions
 
@@ -82,6 +83,10 @@ def _getUserDetails():
     response, status = getUserDetails.getUserDetails(connection = getConnection(), data = request.get_json())
     return response, status
 
+@app.route('/getEnergyObjects', methods=['POST'])
+def _getEnergyObjects():
+    response, status = getEnergyObjects.getEnergyObjects(connection = getConnection(), data = request.get_json())
+    return response, status
 
 @app.route('/getTransportObjects', methods=['POST'])
 def _getTransportObjects():
