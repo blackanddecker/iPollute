@@ -1,5 +1,5 @@
 export default {
-  primaryColor: 'green',
-  accentColor: 'green',
+  primaryColor: '#355e3b',
+  accentColor: '#355e3b',
   thirdBlueColor: 'blue'
 };

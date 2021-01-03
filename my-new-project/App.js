@@ -26,6 +26,5 @@ export default function App() {
       />
     );
   }
-
   return <MealsNavigator />;
 }

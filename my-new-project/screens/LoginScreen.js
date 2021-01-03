@@ -2,19 +2,22 @@ import React, { Component } from 'react'
 import { Image, KeyboardAvoidingView, StyleSheet, View } from "react-native";
 import Button from "../components/Button";
 import FormTextInput from "../components/FormTextInput";
-import imageLogo from "../assets/favicon.png";
+import imageLogo from "../assets/logo2.jpeg";
 import colors from '../constants/Colors';
 import strings from "../config/strings";
 import BaseUrl from '../constants/Url';
-
-
+import MainNavigator from '../navigation/MealsNavigator';
+import { HeaderButtons, Item } from 'react-navigation-header-buttons';
+import HeaderButton from '../components/HeaderButton';
+import AsyncStorage from '@react-native-community/async-storage'
 
 class LoginScreen extends Component {
   state= {
     email: "",
     password: "",
     emailTouched: false,
-    passwordTouched: false
+    passwordTouched: false,
+    userId:-1
   }
 
   handleEmailChange = (email: string) => {
@@ -40,6 +43,10 @@ class LoginScreen extends Component {
     this.setState({ passwordTouched: true });
   };
 
+  goToSignUp = () => {
+    this.props.navigation.navigate({routeName:'SignUp'})
+  }
+
 
   handleLoginPress = () => {
     
@@ -60,9 +67,18 @@ class LoginScreen extends Component {
         console.log(responseJson);     
         if (responseJson['success'] == true){
           console.log("Set param:", responseJson['user']['id']);
-          // this.props.navigation.navigate('Settings', { userId: responseJson['user']['id'] })
-          this.props.navigation.navigate('Settings', 
-            {userId: responseJson['user']['id']});
+          AsyncStorage.setItem('userId', responseJson['user']['id']);
+          this.props.navigation.navigate({
+            routeName:'Categories', 
+            params:{
+              userId: responseJson['user']['id'],
+              email: responseJson['user']['email'],
+              username: responseJson['user']['username'],
+              fullname: responseJson['user']['fullname']
+            }
+          });
+
+          
         }
         else{
           alert("Login Failed");
@@ -127,12 +143,34 @@ class LoginScreen extends Component {
             onPress={this.handleLoginPress}
             disabled={!email || !password}
           />
+          
+          <Button
+            label={"Go to sign-up page"}
+            onPress={this.goToSignUp}
+          />
         </View>
       </KeyboardAvoidingView>
 
     );
   }
 }
+
+LoginScreen.navigationOptions = navData => {
+  return {
+      headerTitle: 'Login',
+      // headerLeft: (
+      //     <HeaderButtons HeaderButtonComponent={HeaderButton}>
+      //         <Item
+      //             title="Menu"
+      //             iconName="ios-menu"
+      //             onPress={() => {
+      //                 navData.navigation.toggleDrawer();
+      //             }}
+      //         />
+      //     </HeaderButtons>
+      // )
+  };
+};
 
 const styles = StyleSheet.create({
   container: {

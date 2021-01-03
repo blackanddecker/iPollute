@@ -4,14 +4,16 @@ import { Text, ScrollView, StyleSheet, View, Image} from 'react-native';
 import { SafeAreaView } from 'react-navigation';
 import { DrawerItems } from 'react-navigation-drawer';
 
-import logoImage from "../assets/favicon.png"
+import logoImage from "../assets/Smoke.png";
 
 const CustomDrawerContentComponent = (props) => {
+    console.log("Custom Navigation Props",props)
+    // const { navigation } = this.props;
+    // const userId = navigation.getParam('userId', '-1');
     return (<ScrollView>
         <SafeAreaView style={styles.container}>      
         <Image source={logoImage} style={styles.profileImg}/>
-        <Text style={{fontWeight:"bold",fontSize:16,marginTop:10}}>Janna Doe</Text>
-        <Text style={{color:"gray",marginBottom:10}}>janna@doe.com</Text>
+
         <View style={styles.sidebarDivider}></View>
 
             <DrawerItems {...props} />

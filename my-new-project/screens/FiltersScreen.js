@@ -8,66 +8,89 @@ import { AntDesign } from '@expo/vector-icons';
 import HeaderButton from '../components/HeaderButton';
 import Colors from '../constants/Colors';
 import BaseUrl from '../constants/Url';
+import AsyncStorage from '@react-native-community/async-storage'
 
 
 class FiltersScreen extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            isLoading: true,
+            minDate : '',
+            maxDate: '',
+            maxKm: 0,
+            minKm: 0,
+            minKg: 0, 
+            maxKg: 0, 
+            transports: [],
+            foods: [],
+            currentKg:0,
+            currentKm:0,
+            maxCurrentDate: '',
+            minCurrentDate: '',
+            isTransport: false, 
+            isFood: false,
+            isRecycle: false,
+            isElectricity: false
+        };
+      }
 
-    state = {
-        isLoading: true,
-        minDate : '',
-        maxDate: '',
-        maxKm: 0,
-        minKm: 0,
-        minKg: 0, 
-        maxKg: 0, 
-        transports: [],
-        foods: [],
-        currentKg:0,
-        currentKm:0,
-        maxCurrentDate: '',
-        minCurrentDate: ''
+
+    fetchData = (userId) => {
+        fetch(BaseUrl+'getFilterOptions', {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                userId:1
+            }),
+            method: 'POST'
+        })
+        .then((response) => response.json())
+        .then((responseJson) => {
+            console.log(responseJson);
+            this.setState({
+                minDate : responseJson['filters']['minDate'],
+                maxDate: responseJson['filters']['maxDate'],
+                maxKm: responseJson['filters']['maxKm'],
+                minKm: responseJson['filters']['minKm'],
+                minKg: responseJson['filters']['minKg'], 
+                maxKg: responseJson['filters']['maxKg'], 
+                currentKg:responseJson['filters']['minKg'],
+                currentKm:responseJson['filters']['minKm'],
+                transports: [],
+                foods: [],
+                isLoading: !this.state.isLoading })
+            console.log(this.state);
+                        
+        })
+        .catch((error) => {
+                console.error(error);
+                alert("User data didnt fetch");
+                });
     }
 
     componentDidMount = () => {
-            fetch(BaseUrl+'getFilterOptions', {
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        userId:1
-                    }),
-                    method: 'POST'
-            })
-            .then((response) => response.json())
-            .then((responseJson) => {
-                console.log(responseJson);
-                this.setState({
-                    minDate : responseJson['filters']['minDate'],
-                    maxDate: responseJson['filters']['maxDate'],
-                    maxKm: responseJson['filters']['maxKm'],
-                    minKm: responseJson['filters']['minKm'],
-                    minKg: responseJson['filters']['minKg'], 
-                    maxKg: responseJson['filters']['maxKg'], 
-                    currentKg:responseJson['filters']['minKg'],
-                    currentKm:responseJson['filters']['minKm'],
-                    transports: [],
-                    foods: [],
-                    isLoading: !this.state.isLoading })
-                console.log(this.state);
-                            
-            })
-            .catch((error) => {
-                     console.error(error);
-                     alert("User data didnt fetch");
-                    });
-            }
+        const { navigation } = this.props;
+        const userId = navigation.getParam('userId', '-1');
+
+        console.log("Get param1:",this.props.navigation.state.params);
+
+        this.setState({ userId: userId });
+
+        this.fetchData(userId)
+    }
+
+
     // const { navigation } = props;
 
-    // const [isGlutenFree, setIsGlutenFree] = useState(false);
-    // const [isLactoseFree, setIsLactoseFree] = useState(false);
-    // const [isVegan, setIsVegan] = useState(false);
-    // const [isVegetarian, setIsVegetarian] = useState(false);
+    // const [isTransport, setIsTransport] = useState(false);
+    // const [isFood, setIsFood] = useState(false);
+    // const [isRecycle, setisRecycle] = useState(false);
+    // const [isElectricity, setisElectricity] = useState(false);
+
+
     // const [sliderCostValue, setSliderCostValue] = useState(0);
     // const [sliderHoursValue, setSliderHoursValue] = useState(0);
 
@@ -77,30 +100,49 @@ class FiltersScreen extends Component {
 
     // const saveFilters = useCallback(() => {
     //     const appliedFilters = {
-    //         glutenFree: isGlutenFree,
+    //         Transport: isTransport,
     //         lactoseFree: isLactoseFree,
-    //         vegan: isVegan,
-    //         isVegetarian: isVegetarian
+    //         vegan: isRecycle,
+    //         isElectricity: isElectricity
     //     };
 
     //     console.log(appliedFilters);
-    // }, [isGlutenFree, isLactoseFree, isVegan, isVegetarian]);
+    // }, [isTransport, isLactoseFree, isRecycle, isElectricity]);
 
     // useEffect(() => {
     //     navigation.setParams({ save: saveFilters });
     // }, [saveFilters]);
 
     saveFilters = () => {
-        console.log("SaveFilters",state)
+        const appliedFilters = {
+            isTransport: this.state.isTransport,
+            isFood:this.state.isFood,
+            isElectricity:this.state.isElectricity,
+            isRecycle:this.state.isRecycle
+        };
+        console.log("appliedFilters",appliedFilters)
+        AsyncStorage.setItem('appliedFilters', appliedFilters);
+
     }
 
     updateMinCurrentDate = (minCurrentDate) => {
         this.setState({ minCurrentDate: minCurrentDate })
     }
+    setIsTransport = (isTransport) => {
+        this.setState({ isTransport: isTransport })
+    }
+    setIsRecycle = (isRecycle) => {
+        this.setState({ isRecycle: isRecycle })
+    }
+    setIsElectricity = (isElectricity) => {
+        this.setState({ isElectricity: isElectricity })
+    }
+    setIsFood = (isFood) => {
+        this.setState({ isFood: isFood })
+    }
     updateMaxCurrentDate = (maxCurrentDate) => {
         this.setState({ maxCurrentDate: maxCurrentDate })
     }
-
     updateCurrentKm = (currentKm) => {
         this.setState({ currentKm: currentKm })
     }
@@ -111,6 +153,46 @@ class FiltersScreen extends Component {
     render() {
         return (
             <View style={styles.screen}>
+                        
+                    
+                <View style={styles.component}>
+                    <Text> Transport</Text>
+                    <Switch 
+                        value = {this.state.isTransport} 
+                        trackColor = {{true: Colors.primaryColor}}
+                        thumbColor = {Colors.primaryColor}
+                        onValueChange = {newValue => this.setIsTransport(newValue)}>
+                    </Switch>
+                </View>  
+                <View style={styles.component}>
+                    <Text> Food</Text>
+                    <Switch 
+                        value = {this.state.isFood}
+                        trackColor = {{true: Colors.primaryColor}}
+                        thumbColor = {Colors.primaryColor}
+                        onValueChange = {newValue => this.setIsFood(newValue)}
+                    ></Switch>
+                </View>  
+                <View style={styles.component}>
+                    <Text> Electricity </Text>
+                    <Switch 
+                        value = {this.state.isElectricity}
+                        trackColor = {{true: Colors.primaryColor}}
+                        thumbColor = {Colors.primaryColor}
+                        onValueChange = {newValue => this.setIsElectricity(newValue)}
+                    ></Switch>
+                </View>  
+                <View style={styles.component}>
+                    <Text> Recycle </Text>
+                    <Switch 
+                    value = {this.state.isRecycle}
+                    trackColor = {{true: Colors.primaryColor}}
+                    thumbColor = {Colors.primaryColor}
+                    onValueChange = {newValue => this.setIsRecycle(newValue)}
+
+                    ></Switch>
+                </View> 
+
                 <View style={styles.component}>
                     <Text style={styles.text}>Select Start Date</Text>
 

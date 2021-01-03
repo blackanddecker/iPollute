@@ -19,6 +19,7 @@ import Colors from '../constants/Colors';
 import { format } from "date-fns";
 
 import BaseUrl from '../constants/Url';
+import AsyncStorage from '@react-native-community/async-storage'
 
 import {
     PieChart,
@@ -74,7 +75,7 @@ class CategoriesScreen extends Component {
       }
 
 
-    fetchData = () => {
+    fetchData = (userId) => {
 
 
         // const { navigation } = this.props;
@@ -86,7 +87,7 @@ class CategoriesScreen extends Component {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                userId:1
+                userId:userId
             }),
             method: 'POST'
         })
@@ -121,7 +122,7 @@ class CategoriesScreen extends Component {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                userId:1
+                userId:userId
             }),
             method: 'POST'
         })
@@ -152,7 +153,20 @@ class CategoriesScreen extends Component {
     }
     
     componentDidMount = () => {
-        this.fetchData()
+
+        const { navigation } = this.props;
+        const userId = AsyncStorage.getItem('userId').then((value) => {
+          console.log("in then", value)
+          this.setState({userId: value});
+      
+          console.log("Get param1 Async:",value);
+          console.log("Get param1 Async:",this.state.userId);
+      
+          this.fetchData(value)
+          return value
+    
+          
+        })
         
     }
     
@@ -539,7 +553,7 @@ class CategoriesScreen extends Component {
 CategoriesScreen.navigationOptions = navData => {
     return {
         headerTitle: 'My Energy',
-        headerLeft: (
+        headerLeft:() =>
             <HeaderButtons HeaderButtonComponent={HeaderButton}>
                 <Item
                     title="Menu"
@@ -549,7 +563,6 @@ CategoriesScreen.navigationOptions = navData => {
                     }}
                 />
             </HeaderButtons>
-        )
     };
 };
 

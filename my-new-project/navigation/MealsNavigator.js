@@ -23,8 +23,10 @@ import AboutsScreen from '../screens/AboutsScreen';
 import HistoryScreen from '../screens/HistoryScreen';
 import SettingsScreen from '../screens/SettignsScreen';
 import LoginScreen from '../screens/LoginScreen';
+import SignUpScreen from '../screens/SignUpScreen';
 
 import Colors from '../constants/Colors';
+import CityScreen from '../screens/CityScreen';
 
 const defaultStackNavOptions = {
   headerStyle: {
@@ -40,172 +42,79 @@ const defaultStackNavOptions = {
   headerTitle: 'A Screen'
 };
 
-const MealsNavigator = createStackNavigator(
-  {
-    Categories: {
-      screen: CategoriesScreen
-    },
-    MealDetail: MealDetailScreen
-  },
-  {
-    defaultNavigationOptions: defaultStackNavOptions
+
+// const MealsFavsNavigator = createStackNavigator(
+//   {
+//     Login: LoginScreen,
+//     SignUp:SignUpScreen,
+//     // Categories: CategoriesScreen,
+//     Logout: LoginScreen
+
+//   },
+//   {
+//     initialRouteName: 'Login',
+//     navigationOptions: {
+//       drawerLabel: 'Login'
+//     },
+//     defaultNavigationOptions: defaultStackNavOptions
+//   }
+// );
+
+
+const MyEnergyNavigator = createStackNavigator({
+  Categories: CategoriesScreen
+  },{
+  defaultNavigationOptions: defaultStackNavOptions
   }
-);
+)
 
-const HistoryNavigator  = createStackNavigator(
-  {
-    History: HistoryScreen,
-    Categories: {
-      screen: MealsNavigator
-    }
-  },
-  {
-    defaultNavigationOptions: defaultStackNavOptions
+const HistoryNavigator = createStackNavigator({
+  History: HistoryScreen
+  },{
+  defaultNavigationOptions: defaultStackNavOptions
   }
-);
+)
 
-const tabScreenConfig = {
-  Meals: {
-    screen: MealsNavigator,
-    navigationOptions: {
-      tabBarIcon: tabInfo => {
-        return (
-          // <Ionicons name="baidu" size={25} color={tabInfo.tintColor} />
-          <SimpleLineIcons name="energy" size={25} color={tabInfo.tintColor} />
-        );
-      },
-      tabBarColor: Colors.primaryColor,      
-      tabBarLabel:
-        Platform.OS === 'android' ? (
-          <Text style={{ fontFamily: 'open-sans-bold' }}>My Energy</Text>
-        ) : (
-          'My Energy'
-        )
-    }
-  },
-  History: {
-    screen: HistoryNavigator,
-    navigationOptions: {
-      tabBarIcon: tabInfo => {
-        return <MaterialIcons name="history" size={25} color={tabInfo.tintColor} /> ;
-      },
-      tabBarColor: Colors.accentColor,
-      tabBarLabel:
-        Platform.OS === 'android' ? (
-          <Text style={{ fontFamily: 'open-sans-bold' }}>History</Text>
-        ) : (
-          'History'
-        )
-    }
+const FiltersNavigator = createStackNavigator({
+  Filters: FiltersScreen
+  },{
+  defaultNavigationOptions: defaultStackNavOptions
   }
-};
+)
 
-const MealsFavTabNavigator =
-  Platform.OS === 'android'
-    ? createMaterialBottomTabNavigator(tabScreenConfig, {
-        activeTintColor: 'white',
-        shifting: true,
-        barStyle: {
-          backgroundColor: Colors.primaryColor
-        }
-      })
-    : createBottomTabNavigator(tabScreenConfig, {
-        tabBarOptions: {
-          labelStyle: {
-            fontFamily: 'open-sans'
-          },
-          activeTintColor: Colors.accentColor
-        }
-});
-
-const HistoryTabNavigator =
-  Platform.OS === 'android'
-    ? createMaterialBottomTabNavigator(tabScreenConfig, {
-        activeTintColor: 'white',
-        shifting: true,
-        barStyle: {
-          backgroundColor: Colors.primaryColor
-        }
-      })
-    : createBottomTabNavigator(tabScreenConfig, {
-        tabBarOptions: {
-          labelStyle: {
-            fontFamily: 'open-sans'
-          },
-          activeTintColor: Colors.accentColor
-        }
-});
-
-const FiltersNavigator = createStackNavigator(
-  {
-    Filters: FiltersScreen
-  },
-  {
-    navigationOptions: {
-      drawerLabel: 'Filters'
-    },
-    defaultNavigationOptions: defaultStackNavOptions
+const LoginNavigator = createStackNavigator({
+  Login: LoginScreen
+  },{
+  defaultNavigationOptions: defaultStackNavOptions
   }
-);
+)
 
-const AboutNavigator = createStackNavigator(
-  {
-    Abouts: AboutsScreen
-  },
-  {
-    navigationOptions: {
-      drawerLabel: 'About'
-    },
-    defaultNavigationOptions: defaultStackNavOptions
+const CityNavigator = createStackNavigator({
+  City: CityScreen
+  },{
+  defaultNavigationOptions: defaultStackNavOptions
   }
-);
+)
 
-const SettingsNavigator = createStackNavigator(
-  {
-    Settings: SettingsScreen,
-    Login: LoginScreen
-
-  },
-  {
-    navigationOptions: {
-      drawerLabel: 'Settings'
-    },
-    defaultNavigationOptions: defaultStackNavOptions
+const SettingsNavigator = createStackNavigator({
+  Settings: SettingsScreen
+  },{
+  defaultNavigationOptions: defaultStackNavOptions
   }
-);
+)
 
-
-const LoginNavigator = createStackNavigator(
-  {
-    Login: LoginScreen,
-    Settings: SettingsScreen
-  },
-  {
-    navigationOptions: {
-      drawerLabel: 'Login'
-    },
-    defaultNavigationOptions: defaultStackNavOptions
+const AboutsNavigator = createStackNavigator({
+  Abouts: AboutsScreen
+  },{
+  defaultNavigationOptions: defaultStackNavOptions
   }
-);
-
-
-const LogoutNavigator = createStackNavigator(
-  {
-    Login: LoginScreen
-  },
-  {
-    navigationOptions: {
-      drawerLabel: 'Logout'
-    },
-    defaultNavigationOptions: defaultStackNavOptions
-  }
-);
+)
 
 // This is for side drawer
 const MainNavigator = createDrawerNavigator(
   {
     MealsFavs: {
-      screen: MealsFavTabNavigator,
+      screen: MyEnergyNavigator,
       navigationOptions: {
         drawerLabel: 'My Energy',
         drawerIcon: tabInfo =>  (
@@ -214,7 +123,7 @@ const MainNavigator = createDrawerNavigator(
       }
     },
     History: {
-      screen:HistoryTabNavigator,
+      screen:HistoryNavigator,
       navigationOptions: {
         drawerLabel: 'History',
         drawerIcon: tabInfo =>  (
@@ -230,6 +139,15 @@ const MainNavigator = createDrawerNavigator(
           )
       }
     },
+    City: {
+      screen:CityNavigator,
+      navigationOptions: {
+        drawerLabel: 'City',
+        drawerIcon: tabInfo =>  (
+          <MaterialIcons name="location-city" size={25} color={tabInfo.tintColor} />
+          )
+      }
+    },
     Settings: {
       screen:SettingsNavigator,
       navigationOptions: {
@@ -240,7 +158,7 @@ const MainNavigator = createDrawerNavigator(
       }
     },    
     Abouts: {
-      screen:AboutNavigator,
+      screen:AboutsNavigator,
       navigationOptions: {
         drawerLabel: 'About',
         drawerIcon: tabInfo =>  (
@@ -248,21 +166,30 @@ const MainNavigator = createDrawerNavigator(
           )
       }
     },
-    Login: {
-      screen:LoginNavigator,
-      navigationOptions: {
-        drawerLabel: 'Login',
-        drawerIcon: tabInfo =>  (
-          <Ionicons name="md-information-circle-outline" size={25} color={tabInfo.tintColor} />
-          )
-      }
-    },
+    // Login: {
+    //   screen:LoginNavigator,
+    //   navigationOptions: {
+    //     drawerLabel: 'Login',
+    //     drawerIcon: tabInfo =>  (
+    //       <Ionicons name="md-information-circle-outline" size={25} color={tabInfo.tintColor} />
+    //       )
+    //   }
+    // },
+    // SignUpScreen: {
+    //   screen:MealsFavsNavigator,
+    //   navigationOptions: {
+    //     drawerLabel: 'Sign-Up',
+    //     drawerIcon: tabInfo =>  (
+    //       <Ionicons name="md-information-circle-outline" size={25} color={tabInfo.tintColor} />
+    //       )
+    //   }
+    // },
     Logout: {
       screen:LoginNavigator,
       navigationOptions: {
         drawerLabel: 'Logout',
         drawerIcon: tabInfo =>  (
-          <Ionicons name="md-information-circle-outline" size={25} color={tabInfo.tintColor} />
+          <Ionicons name="ios-log-out" size={25} color={tabInfo.tintColor} />
           )
       }
     }

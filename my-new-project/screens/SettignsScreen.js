@@ -7,6 +7,7 @@ import { AntDesign } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
 import Modal from 'react-native-modal';
 import BaseUrl from '../constants/Url';
+import AsyncStorage from '@react-native-community/async-storage'
 
 class SettingsScreen extends Component {
     constructor(props){
@@ -34,15 +35,27 @@ class SettingsScreen extends Component {
 
     }
 
-    componentDidMount(){
+
+    componentDidMount = () => {
+
         const { navigation } = this.props;
-        const userId = navigation.getParam('userId', '-1');
+        const userId = AsyncStorage.getItem('userId').then((value) => {
+          console.log("in then", value)
+          this.setState({userId: value});
+      
+          console.log("Get param1 Async:",value);
+          console.log("Get param1 Async:",this.state.userId);
+      
+          this.fetchData(value)
+          return value
+    
+          
+        })
+        
+    
+      }
 
-        console.log("Get param1:",this.props.navigation.state.params);
-
-        this.setState({ userId: userId });
-
-        console.log("Get param after set state:", this.state.userId);
+      fetchData = (userId) => {
 
         fetch(BaseUrl+'getUserDetails', {
             headers: {

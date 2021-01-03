@@ -5,7 +5,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 import { FontAwesome } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
-
+import { FontAwesome5 } from '@expo/vector-icons'; 
 import MealItem from './MealItem';
 import BaseUrl from '../constants/Url';
 
@@ -112,46 +112,74 @@ class MealList extends Component {
  renderItem = ({ item }) => {
 
     var itemIcon = <MaterialCommunityIcons name="train-car" size={24} color={Colors.primaryColor} /> 
-    if (item.transportDescription === 'car'){
-      itemIcon = <AntDesign name="car" size={25} color= {Colors.primaryColor} />
+    if (item.itemId === 2 & item.energyType === 1){
+        itemIcon = <FontAwesome name="car" size={24} color={Colors.primaryColor}/>
     }
-    else if (item.transportDescription === 'train'){
-      itemIcon = <MaterialIcons name="train" size={24} color= {Colors.primaryColor} />
+    else if (item.itemId === 3 & item.energyType === 1){
+        itemIcon = <FontAwesome name="car" size={24} color={Colors.primaryColor} />
     }
-    else if (item.itemId === 4 && item.energyType === 1){
-      itemIcon = <MaterialIcons name="directions-bus" size={24} color={Colors.primaryColor} />    }
-    
+    else if (item.itemId === 4 & item.energyType === 1){
+        itemIcon = <MaterialIcons name="train" size={24} color= {Colors.primaryColor} />
+    }
+    else if (item.itemId === 4 & item.energyType === 1){
+        itemIcon = <MaterialIcons name="directions-bus" size={24} color={Colors.primaryColor} />    
+    }    
     else if (item.itemId === 1 && item.energyType === 1){
-      itemIcon = <FontAwesome name="plane" size={24} color= {Colors.primaryColor} />
+        itemIcon = <FontAwesome name="plane" size={24} color= {Colors.primaryColor} />
+    }
+    else if (item.itemId === 1 && item.energyType === 8){
+        itemIcon = <FontAwesome name="bicycle" size={24} color= {Colors.primaryColor} />
+    }
+    else if (item.itemId === 1 && item.energyType === 7){
+        itemIcon = <FontAwesome name="motorcycle" size={24} color= {Colors.primaryColor} />
+    }
+    else if (item.energyType === 0 && item.itemId === 5 ){
+        itemIcon = <MaterialCommunityIcons name="coffee" size={24} color= {Colors.primaryColor} />
+    }
+    else if (item.itemId === 9 && item.energyType === 0){
+        <FontAwesome5 name="fish" size={24} color= {Colors.primaryColor}/>   
+    }
+    else if (item.energyType === 0 && item.itemId === 3 ){
+        itemIcon = <FontAwesome5 name="cheese" size={24} color= {Colors.primaryColor} />
     }
     else if (item.energyType === 0 ){
         itemIcon = <MaterialCommunityIcons name="food" size={24} color= {Colors.primaryColor} />
-      }
+    }
     else if (item.energyType === 2 ){
         itemIcon = <MaterialCommunityIcons name="recycle" size={24} color= {Colors.primaryColor} />
     }    
     else if (item.energyType === 3 ){
         itemIcon = <MaterialCommunityIcons name="power" size={24} color= {Colors.primaryColor} />
     }
+
+
     var stringCost = "Energy"
-    if (item.foodDescription !== undefined ){
+    if (item.energyType === 0 ){
         stringCost = "Total kg used: "
     }
-    else{
+    else if (item.energyType === 1 ){
         stringCost = "Total km done: "
+    }
+    else if (item.energyType === 2 ){
+        stringCost = "Total kg of "+item.description+": "
+    }
+    else if (item.energyType === 3 ){
+        stringCost = "Total hours done: "
     }
     return (
 
             <View style={styles.item} >
                         
                 <View style={styles.marginLeft}>
-                    {itemIcon}
+                    <View style={styles.iconList}>
+                        {itemIcon}
+                    </View>
 
                 </View>
                 <View style = {styles.itemTexts}>
                     <Text style={styles.text}> Date: {item.energyDate} </Text>
                     <Text style={styles.text}> {stringCost} {item.userCost}</Text> 
-                    <Text style={styles.text}> Total Co2 produced: {item.totalCost} </Text>
+                    <Text style={styles.text}> Co2: {item.totalCost} Kg</Text>
                 </View>
                 
                 <View style={styles.iconStyles}>
@@ -241,7 +269,7 @@ class MealList extends Component {
                             <TouchableOpacity style={{backgroundColor:'red',width:'50%'}} onPress={()=>this.closeUpdateModal()}>
                                 <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={{backgroundColor:'green',width:'50%'}} onPress={()=>this.deleteUser()}>
+                            <TouchableOpacity style={{backgroundColor:'green',width:'50%'}} onPress={()=>this.updateCost()}>
                                 <Text style={{color:'white',textAlign:'center',padding:10}}>Ok</Text>
                             </TouchableOpacity>
                         </View>
@@ -289,7 +317,7 @@ const styles = StyleSheet.create({
         height: 50,
         borderRadius: 9,
         justifyContent: 'flex-start',
-        alignItems: 'center',
+        alignItems: 'stretch',
         width: '100%',
         backgroundColor: '#F8F8FF',
         shadowColor: '#2AC062',
@@ -329,7 +357,13 @@ const styles = StyleSheet.create({
         marginLeft: 10,
     },
     iconStyles:{
-        flexDirection: 'row'
+        flexDirection: 'row',
+        alignSelf: 'center'
+    },
+    iconList:{
+        textAlign: 'center',
+        alignSelf: "center",
+        justifyContent: "center"
     },
     textInput: {
         width: '90%',

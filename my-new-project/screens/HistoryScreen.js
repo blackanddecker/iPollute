@@ -5,6 +5,10 @@ import { View, Text, StyleSheet,ActivityIndicator , RefreshControl, ScrollView} 
 import HeaderButton from '../components/HeaderButton';
 import MealList from '../components/MealList';
 import BaseUrl from '../constants/Url';
+import AsyncStorage from '@react-native-community/async-storage'
+import { MaterialCommunityIcons } from '@expo/vector-icons'; 
+import { FontAwesome } from '@expo/vector-icons'; 
+import Colors from '../constants/Colors';
 
 class HistoryScreen extends Component {
 
@@ -20,11 +24,13 @@ class HistoryScreen extends Component {
     isDisabled: true,
     totalCo2 : 0, 
     totalRecycledCo2:0, 
-    totalCo2Reduced:0
+    totalCo2Reduced:0,
+    userId:-1,
+    appliedFilters:{}
   }
 
 
-  fetchData = () => {
+  fetchData = (userId) => {
     this.setState({historyData: []}); 
     fetch(BaseUrl+'getEnergyHistory', {
       headers: {
@@ -33,7 +39,7 @@ class HistoryScreen extends Component {
       },
       method: 'POST',
       body: JSON.stringify({
-        userId: 1
+        userId: userId
       })
     })
     .then((response) => response.json())
@@ -63,9 +69,21 @@ class HistoryScreen extends Component {
   componentDidMount = () => {
 
     const { navigation } = this.props;
-    const userId = navigation.getParam('userId', '-1');
-    this.fetchData()
+    const userId = AsyncStorage.getItem('userId').then((value) => {
+      console.log("in then", value)
+      this.setState({userId: value});
+  
+      console.log("Get param1 Async:",value);
+      console.log("Get param1 Async:",this.state.userId);
+  
+      this.fetchData(value)
+      return value
 
+      
+    })
+    
+
+    console.log("Component did mount")
   }
     
 
@@ -78,14 +96,43 @@ class HistoryScreen extends Component {
 
     render() {
       console.log("Render")
+      const appliedFilters = AsyncStorage.getItem('appliedFilters').then((value) => {    
+        console.log("Get appliedFilters Async:",value);
+        return value
+        
+      })
+  
+      var totalCo2Reduced = this.state.totalCo2Reduced
+      // if (totalCo2Reduced > 0) {
+      //   totalCo2Reduced = " + " + totalCo2Reduced
+      // } 
+      // else if (totalCo2Reduced < 0){
+      //   totalCo2Reduced = " - " + totalCo2Reduced
+      // }
+      // else{
+      //   totalCo2Reduced = " - " 
+      // }
+
       if(this.state.isLoading == false) {
         return (
             <View>
               <View style= {styles.totals}>
-                <Text style={styles.text}> Total Co2: {this.state.totalCo2}</Text>
-                <Text style={styles.text}> Total Recycled Co2: {this.state.totalRecycledCo2}</Text>
-                <Text style={styles.text}> Reduced C02 from last week: {this.state.totalCo2Reduced}</Text>
+                <View >
+                  <Text> Total Co2 </Text>
+                  <Text style={styles.text}>{this.state.totalCo2}Kg</Text>
+                  <MaterialCommunityIcons name="periodic-table-co2" size={25} color={Colors.primaryColor} />
+                </View>
+                <View>
+                  <Text> Recycled Co2 </Text>
+                  <Text style={styles.text}>{this.state.totalRecycledCo2}Kg</Text>
+                  <FontAwesome name="recycle" size={24} color={Colors.primaryColor} />
 
+                </View>
+                <View>
+                  <Text> From last week </Text>
+                  <Text style={styles.text}> {totalCo2Reduced}</Text>
+                  <MaterialCommunityIcons name="percent" size={24} color={Colors.primaryColor} />
+                </View>
               </View>
                 <MealList list={this.state.historyData} refresing={this.state.refreshing} _handleRefresh={this._onRefresh}/>
             </View>
@@ -104,7 +151,7 @@ class HistoryScreen extends Component {
 HistoryScreen.navigationOptions = navData => {
   return {
     headerTitle: 'History',
-    headerLeft: (
+    headerLeft:() =>
       <HeaderButtons HeaderButtonComponent={HeaderButton}>
         <Item
           title="Menu"
@@ -114,7 +161,7 @@ HistoryScreen.navigationOptions = navData => {
           }}
         />
       </HeaderButtons>
-    )
+    
   };
 };
 
@@ -131,11 +178,18 @@ const styles = StyleSheet.create({
     color: 'black',
     fontWeight: 'bold',
     textAlign: "center",
-    marginTop:5    
+    marginTop:5 ,
+    alignSelf: "center"
   },
   totals:{
-    backgroundColor: '#6ED4C8',
+    marginBottom: 15,
+    textAlign: 'center',
+    // backgroundColor: '#6ED4C8',
     paddingBottom: 15,
+    flexDirection: 'row',
+    alignItems: 'stretch',
+    alignSelf: "center",
+    justifyContent: "center"
   }
 
 });
