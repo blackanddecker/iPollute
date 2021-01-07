@@ -8,6 +8,7 @@ def insertEnergy(connection, data):
     '''
     Insert Energy
     '''
+    print(data)
     if 'userId' not in data:
         return {'message':'userId missing!', 'success': False}, 400
     if 'energyItemId' not in data:
@@ -19,7 +20,6 @@ def insertEnergy(connection, data):
     if 'datetime' not in data:
         return {'message':'datetime missing', 'success': False}, 400
     try:
-        print(data)
 
         energyCost = costCalculations(connection, data['userCost'], data['energyItemId'], data['energyTypeId'], data['userId'] )
             

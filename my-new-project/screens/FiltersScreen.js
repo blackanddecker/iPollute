@@ -122,7 +122,12 @@ class FiltersScreen extends Component {
         };
         console.log("appliedFilters",appliedFilters)
         AsyncStorage.setItem('appliedFilters', appliedFilters);
-
+        this.props.navigation.navigate({
+            routeName:'History', 
+            params:{
+              userId: this.state.userId
+            }
+          });
     }
 
     updateMinCurrentDate = (minCurrentDate) => {

@@ -1,11 +1,11 @@
 {
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web",
-    "eject": "expo eject"
+    "start": "npm start",
+    "android": "npm start --android",
+    "ios": "npm start --ios",
+    "web": "npm start --web",
+    "eject": "npm eject"
   },
   "dependencies": {
     "@ant-design/icons": "^4.2.2",
@@ -16,10 +16,12 @@
     "@react-native-community/viewpager": "^4.2.0",
     "date-fns": "^2.16.1",
     "expo": "~39.0.2",
+    "expo-location": "~9.0.0",
     "expo-status-bar": "~1.0.2",
     "moment": "^2.29.1",
     "react": "16.13.1",
     "react-dom": "16.13.1",
+    "react-minimal-pie-chart": "^8.1.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-39.0.4.tar.gz",
     "react-native-chart-kit": "^6.6.1",
     "react-native-circular-progress": "^1.3.6",
@@ -29,6 +31,8 @@
     "react-native-material-textfield": "^0.16.1",
     "react-native-modal": "^11.5.6",
     "react-native-paper": "^4.3.0",
+    "react-native-pie": "^1.1.2",
+    "react-native-pie-chart": "^1.0.13",
     "react-native-progress": "^4.1.2",
     "react-native-progress-circle": "^2.1.0",
     "react-native-reanimated": "^1.13.1",

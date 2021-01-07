@@ -2,6 +2,8 @@ import pymysql.cursors
 import flask
 from flask import Flask , request ,make_response ,jsonify
 from src.utils.costCalculations import costCalculations
+from datetime import datetime
+from datetime import timedelta
 
 def getEnergyHistory(connection, data):
     '''
@@ -10,6 +12,7 @@ def getEnergyHistory(connection, data):
     if 'userId' not in data:
         return {'message':'userId missing!', 'success': False}, 400
     try:
+        print("data:", data)
         history = []
         totalCo2 = 0 
         totalRecycledCo2 = 0
@@ -31,22 +34,49 @@ def getEnergyHistory(connection, data):
             print(sql)
             cursor.execute(sql)
             transportHistory = cursor.fetchall()
-            history +=transportHistory
-
-            sql = "CALL getRecycledEnergyHistory({});".format(data['userId'])
-            print(sql)
-            cursor.execute(sql)
-            transportHistory = cursor.fetchall()
-            history +=transportHistory
+            history += transportHistory
 
             for item in history: 
                 print(item)
                 totalCo2 += item['totalCost'] 
-                totalRecycledCo2 += item['totalCost']  
-                totalCo2Reduced += item['totalCost'] 
+            
+            sql = "CALL getRecycledEnergyHistory({});".format(data['userId'])
+            print(sql)
+            cursor.execute(sql)
+            recycledHistory = cursor.fetchall()
+            history +=recycledHistory
+
+            for item in recycledHistory: 
+                print(item)
+                totalRecycledCo2 += item['totalCost'] 
+
+            curWeekCo2 = 0
+            lastWeekCo2 = 0
+            getCurDate = datetime.now() - timedelta(days=7)
+            getLastWeekDate = datetime.now() - timedelta(days=14)
+            print("getCurDate", getCurDate)
+            print("getLastWeekDate", getLastWeekDate)
+            
+            for item in history: 
+                if item['energyType'] == 2:
+                    cost = (-1) * item['totalCost']
+                else:
+                    cost = item['totalCost']
+
+                if getCurDate < item['energyDate'] :
+                    curWeekCo2 += cost
+                    print("Cost is", cost, "1date is:", item['energyDate'],curWeekCo2 )
+                elif getCurDate > item['energyDate'] and getLastWeekDate < item['energyDate']:
+                    lastWeekCo2 += cost
+                    print("2Cost is", cost, "1date is:", item['energyDate'], lastWeekCo2 )
+            if lastWeekCo2 == 0:
+                lastWeekCo2 = 0.0001
+
+            totalCo2Reduced = (lastWeekCo2- curWeekCo2) / lastWeekCo2 
+
 
             print(history)
-            return {"history":history, "success":True,    "totalStats": {"totalCo2": totalCo2, "totalRecycledCo2":totalRecycledCo2,  "totalCo2Reduced":totalCo2Reduced} }, 200
+            return {"history":history, "success":True,    "totalStats": {"totalCo2": totalCo2, "totalRecycledCo2":totalRecycledCo2,  "totalCo2Reduced":round(totalCo2Reduced,1)} }, 200
 
     
     except Exception as e :

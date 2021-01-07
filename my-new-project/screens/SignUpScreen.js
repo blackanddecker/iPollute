@@ -229,7 +229,7 @@ class SignUpScreen extends Component {
 
 SignUpScreen.navigationOptions = navData => {
   return {
-      headerTitle: 'Sign-Up',
+      headerTitle: 'Sign-In',
       // headerLeft: (
       //     <HeaderButtons HeaderButtonComponent={HeaderButton}>
       //         <Item
@@ -260,7 +260,8 @@ const styles = StyleSheet.create({
   form: {
     flex: 1,
     justifyContent: "center",
-    width: "80%"
+    width: "80%",
+    marginTop:10
   }
 });
 

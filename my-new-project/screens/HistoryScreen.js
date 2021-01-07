@@ -26,12 +26,12 @@ class HistoryScreen extends Component {
     totalRecycledCo2:0, 
     totalCo2Reduced:0,
     userId:-1,
-    appliedFilters:{}
+    appliedFilters:"",
+    isFiltersApplied: false
   }
 
 
-  fetchData = (userId) => {
-    this.setState({historyData: []}); 
+  fetchData = (userId, appliedFilters) => {
     fetch(BaseUrl+'getEnergyHistory', {
       headers: {
         'Accept': 'application/json',
@@ -39,7 +39,8 @@ class HistoryScreen extends Component {
       },
       method: 'POST',
       body: JSON.stringify({
-        userId: userId
+        userId: userId,
+        appliedFilters: appliedFilters
       })
     })
     .then((response) => response.json())
@@ -67,22 +68,6 @@ class HistoryScreen extends Component {
 
 
   componentDidMount = () => {
-
-    const { navigation } = this.props;
-    const userId = AsyncStorage.getItem('userId').then((value) => {
-      console.log("in then", value)
-      this.setState({userId: value});
-  
-      console.log("Get param1 Async:",value);
-      console.log("Get param1 Async:",this.state.userId);
-  
-      this.fetchData(value)
-      return value
-
-      
-    })
-    
-
     console.log("Component did mount")
   }
     
@@ -96,12 +81,32 @@ class HistoryScreen extends Component {
 
     render() {
       console.log("Render")
-      const appliedFilters = AsyncStorage.getItem('appliedFilters').then((value) => {    
-        console.log("Get appliedFilters Async:",value);
-        return value
-        
-      })
+
+      const userId = AsyncStorage.getItem('userId').then((value) => {
+        console.log("in then", value)
+        if(this.state.userId == -1){
+          this.setState({userId: value});
+        }
+        console.log("History User Id Async:",this.state.userId);
   
+        const appliedFilters = AsyncStorage.getItem('appliedFilters').then((value) => {    
+          console.log("Get appliedFilters Async History:",value);
+            this.setState({appliedFilters: value});
+            this.fetchData(this.state.userId, this.state.appliedFilters)
+          // }
+          return value
+          
+        })
+        return value      
+      })
+      this.setState({isFiltersApplied: true});
+
+      // if (appliedFilters !== "" && this.state.isFiltersApplied == false){
+      //   this.fetchData(this.state.userId, this.state.appliedFilters)
+      //   this.setState({isFiltersApplied: !isFiltersApplied});
+
+      // }
+
       var totalCo2Reduced = this.state.totalCo2Reduced
       // if (totalCo2Reduced > 0) {
       //   totalCo2Reduced = " + " + totalCo2Reduced
@@ -117,21 +122,21 @@ class HistoryScreen extends Component {
         return (
             <View>
               <View style= {styles.totals}>
-                <View >
-                  <Text> Total Co2 </Text>
+                <View style= {styles.Eachtotal}>
+                  <Text> Total </Text>
                   <Text style={styles.text}>{this.state.totalCo2}Kg</Text>
                   <MaterialCommunityIcons name="periodic-table-co2" size={25} color={Colors.primaryColor} />
                 </View>
-                <View>
-                  <Text> Recycled Co2 </Text>
+                <View style= {styles.Eachtotal}>
+                  <Text> Recycled </Text>
                   <Text style={styles.text}>{this.state.totalRecycledCo2}Kg</Text>
                   <FontAwesome name="recycle" size={24} color={Colors.primaryColor} />
 
                 </View>
-                <View>
-                  <Text> From last week </Text>
-                  <Text style={styles.text}> {totalCo2Reduced}</Text>
-                  <MaterialCommunityIcons name="percent" size={24} color={Colors.primaryColor} />
+                <View style= {styles.Eachtotal}>
+                  <Text> Since last week </Text>
+                  <Text style={styles.text}> {totalCo2Reduced} %</Text>
+                  {/* <MaterialCommunityIcons name="percent" size={24} color={Colors.primaryColor} /> */}
                 </View>
               </View>
                 <MealList list={this.state.historyData} refresing={this.state.refreshing} _handleRefresh={this._onRefresh}/>
@@ -180,6 +185,12 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop:5 ,
     alignSelf: "center"
+  },
+  Eachtotal:{
+    borderColor: '#F8F8FF',
+    border:1,
+    width: '32%'
+
   },
   totals:{
     marginBottom: 15,

@@ -15,6 +15,15 @@ def getFilterOptions(connection, data):
             cursor.execute(sql)
             filters = cursor.fetchall()
         
+            if filters[0]['minKm'] is None:
+                filters[0]['minKm'] = 0.0
+            if filters[0]['maxKm'] is None:
+                filters[0]['maxKm'] = 0.0
+            if filters[0]['minKg'] is None:
+                filters[0]['minKg'] = 0.0
+            if filters[0]['maxKg'] is None:
+                filters[0]['maxKg'] = 0.0
+                
         if len(filters)>0:
             return {"filters":filters[0], "success":True}, 200
         else:

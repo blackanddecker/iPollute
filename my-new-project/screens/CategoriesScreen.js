@@ -22,7 +22,6 @@ import BaseUrl from '../constants/Url';
 import AsyncStorage from '@react-native-community/async-storage'
 
 import {
-    PieChart,
     ProgressChart
 } from 'react-native-chart-kit'
 
@@ -257,12 +256,13 @@ class CategoriesScreen extends Component {
         }
         console.log("Pie Chart data:", data)
         const chartConfig = {
-            backgroundGradientFrom: '#1E2923',
-            backgroundGradientTo: '#08130D',
-            decimalPlaces: 1,
-            color: (opacity = 0.8) => `rgba(26, 255, 146, ${opacity})`
+            backgroundGradientFrom: "#1E2923",
+            backgroundGradientFromOpacity: 0,
+            backgroundGradientTo: "#08130D",
+            backgroundGradientToOpacity: 0.5,
+            color: (opacity = 1) => `rgba(53, 94, 59, ${opacity})`,
+            decimalPlaces: 1
         }
-        
         
         if(!this.state.loading) {
             return (
@@ -284,9 +284,12 @@ class CategoriesScreen extends Component {
                     width={350}
                     height={220}
                     chartConfig={chartConfig}
+                    strokeWidth={12}
+                    radius={20}
+                    hideLegend={false}
                     style={{
                         marginVertical: 8,
-                        borderRadius: 12,
+                        borderRadius: 8,
                     }}
                     />
 

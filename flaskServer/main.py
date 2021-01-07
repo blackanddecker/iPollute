@@ -21,6 +21,7 @@ from src.energy import getEnergyObjects
 from src import getFilterOptions
 
 from src.user import login 
+from src.user import signin 
 
 db = yaml.safe_load(open('configs/local.yml'))
 
@@ -58,9 +59,10 @@ def _hello_world():
     return 'Hello, World!'
 
 
-@app.route('/signin')
+@app.route('/signup', methods=['POST'])
 def _signin():
-    return 
+    response, status = signin.signin(connection = getConnection(), data = request.get_json(), key = app.config['SECRET_KEY'], bcrypt = bcrypt)
+    return response, status
 
 @app.route('/login' , methods=['POST'])
 def _login():

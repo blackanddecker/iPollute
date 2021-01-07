@@ -7,7 +7,7 @@ import { createAppContainer } from 'react-navigation';
 
 import {createDrawerNavigator} from 'react-navigation-drawer'
 import { createBottomTabNavigator } from 'react-navigation-tabs'
-import { Ionicons } from '@expo/vector-icons';
+import { Icon } from '@expo/vector-icons';
 import { SimpleLineIcons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons'; 
 
@@ -43,22 +43,22 @@ const defaultStackNavOptions = {
 };
 
 
-// const MealsFavsNavigator = createStackNavigator(
-//   {
-//     Login: LoginScreen,
-//     SignUp:SignUpScreen,
-//     // Categories: CategoriesScreen,
-//     Logout: LoginScreen
+const MealsFavsNavigator = createStackNavigator(
+  {
+    Login: LoginScreen,
+    SignUp:SignUpScreen,
+    // Categories: CategoriesScreen,
+    Logout: LoginScreen
 
-//   },
-//   {
-//     initialRouteName: 'Login',
-//     navigationOptions: {
-//       drawerLabel: 'Login'
-//     },
-//     defaultNavigationOptions: defaultStackNavOptions
-//   }
-// );
+  },
+  {
+    initialRouteName: 'Login',
+    navigationOptions: {
+      drawerLabel: 'Login'
+    },
+    defaultNavigationOptions: defaultStackNavOptions
+  }
+);
 
 
 const MyEnergyNavigator = createStackNavigator({
@@ -83,7 +83,8 @@ const FiltersNavigator = createStackNavigator({
 )
 
 const LoginNavigator = createStackNavigator({
-  Login: LoginScreen
+  Login: LoginScreen,
+  SignUp:SignUpScreen
   },{
   defaultNavigationOptions: defaultStackNavOptions
   }
@@ -118,7 +119,7 @@ const MainNavigator = createDrawerNavigator(
       navigationOptions: {
         drawerLabel: 'My Energy',
         drawerIcon: tabInfo =>  (
-            <SimpleLineIcons name="energy" size={25} color={tabInfo.tintColor} />
+            <Icon name="energy" size={25} color={tabInfo.tintColor} />
           )
       }
     },
@@ -127,7 +128,7 @@ const MainNavigator = createDrawerNavigator(
       navigationOptions: {
         drawerLabel: 'History',
         drawerIcon: tabInfo =>  (
-          <MaterialIcons name="history" size={25} color={tabInfo.tintColor} />          )
+          <Icon name="history" size={25} color={tabInfo.tintColor} />          )
       }
     },
     Filters: {
@@ -135,7 +136,7 @@ const MainNavigator = createDrawerNavigator(
       navigationOptions: {
         drawerLabel: 'Filters',
         drawerIcon: tabInfo =>  (
-          <Ionicons name="ios-star" size={25} color={tabInfo.tintColor} />
+          <Icon name="ios-star" size={25} color={tabInfo.tintColor} />
           )
       }
     },
@@ -144,7 +145,7 @@ const MainNavigator = createDrawerNavigator(
       navigationOptions: {
         drawerLabel: 'City',
         drawerIcon: tabInfo =>  (
-          <MaterialIcons name="location-city" size={25} color={tabInfo.tintColor} />
+          <Icon name="location-city" size={25} color={tabInfo.tintColor} />
           )
       }
     },
@@ -153,7 +154,7 @@ const MainNavigator = createDrawerNavigator(
       navigationOptions: {
         drawerLabel: 'Settings',
         drawerIcon: tabInfo =>  (
-          <Ionicons name="ios-settings" size={25} color={tabInfo.tintColor} />
+          <Icon name="ios-settings" size={25} color={tabInfo.tintColor} />
           )
       }
     },    
@@ -162,7 +163,7 @@ const MainNavigator = createDrawerNavigator(
       navigationOptions: {
         drawerLabel: 'About',
         drawerIcon: tabInfo =>  (
-          <Ionicons name="md-information-circle-outline" size={25} color={tabInfo.tintColor} />
+          <Icon name="md-information-circle-outline" size={25} color={tabInfo.tintColor} />
           )
       }
     },
@@ -171,7 +172,7 @@ const MainNavigator = createDrawerNavigator(
     //   navigationOptions: {
     //     drawerLabel: 'Login',
     //     drawerIcon: tabInfo =>  (
-    //       <Ionicons name="md-information-circle-outline" size={25} color={tabInfo.tintColor} />
+    //       <Icon name="md-information-circle-outline" size={25} color={tabInfo.tintColor} />
     //       )
     //   }
     // },
@@ -180,7 +181,7 @@ const MainNavigator = createDrawerNavigator(
     //   navigationOptions: {
     //     drawerLabel: 'Sign-Up',
     //     drawerIcon: tabInfo =>  (
-    //       <Ionicons name="md-information-circle-outline" size={25} color={tabInfo.tintColor} />
+    //       <Icon name="md-information-circle-outline" size={25} color={tabInfo.tintColor} />
     //       )
     //   }
     // },
@@ -189,7 +190,7 @@ const MainNavigator = createDrawerNavigator(
       navigationOptions: {
         drawerLabel: 'Logout',
         drawerIcon: tabInfo =>  (
-          <Ionicons name="ios-log-out" size={25} color={tabInfo.tintColor} />
+          <Icon name="ios-log-out" size={25} color={tabInfo.tintColor} />
           )
       }
     }

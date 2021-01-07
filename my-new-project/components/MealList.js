@@ -155,26 +155,24 @@ class MealList extends Component {
 
     var stringCost = "Energy"
     if (item.energyType === 0 ){
-        stringCost = "Total kg used: "
+        stringCost = "Total Kg used: "
     }
     else if (item.energyType === 1 ){
-        stringCost = "Total km done: "
+        stringCost = "Total Km: "
     }
     else if (item.energyType === 2 ){
-        stringCost = "Total kg of "+item.description+": "
+        stringCost = "Total Kg of "+item.description+": "
     }
     else if (item.energyType === 3 ){
-        stringCost = "Total hours done: "
+        stringCost = "Total hours: "
     }
     return (
 
             <View style={styles.item} >
                         
-                <View style={styles.marginLeft}>
-                    <View style={styles.iconList}>
-                        {itemIcon}
-                    </View>
 
+                <View style={styles.iconStyles}>
+                    {itemIcon}
                 </View>
                 <View style = {styles.itemTexts}>
                     <Text style={styles.text}> Date: {item.energyDate} </Text>
@@ -320,20 +318,14 @@ const styles = StyleSheet.create({
         alignItems: 'stretch',
         width: '100%',
         backgroundColor: '#F8F8FF',
-        shadowColor: '#2AC062',
-        shadowOpacity: 0.5,
-        shadowOffset: { 
-            height: 10, 
-            width: 0 
         },
-        shadowRadius: 25
-        },
-        buttonText: {
-            textAlign: 'left',
-            padding: 20,
-            color: 'black'
-        },
+    buttonText: {
+        textAlign: 'left',
+        padding: 20,
+        color: 'black'
+    },
     itemTexts: {
+        justifyContent: 'flex-start',
         flexDirection: 'column',
         borderBottomColor: 'grey',
         alignItems: 'flex-start',
@@ -357,10 +349,14 @@ const styles = StyleSheet.create({
         marginLeft: 10,
     },
     iconStyles:{
+        width: '10%',
         flexDirection: 'row',
-        alignSelf: 'center'
+        alignSelf: 'center',
+        marginLeft:5
     },
     iconList:{
+        width: '10%',
+        justifyContent: 'flex-end',
         textAlign: 'center',
         alignSelf: "center",
         justifyContent: "center"
