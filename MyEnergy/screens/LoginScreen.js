@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Image, KeyboardAvoidingView, StyleSheet, View } from "react-native";
+import { Image, KeyboardAvoidingView, StyleSheet, View, TouchableOpacity, Text } from "react-native";
 import Button from "../components/Button";
 import FormTextInput from "../components/FormTextInput";
 import imageLogo from "../assets/logo2.jpeg";
@@ -17,7 +17,8 @@ class LoginScreen extends Component {
     password: "",
     emailTouched: false,
     passwordTouched: false,
-    userId:-1
+    userId:-1,
+    passwordInputRef: ''
   }
 
   handleEmailChange = (email: string) => {
@@ -130,7 +131,7 @@ class LoginScreen extends Component {
             error={emailError}
           />
           <FormTextInput
-            ref={this.passwordInputRef}
+            ref={(input) => { this.passwordInputRef = input; }}
             value={this.state.password}
             onChangeText={this.handlePasswordChange}
             placeholder={strings.PASSWORD_PLACEHOLDER}
@@ -146,9 +147,12 @@ class LoginScreen extends Component {
           />
           
           <Button
-            label={"Go to sign-up page"}
+            label={"Create New Account"}
             onPress={this.goToSignUp}
           />
+          <TouchableOpacity style={styles.text} onPress={()=>this.forgotPassword()}>
+              <Text style={styles.text} >Forgot Password</Text>
+          </TouchableOpacity>
         </View>
       </View>
 
@@ -192,6 +196,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     width: "80%"
+  },
+  text:{
+    marginBottom: 5,
+    color:'white',
+    textAlign:'center',
+    padding:10, 
+    color:'blue'
   }
 });
 

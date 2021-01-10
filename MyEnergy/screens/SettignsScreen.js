@@ -2,15 +2,14 @@ import React, { Component } from 'react'
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity,  SafeAreaView, ScrollView  } from 'react-native';
 
-import Icon from 'react-native-vector-icons/FontAwesome';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import HeaderButton from '../components/HeaderButton';
-import { AntDesign } from 'react-native-vector-icons'; 
 import Colors from '../constants/Colors';
 import Modal from 'react-native-modal';
 import BaseUrl from '../constants/Url';
 import AsyncStorage from '@react-native-community/async-storage'
+import { Icon } from 'react-native-elements';
 
 class SettingsScreen extends Component {
     constructor(props){
@@ -43,18 +42,15 @@ class SettingsScreen extends Component {
 
         const { navigation } = this.props;
         const userId = AsyncStorage.getItem('userId').then((value) => {
-          console.log("in then", value)
           this.setState({userId: value});
       
-          console.log("Get param1 Async:",value);
-          console.log("Get param1 Async:",this.state.userId);
-      
-          this.fetchData(value)
+          console.log("Settings AsyncStorage UserId:",this.state.userId);
           return value
-    
-          
         })
-        
+        .then(userId => {
+                this.fetchData(this.state.userId)
+                this.setState({isFiltersApplied: true})
+            })
     
       }
 
@@ -66,7 +62,7 @@ class SettingsScreen extends Component {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                userId: userId
+                userId: this.state.userId
             }),
             method: 'POST'
         })
@@ -149,8 +145,7 @@ class SettingsScreen extends Component {
             this.setState({ favTransport: favTransport })
         }
 
-        updateSettings = (userId, username, email, password, energyTotal) => {
-            alert(userId+'username: ' + username + ' email: ' + email +' energyTotal: ' + energyTotal+ 'password:'+ password)
+        updateSettings = () => {
             
             fetch(BaseUrl+'updateUser', {
             headers: {
@@ -158,26 +153,30 @@ class SettingsScreen extends Component {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                userId: userId,
-                email: email,
-                username: username,
-                userEnergy: energyTotal,
-                password: password
+                userId: this.state.userId,
+                email: this.state.email,
+                username: this.state.username,
+                userEnergy: this.state.userEnergy,
+                password: this.state.password,
+                favTransport: this.state.favTransport,
+                favFood: this.state.favFood
+
             }),
             method: 'POST'
             })
             .then((response) => response.json())
             .then((responseJson) => {
-                console.log(responseJson);
                 if(responseJson['success'] == true){
                     alert("Updated Succefully");
-                    this.setState({
-                        userId: userId,
-                        email: email,
-                        username: username,
-                        energyTotal: energyTotal,
-                        password: password,
-                        isLoading: !this.state.isLoading })
+                    this.closeUsernameModal()
+                    this.closeEmailModal()
+                    this.closePasswordModal()
+                    this.closeFavTransportModal()
+                    this.closeFavFoodModal()
+                    this.closeEnergyModal()
+
+
+
                 }
                 else{
                     alert("Update Failed");
@@ -191,7 +190,6 @@ class SettingsScreen extends Component {
         }
         
         deleteUser = (userId) => {
-            alert("userId:", userId)
             
             fetch('http://192.168.1.4:5000/deleteUser', {
             headers: {
@@ -199,7 +197,7 @@ class SettingsScreen extends Component {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                userId: userId
+                userId: this.state.userId
             }),
             method: 'POST'
             })
@@ -224,8 +222,7 @@ class SettingsScreen extends Component {
 
 
         render() {
-            console.log("In render:",this.props.navigation.state.params);
-
+            var placeholderUsername = this.state.username
             if(!this.state.loading) {
                 return (
                     <SafeAreaView style={styles.centeredView}>
@@ -233,7 +230,9 @@ class SettingsScreen extends Component {
                         <View style={styles.inputLabels}>
                             <TouchableOpacity    onPress={()=>this.openUsernameModal()}    underlayColor="white">
                                 <View style={styles.button}>
-                                    <Icon name="arrowright" size={24} color="black" />
+                                    <View style={styles.iconStyle}>
+                                        <FontAwesome name="user" size={24} color="black" />
+                                    </View>
                                     <Text style={styles.buttonText}> Update Username</Text>
                                 </View>
                             </TouchableOpacity>
@@ -241,40 +240,52 @@ class SettingsScreen extends Component {
                             
                             <TouchableOpacity    onPress={()=>this.openPasswordModal()}    underlayColor="black">
                                 <View style={styles.button}>
-                                    <Icon name="arrowright" size={24} color="black" />
+                                    <View style={styles.iconStyle}>
+                                        <FontAwesome name="key" size={24} color="black" />
+                                    </View>
                                     <Text style={styles.buttonText}> Update Password</Text>
                                 </View>
                             </TouchableOpacity>
                             
                             <TouchableOpacity    onPress={()=>this.openEmailModal()}    underlayColor="black">
                                 <View style={styles.button}>
-                                    <Icon name="arrowright" size={24} color="black" />
+                                    <View style={styles.iconStyle}>
+                                        <FontAwesome name="envelope" size={24} color="black" />
+                                    </View>
                                     <Text style={styles.buttonText}> Update Email</Text>
                                 </View>
                             </TouchableOpacity>
                             
                             <TouchableOpacity    onPress={()=>this.openFavFoodModal()}    underlayColor="black">
                                 <View style={styles.button}>
-                                    <Icon name="arrowright" size={24} color="black" />
+                                    <View style={styles.iconStyle}>
+                                        <FontAwesome name="apple" size={24} color="black" />
+                                    </View>
                                     <Text style={styles.buttonText}> Update Favorite Food</Text>
                                 </View>
                             </TouchableOpacity>
                             <TouchableOpacity    onPress={()=>this.openFavTransportModal()}    underlayColor="black">
                                 <View style={styles.button}>
-                                    <Icon name="arrowright" size={24} color="black" />
+                                    <View style={styles.iconStyle}>
+                                        <FontAwesome name="car" size={24} color="black" />
+                                    </View>
                                     <Text style={styles.buttonText}> Update Favorite Transport</Text>
                                 </View>
                             </TouchableOpacity>
                             <TouchableOpacity    onPress={()=>this.openEnergyModal()}    underlayColor="black">
                                 <View style={styles.button}>
-                                    <Icon name="arrowright" size={24} color="black" />
+                                    <View style={styles.iconStyle}>
+                                        <FontAwesome name="bolt" size={24} color="black" />
+                                    </View>
                                     <Text style={styles.buttonText}> Update User Energy</Text>
                                 </View>
                             </TouchableOpacity>
                             
                             <TouchableOpacity    onPress={()=>this.openDeleteAccountModal()}    underlayColor="black">
                                 <View style={styles.button}>
-                                    <Icon name="arrowright" size={24} color="black" />
+                                    <View style={styles.iconStyle}>
+                                        <FontAwesome name="ban" size={24} color="black" />
+                                    </View>
                                     <Text style={styles.buttonText}> Delete Account</Text>
                                 </View>
                             </TouchableOpacity>
@@ -293,8 +304,9 @@ class SettingsScreen extends Component {
                                         
                                     <TextInput style = {styles.input}
                                         underlineColorAndroid = "transparent"
-                                        placeholder = {this.state.username}
+                                        placeholder = {"Username"}
                                         autoCapitalize = "none"
+                                        defaultValue={this.state.username}
                                         onChangeText = {this.updateUsername}/>         
                             
                             
@@ -326,6 +338,7 @@ class SettingsScreen extends Component {
                                         underlineColorAndroid = "transparent"
                                         placeholder = {this.state.email}
                                         autoCapitalize = "none"
+                                        defaultValue={this.state.email}
                                         onChangeText = {this.updateEmail}/>         
                             
                             
@@ -356,6 +369,7 @@ class SettingsScreen extends Component {
                                         underlineColorAndroid = "transparent"
                                         placeholder = {this.state.email}
                                         autoCapitalize = "none"
+                                        defaultValue={this.state.email}
                                         onChangeText = {this.updateFavFood}/>         
                             
                             
@@ -479,13 +493,14 @@ SettingsScreen.navigationOptions = navData => {
         headerTitle: 'Settings',
         headerLeft: (
             <HeaderButtons HeaderButtonComponent={HeaderButton}>
-                <Item
-                    title="Menu"
-                    iconName="ios-menu"
-                    onPress={() => {
-                        navData.navigation.toggleDrawer();
-                    }}
-                />
+                <Icon
+                    name="menu"
+                    size={30}
+                    color='white'
+                        onPress={() => {
+                            navData.navigation.toggleDrawer();
+                        }}
+                    />
             </HeaderButtons>
         )
     };
@@ -515,7 +530,12 @@ const styles = StyleSheet.create({
         borderWidth:1,
         marginBottom:10
     },
-
+    itemTexts: {
+        justifyContent: 'flex-start',
+        flexDirection: 'column',
+        borderBottomColor: 'grey',
+        alignItems: 'flex-start',
+    },
     button: {
         marginBottom: 15,
         display: 'flex',
@@ -566,6 +586,13 @@ const styles = StyleSheet.create({
         shadowRadius: 3.84,
         elevation: 5
       },
+      iconStyle:{
+        width: '10%',
+        flexDirection: 'row',
+        alignSelf: 'center',
+        justifyContent: "center",
+        marginLeft:10,
+    }
 });
 
 export default SettingsScreen;

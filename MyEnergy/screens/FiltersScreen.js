@@ -3,12 +3,14 @@ import { View, Text, StyleSheet, Switch, Platform, TouchableOpacity, ScrollView}
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { Slider } from 'react-native-elements';
 import DatePicker from 'react-native-datepicker'
-import { AntDesign } from 'react-native-vector-icons'; 
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 import HeaderButton from '../components/HeaderButton';
 import Colors from '../constants/Colors';
 import BaseUrl from '../constants/Url';
 import AsyncStorage from '@react-native-community/async-storage'
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { Icon } from 'react-native-elements';
 
 
 class FiltersScreen extends Component {
@@ -28,10 +30,11 @@ class FiltersScreen extends Component {
             currentKm:0,
             maxCurrentDate: '',
             minCurrentDate: '',
-            isTransport: false, 
-            isFood: false,
-            isRecycle: false,
-            isElectricity: false
+            isTransport: true, 
+            isFood: true,
+            isRecycle: true,
+            isElectricity: true, 
+            date:"2016-05-15"
         };
       }
 
@@ -82,36 +85,14 @@ class FiltersScreen extends Component {
         this.fetchData(userId)
     }
 
+    showMode = (currentMode) => {
+        setShow(true);
+        setMode(currentMode);
+      };
 
-    // const { navigation } = props;
-
-    // const [isTransport, setIsTransport] = useState(false);
-    // const [isFood, setIsFood] = useState(false);
-    // const [isRecycle, setisRecycle] = useState(false);
-    // const [isElectricity, setisElectricity] = useState(false);
-
-
-    // const [sliderCostValue, setSliderCostValue] = useState(0);
-    // const [sliderHoursValue, setSliderHoursValue] = useState(0);
-
-    
-    // const [startDate, setStartDate] = useState(0);
-    // const [endDate, setEndDate] = useState(0);
-
-    // const saveFilters = useCallback(() => {
-    //     const appliedFilters = {
-    //         Transport: isTransport,
-    //         lactoseFree: isLactoseFree,
-    //         vegan: isRecycle,
-    //         isElectricity: isElectricity
-    //     };
-
-    //     console.log(appliedFilters);
-    // }, [isTransport, isLactoseFree, isRecycle, isElectricity]);
-
-    // useEffect(() => {
-    //     navigation.setParams({ save: saveFilters });
-    // }, [saveFilters]);
+    showDatepicker = () => {
+        showMode('date');
+      };
 
     saveFilters = () => {
         const appliedFilters = {
@@ -121,13 +102,10 @@ class FiltersScreen extends Component {
             isRecycle:this.state.isRecycle
         };
         console.log("appliedFilters",appliedFilters)
-        AsyncStorage.setItem('appliedFilters', appliedFilters);
-        this.props.navigation.navigate({
-            routeName:'History', 
-            params:{
-              userId: this.state.userId
-            }
-          });
+        AsyncStorage.setItem('appliedFilters', JSON.stringify(appliedFilters))
+        .then(res => {
+            alert("Filters are saved")
+        });
     }
 
     updateMinCurrentDate = (minCurrentDate) => {
@@ -159,10 +137,76 @@ class FiltersScreen extends Component {
         return (
             <ScrollView style={styles.screen}>
                         
-                    
+                    <View style={styles.component}>
+                    <Text style={styles.text}>Select Start Date</Text>
+
+                    <DatePicker
+                        style={{width: 200}}
+                        date={this.state.date}
+                        mode="date"
+                        placeholder="select date"
+                        format="YYYY-MM-DD"
+                        minDate="2016-05-01"
+                        maxDate="2016-06-01"
+                        confirmBtnText="Confirm"
+                        cancelBtnText="Cancel"
+                        customStyles={{
+                        dateIcon: {
+                            position: 'absolute',
+                            left: 0,
+                            top: 4,
+                            marginLeft: 0
+                        },
+                        dateInput: {
+                            marginLeft: 36
+                        }
+                        // ... You can check the source to find the other keys.
+                        }}
+                        onDateChange={(date) => {this.setState({date: date})}}
+                    />
+                    {/* <DateTimePicker
+                        style={{width: 300}}
+                        value={"2016-05-15"}
+                        mode="date"
+                        placeholder="select date"
+                        format="YYYY-MM-DD"
+                        minDate={"2016-05-15"}
+                        maxDate={"2016-05-15"}
+                        confirmBtnText="Confirm"
+                        cancelBtnText="Cancel"
+                        onDateChange={this.updateMinCurrentDate}
+                    /> */}
+                </View>
+                <View style={styles.component}>
+                    <Text style={styles.text}>Select End Date</Text>
+                    <DatePicker
+                        style={{width: 200}}
+                        date={this.state.date}
+                        mode="date"
+                        placeholder="select date"
+                        format="YYYY-MM-DD"
+                        minDate="2016-05-01"
+                        maxDate="2016-06-01"
+                        confirmBtnText="Confirm"
+                        cancelBtnText="Cancel"
+                        customStyles={{
+                        dateIcon: {
+                            position: 'absolute',
+                            left: 0,
+                            top: 4,
+                            marginLeft: 0
+                        },
+                        dateInput: {
+                            marginLeft: 36
+                        }
+                        // ... You can check the source to find the other keys.
+                        }}
+                        onDateChange={(date) => {this.setState({date: date})}}
+                    />
+                </View>     
                 <View style={styles.componentRow}>
                     <Text> Transport</Text>
-                    <Switch 
+                    <Switch style={styles.switch}
                         value = {this.state.isTransport} 
                         trackColor = {{true: Colors.primaryColor}}
                         thumbColor = {Colors.primaryColor}
@@ -171,16 +215,19 @@ class FiltersScreen extends Component {
                 </View>  
                 <View style={styles.componentRow}>
                     <Text> Food</Text>
-                    <Switch 
-                        value = {this.state.isFood}
-                        trackColor = {{true: Colors.primaryColor}}
-                        thumbColor = {Colors.primaryColor}
-                        onValueChange = {newValue => this.setIsFood(newValue)}
-                    ></Switch>
+                    <View style={styles.switch}>
+                        <Switch 
+                            value = {this.state.isFood}
+                            trackColor = {{true: Colors.primaryColor}}
+                            thumbColor = {Colors.primaryColor}
+                            onValueChange = {newValue => this.setIsFood(newValue)}
+                        ></Switch>
+                    </View>
                 </View>  
                 <View style={styles.componentRow}>
                     <Text> Electricity </Text>
                     <Switch 
+                        style={styles.switch}
                         value = {this.state.isElectricity}
                         trackColor = {{true: Colors.primaryColor}}
                         thumbColor = {Colors.primaryColor}
@@ -190,53 +237,23 @@ class FiltersScreen extends Component {
                 <View style={styles.componentRow}>
                     <Text> Recycle </Text>
                     <Switch 
-                    value = {this.state.isRecycle}
-                    trackColor = {{true: Colors.primaryColor}}
-                    thumbColor = {Colors.primaryColor}
-                    onValueChange = {newValue => this.setIsRecycle(newValue)}
+                        style={styles.switch}
+                        value = {this.state.isRecycle}
+                        trackColor = {{true: Colors.primaryColor}}
+                        thumbColor = {Colors.primaryColor}
+                        onValueChange = {newValue => this.setIsRecycle(newValue)}
 
                     ></Switch>
                 </View> 
 
-                <View style={styles.component}>
-                    <Text style={styles.text}>Select Start Date</Text>
 
-                    <DatePicker
-                        style={{width: 300}}
-                        date={this.state.minCurrentDate}
-                        mode="date"
-                        placeholder="select date"
-                        format="YYYY-MM-DD"
-                        minDate={this.state.minDate}
-                        maxDate={this.state.maxDate}
-                        confirmBtnText="Confirm"
-                        cancelBtnText="Cancel"
-                        onDateChange={this.updateMinCurrentDate}
-                    />
-                </View>
-                <View style={styles.component}>
-                    <Text style={styles.text}>Select End Date</Text>
-                    <DatePicker
-                        style={{width: 300}}
-                        date={this.state.maxCurrentDate}//{this.state.date}
-                        mode="date"
-                        placeholder="select date"
-                        format="YYYY-MM-DD"
-                        minDate={this.state.minDate}
-                        maxDate={this.state.maxDate}
-                        confirmBtnText="Confirm"
-                        cancelBtnText="Cancel"
-                        onDateChange={this.updateMaxCurrentDate}
-                        />    
-                </View>
 
                 <View style={styles.component}>
-                    <Text style={styles.text}>Food Kg: {this.state.currentKg}</Text>
                     
                     <View style={styles.slider}>
 
                         <Slider
-                            value={this.currentKg}
+                            value={this.state.currentKg}
                             onValueChange={this.updateCurrentKg}
                             maximumValue={this.state.maxKg}
                             minimumValue={this.state.minKg}
@@ -246,14 +263,14 @@ class FiltersScreen extends Component {
                         />
 
                     </View>
+                    <Text style={styles.text}>Food Kg: {this.state.currentKg}</Text>
                 </View>
 
                 <View style={styles.component}>
-                    <Text style={styles.text}>Transport Km: {this.state.currentKm}</Text>
                     <View style={styles.slider}>
 
                         <Slider
-                            value={this.currentKm}
+                            value={this.state.currentKm}
                             onValueChange={this.updateCurrentKm}
                             maximumValue={this.state.maxKm}
                             minimumValue={this.state.minKm}
@@ -262,10 +279,13 @@ class FiltersScreen extends Component {
                             thumbStyle={{ height: 20, width: 20, backgroundColor: Colors.primaryColor }}
                         />
                     </View>
+                    <Text style={styles.text}>Transport Km: {this.state.currentKm}</Text>
                 </View>
 
-                <TouchableOpacity    onPress={()=>this.saveFilters()} underlayColor="white">
+                <TouchableOpacity    style={styles.SaveButton2} onPress={()=>this.saveFilters()} underlayColor="white">
                     <View style={styles.SaveButton}>
+                        <FontAwesome name="save" size={24} color="black" />
+
                         <Text style={styles.buttonText}> Save </Text>
                     </View>
                 </TouchableOpacity>
@@ -293,13 +313,14 @@ FiltersScreen.navigationOptions = navData => {
         headerTitle: 'Filters',
         headerLeft: (
             <HeaderButtons HeaderButtonComponent={HeaderButton}>
-                <Item
-                    title="Menu"
-                    iconName="ios-menu"
-                    onPress={() => {
-                        navData.navigation.toggleDrawer();
-                    }}
-                />
+                <Icon
+                    name="menu"
+                    size={30}
+                    color='white'
+                        onPress={() => {
+                            navData.navigation.toggleDrawer();
+                        }}
+                    />
             </HeaderButtons>
         )
     };
@@ -307,25 +328,27 @@ FiltersScreen.navigationOptions = navData => {
 
 const styles = StyleSheet.create({
     screen: {
-
-        marginTop: 15,
+        flex:1,
         position: 'relative',
-        backgroundColor: '#ffffff'
+        backgroundColor: '#F8F8FF'
+        
     },
     text: {
         height: 30
     },
-
+    SaveButton2:{
+        alignItems: 'center'
+    },
     SaveButton: {
-
+        
         display: 'flex',
         flexDirection: 'row',
         height: 60,
         borderRadius: 6,
         alignItems: 'center',
-        width: '100%',
-        paddingLeft:25,
+        width: '85%',
         backgroundColor: '#2AC062',
+        justifyContent: 'center',
         shadowColor: '#2AC062',
         shadowOpacity: 0.5,
         shadowOffset: { 
@@ -334,17 +357,14 @@ const styles = StyleSheet.create({
         },
         shadowRadius: 25,
         backgroundColor:    Colors.thirdBlueColor
-        },
-    buttonText: {
-        textAlign: 'center',
-        padding: 20,
-        color: 'white'
     },
+    
     component: {
         paddingLeft: 25,
         alignSelf: 'stretch',
         // justifyContent: 'center'
 
+        backgroundColor: '#ffffff',
         marginBottom: 15,
         display: 'flex',
         flexDirection: 'column',
@@ -353,7 +373,6 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         alignItems: 'center',
         width: '100%',
-        backgroundColor: '#F8F8FF',
         shadowColor: '#2AC062',
         shadowOpacity: 0.5,
         shadowOffset: { 
@@ -363,16 +382,18 @@ const styles = StyleSheet.create({
         shadowRadius: 25
     },
     buttonText: {
-        textAlign: 'left',
+        textAlign: 'center',
         padding: 20,
         color: 'black'
     },
     componentRow:
     {
+        backgroundColor: '#ffffff',
+
         paddingLeft: 25,
         alignSelf: 'stretch',
         // justifyContent: 'center'
-
+        alignItems: 'stretch',
         marginBottom: 15,
         display: 'flex',
         flexDirection: 'row',
@@ -381,7 +402,6 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         alignItems: 'center',
         width: '100%',
-        backgroundColor: '#F8F8FF',
         shadowColor: '#2AC062',
         shadowOpacity: 0.5,
         shadowOffset: { 
@@ -392,6 +412,13 @@ const styles = StyleSheet.create({
     },
     slider:{
         width:"75%"
+    },
+    switch:{
+        flex:1,
+        marginRight: 30,
+        textAlign: 'center',
+        alignSelf: "center"
+
     }
 });
 

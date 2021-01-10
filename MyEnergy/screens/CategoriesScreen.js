@@ -9,13 +9,15 @@ import {
     Button,
     TouchableOpacity,
     ScrollView,
-    RefreshControl
+    RefreshControl,
+    NumberInput
 } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import Modal from 'react-native-modal';
 // import Icon from 'react-native-ionicons'
-import Icon from 'react-native-vector-icons/FontAwesome';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { Icon } from 'react-native-elements';
+
 import { Dimensions } from 'react-native';
 
 import HeaderButton from '../components/HeaderButton';
@@ -68,17 +70,17 @@ class CategoriesScreen extends Component {
         isRecycleModalVisible:false,
         isElectricityModalVisible:false,
         refreshing: false,
-        appliedFilters : ''
+        appliedFilters:""
     }
     
     _onRefresh = () => {
         this.setState({refreshing: true});
-        this.fetchData(this.state.userId)
+        this.fetchData(this.state.userId, this.state.appliedFilters)
         this.setState({refreshing: false});
      }
 
 
-    fetchData = (userId) => {
+    fetchData = (userId, appliedFilters) => {
 
         fetch(BaseUrl+'getEnergyObjects', {
             headers: {
@@ -86,7 +88,8 @@ class CategoriesScreen extends Component {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                userId:userId
+                userId:userId,
+                appliedFilters: appliedFilters
             }),
             method: 'POST'
         })
@@ -96,7 +99,7 @@ class CategoriesScreen extends Component {
             var foodData = []
             var electricityData = []
             var recycledData = []
-            console.log(responseJson);
+            //console.log(responseJson);
             for (const key in responseJson['transportObjects']){
                 // console.log("key:",responseJson['transportObjects'][key])
                 transportData.push(responseJson['transportObjects'][key])
@@ -127,13 +130,13 @@ class CategoriesScreen extends Component {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                userId:userId
+                userId:userId,
+                appliedFilters: appliedFilters
             }),
             method: 'POST'
         })
         .then((response) => response.json())
         .then((responseJson) => {
-            console.log("getUserEnergy:",responseJson);
             if (responseJson['success'] == true){
                 
                 this.setState({
@@ -165,16 +168,39 @@ class CategoriesScreen extends Component {
       
             console.log("Get state.UserId Async:",this.state.userId);
       
-            this.fetchData(value)
             return value
-    
-          
         })
+        .then(userId => {
+            var appliedFilters = AsyncStorage.getItem('appliedFilters').then((appliedFilters) => {    
+              console.log("Get appliedFilters Async History:",appliedFilters);
+                this.setState({appliedFilters: JSON.parse(appliedFilters)});
+                this.fetchData(this.state.userId, this.state.appliedFilters)
+                this.setState({isFiltersApplied: true});
+              // }
+              return JSON.parse(appliedFilters)
+              
+            })
+            //do something else
+        });
+          console.log("Component did mount")
         
     }
 
     componentDidUpdate(){
-    }
+        const appliedFilters = AsyncStorage.getItem('appliedFilters').then((value) => {    
+          console.log("Get appliedFilters Async History:",value);
+          return JSON.parse(value) 
+        })
+        .then(appliedFilters => {
+          console.log("Compare filters:", this.state.appliedFilters, appliedFilters)
+          if (JSON.stringify(this.state.appliedFilters) !== JSON.stringify(appliedFilters)) {
+            console.log("Save new Filters")
+            this.setState({appliedFilters: appliedFilters});
+            this.fetchData(this.state.userId, this.state.appliedFilters)
+          }
+        });
+      }
+
     forceUpdateHandler(){
         this.forceUpdate();
       };
@@ -214,7 +240,7 @@ class CategoriesScreen extends Component {
                 this.closeRecycleModal()
                 this.closeElectricityModal()
 
-                this.fetchData(this.state.userId)
+                this.fetchData(this.state.userId, this.state.appliedFilters)
 
                 
             }
@@ -241,23 +267,25 @@ class CategoriesScreen extends Component {
         this.setState({ energyTypeId: 1, energyItemId: transport , transportStr: transport})
         console.log("Update Transport Energy:", "Type", this.state.energyTypeId,"Item", this.state.energyItemId,  "User:", this.state.userId)
     }
-    updateFood = (food) => {this.setState({ energyTypeId: 0, energyItemId: food, foodStr:food })}
+    updateFood = (food) => {this.setState({ energyTypeId: 0, energyItemId: food, foodStr:food })
+        console.log("Update Food Energy:", "Type", this.state.energyTypeId,"Item", this.state.energyItemId,  "User:", this.state.userId)
+    }
     updateCost = (cost) => {this.setState({ userCost: cost })}
     
-    openTransportModal = () =>{this.setState({isTransportModalVisible:true})}
+    openTransportModal = () =>{this.setState({isTransportModalVisible:true, energyItemId:1, energyTypeId: 1 })}
     toggleTransportModal = () =>{this.setState({isTransportModalVisible:!this.state.isTransportModalVisible})}
     closeTransportModal = () =>{this.setState({isTransportModalVisible:false})}
     
-    openFoodModal = () =>{this.setState({isFoodModalVisible:true})}
+    openFoodModal = () =>{this.setState({isFoodModalVisible:true, energyItemId:1, energyTypeId: 0 })}
     toggleFoodModal = () =>{this.setState({isFoodModalVisible:!this.state.isFoodModalVisible})}
     closeFoodModal = () =>{this.setState({isFoodModalVisible:false})}
     
     
-    openRecycleModal = () =>{this.setState({isRecycleModalVisible:true})}
+    openRecycleModal = () =>{this.setState({isRecycleModalVisible:true, energyItemId:1, energyTypeId: 2 })}
     toggleRecycleModal = () =>{this.setState({isRecycleModalVisible:!this.state.isRecycleModalVisible})}
     closeRecycleModal = () =>{this.setState({isRecycleModalVisible:false})}
 
-    openElectricityModal = () =>{this.setState({isElectricityModalVisible:true})}
+    openElectricityModal = () =>{this.setState({isElectricityModalVisible:true, energyItemId:1, energyTypeId: 3})}
     toggleElectricityModal = () =>{this.setState({isElectricityModalVisible:!this.state.isElectricityModalVisible})}
     closeElectricityModal = () =>{this.setState({isElectricityModalVisible:false})}
 
@@ -265,18 +293,18 @@ class CategoriesScreen extends Component {
     render() {
 
 
-        const data = {
-            labels: ['Transport', 'Food', 'Electricity', 'Recycle'],
-            data: [ 
-                this.state.totalTransportCost / this.state.totalUserEnergy,
-                this.state.totalFoodCost/ this.state.totalUserEnergy,
-                this.state.totalElectricityCost/ this.state.totalUserEnergy,
-                this.state.totalRecycleCost/ this.state.totalUserEnergy                 
+        // const data = {
+        //     labels: ['Transport', 'Food', 'Electricity', 'Recycle'],
+        //     data: [ 
+        //         Math.round(this.state.totalTransportCost / this.state.totalUserEnergy).toFixed(1),
+        //         Math.round(this.state.totalFoodCost/ this.state.totalUserEnergy).toFixed(1),
+        //         Math.round(this.state.totalElectricityCost/ this.state.totalUserEnergy).toFixed(1),
+        //         Math.round(this.state.totalRecycleCost/ this.state.totalUserEnergy).toFixed(1)                 
 
-                ]
+        //         ]
                 
-        }
-        console.log("Pie Chart data:", data)
+        // }
+        // console.log(data)
         const chartConfig = {
             backgroundGradientFromOpacity: 0,
             backgroundGradientTo: "#08130D",
@@ -288,28 +316,28 @@ class CategoriesScreen extends Component {
         const pieData = [
             {
               name: 'Transport',
-              population: this.state.totalTransportCost / this.state.totalUserEnergy,
-              color: 'rgba(131, 167, 234, 1)',
+              population: (this.state.totalTransportCost / this.state.totalUserEnergy),
+              color: 'orange',
               legendFontColor: '#7F7F7F',
               legendFontSize: 15,
             },
             {
               name: 'Food',
-              population:this.state.totalFoodCost/ this.state.totalUserEnergy,
-              color: '#F00',
+              population: (this.state.totalFoodCost/ this.state.totalUserEnergy),
+              color: 'red',
               legendFontColor: '#7F7F7F',
               legendFontSize: 15,
             },
             {
               name: 'Electricity',
-              population: this.state.totalElectricityCost/ this.state.totalUserEnergy,
+              population: (this.state.totalElectricityCost/ this.state.totalUserEnergy),
               color: 'yellow',
               legendFontColor: '#7F7F7F',
               legendFontSize: 15,
             },
             {
               name: 'Recycle',
-              population: this.state.totalRecycleCost/ this.state.totalUserEnergy,
+              population: (this.state.totalRecycleCost/ this.state.totalUserEnergy),            
               color: 'blue',
               legendFontColor: '#7F7F7F',
               legendFontSize: 15,
@@ -329,23 +357,6 @@ class CategoriesScreen extends Component {
                     />
                     }
                 >
-
-                    {/* <PieChart
-                        data={pieData}
-                        width={Dimensions.get('window').width}
-                        height={220}
-                        chartConfig={chartConfig}
-                        strokeWidth={5}
-                        radius={20}
-                        hideLegend={false}
-                        backgroundColor="transparent"
-                        accessor="pollution"
-
-                        style={{
-                            borderRadius: 1,
-                        }}
-                    /> */}
-
                     <PieChart
                         data={pieData}
                         width={Dimensions.get('window').width}
@@ -362,7 +373,7 @@ class CategoriesScreen extends Component {
                         <TouchableOpacity    onPress={()=>this.openTransportModal()}    underlayColor="white">
                             <View style={styles.button}>
                                 <View style={styles.iconsStyles}>
-                                    <Icon name="plus-circle" size={24} color="white" />
+                                    <FontAwesome name="plus-circle" size={24} color="white" />
                                 </View>
                                 <Text style={styles.buttonText}> Transport Emission</Text>
                             </View>
@@ -371,7 +382,7 @@ class CategoriesScreen extends Component {
                         <TouchableOpacity    onPress={()=>this.openFoodModal()}    underlayColor="white">
                             <View style={styles.button}>
                                 <View style={styles.iconsStyles}>
-                                    <Icon name="plus-circle" size={24} color="white" />
+                                    <FontAwesome name="plus-circle" size={24} color="white" />
                                 </View>
                                 <Text style={styles.buttonText}> Food Emission</Text>
                             </View>
@@ -381,7 +392,7 @@ class CategoriesScreen extends Component {
                         <TouchableOpacity    onPress={()=>this.openElectricityModal()}    underlayColor="white">
                             <View style={styles.button}>
                                 <View style={styles.iconsStyles}>
-                                    <Icon name="plus-circle" size={24} color="white" />
+                                    <FontAwesome name="plus-circle" size={24} color="white" />
                                 </View>
                                 <Text style={styles.buttonText}> Electricity </Text>
                             </View>
@@ -392,7 +403,7 @@ class CategoriesScreen extends Component {
                         <TouchableOpacity    onPress={()=>this.openRecycleModal()}    underlayColor="white">
                             <View style={styles.buttonRecycle}>
                                 <View style={styles.iconsStyles}>
-                                    <Icon name="plus-circle" size={24} color="white" />
+                                    <FontAwesome name="plus-circle" size={24} color="white" />
                                 </View>
                                 <Text style={styles.buttonText}> Recycle</Text>
                             </View>
@@ -429,7 +440,7 @@ class CategoriesScreen extends Component {
                                         <TextInput style = {styles.input}
                                             underlineColorAndroid = "transparent"
                                             placeholder = "0.0"
-                                            autoCapitalize = "none"
+                                            keyboardType={'number-pad'}
                                             onChangeText = {this.updateCost}/>         
                             
                             
@@ -481,9 +492,10 @@ class CategoriesScreen extends Component {
 
                                         <TextInput style = {styles.input}
                                             underlineColorAndroid = "transparent"
+                                            keyboardType = 'decimal-pad'
                                             placeholder = "0.0"
                                             placeholderTextColor = "black"
-                                            autoCapitalize = "none"
+                                            maxLength={10}
                                             onChangeText = {this.updateCost}/>         
                             
                             
@@ -518,6 +530,10 @@ class CategoriesScreen extends Component {
                                         <View style={styles.picker}>
                                             <Picker selectedValue = {this.state.recycleStr} 
                                                     onValueChange = {this.updateRecycled} 
+                                                    placeholder={{
+                                                        label: 'Select a color...',
+                                                        value: null,
+                                                    }}
                                                 >
                                                         {this.state.recycledData.map((recycled, id) => {
                                                             return <Picker.Item 
@@ -526,7 +542,7 @@ class CategoriesScreen extends Component {
                                                                 key={recycled.id}    /> 
                                                                 
                                                                 }
-                                                                )}
+                                                        )}
                                             </Picker>  
                                         </View>
                                         <Text></Text>
@@ -536,7 +552,7 @@ class CategoriesScreen extends Component {
                                             underlineColorAndroid = "transparent"
                                             placeholder = "0.0"
                                             placeholderTextColor = "black"
-                                            autoCapitalize = "none"
+                                            keyboardType = 'numeric'
                                             onChangeText = {this.updateCost}/>         
                             
                             
@@ -621,9 +637,10 @@ CategoriesScreen.navigationOptions = navData => {
         headerTitle: 'My Energy',
         headerLeft:() =>
             <HeaderButtons HeaderButtonComponent={HeaderButton}>
-                <Item
-                    title="Menu"
-                    iconName="ellipsis-v"
+            <Icon
+                name="menu"
+                size={30}
+                color='white'
                     onPress={() => {
                         navData.navigation.toggleDrawer();
                     }}
@@ -690,12 +707,8 @@ const styles = StyleSheet.create({
         },
         shadowRadius: 25,
         backgroundColor:    Colors.primaryColor
-        },
-        buttonText: {
-            textAlign: 'center',
-            padding: 20,
-            color: 'white'
     },
+
 
     buttonRecycle: {
 
@@ -715,31 +728,29 @@ const styles = StyleSheet.create({
         },
         shadowRadius: 25,
         backgroundColor:    Colors.thirdBlueColor
+    },
+    buttonText: {
+        textAlign: 'center',
+        padding: 20,
+        color: 'white'
+    },
+    centeredView: {
+        flex: 1,
         },
-        buttonText: {
-            textAlign: 'center',
-            padding: 20,
-            color: 'white'
+    modalView: {
+        margin: 20,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
         },
-        centeredView: {
-            flex: 1,
-            // justifyContent: "center",
-            // marginTop: 22
-          },
-        modalView: {
-            margin: 20,
-            backgroundColor: "white",
-            borderRadius: 20,
-            padding: 35,
-            shadowColor: "#000",
-            shadowOffset: {
-              width: 0,
-              height: 2
-            },
-            shadowOpacity: 0.25,
-            shadowRadius: 3.84,
-            elevation: 5
-          },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5
+        },
 
 });
 

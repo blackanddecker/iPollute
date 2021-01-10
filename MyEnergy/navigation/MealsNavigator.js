@@ -19,6 +19,7 @@ import HistoryScreen from '../screens/HistoryScreen';
 import SettingsScreen from '../screens/SettignsScreen';
 import LoginScreen from '../screens/LoginScreen';
 import SignUpScreen from '../screens/SignUpScreen';
+import RateMeScreen from '../screens/RateMeScreen';
 
 import Colors from '../constants/Colors';
 import CityScreen from '../screens/CityScreen';
@@ -183,6 +184,19 @@ const CityNavigator = createStackNavigator(
   }
 );
 
+
+const RateMeNavigator = createStackNavigator(
+  {
+    RateMe: RateMeScreen
+  },
+  {
+    navigationOptions: {
+      drawerLabel: 'Rate Me'
+    },
+    defaultNavigationOptions: defaultStackNavOptions
+  }
+);
+
 const LoginNavigator = createStackNavigator(
   {
     Login: LoginScreen,
@@ -257,6 +271,15 @@ const MainNavigator = createDrawerNavigator(
           )
       }
     },    
+    RateMe: {
+      screen:RateMeNavigator,
+      navigationOptions: {
+        drawerLabel: 'Rate Me',
+        drawerIcon: tabInfo =>  (
+          <Ionicons name="star" size={25} color={tabInfo.tintColor} />
+          )
+      }
+    },  
     Abouts: {
       screen:AboutsNavigator,
       navigationOptions: {

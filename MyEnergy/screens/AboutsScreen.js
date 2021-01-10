@@ -1,6 +1,7 @@
 import React from 'react';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView  } from 'react-native';
+import { Icon } from 'react-native-elements';
 
 import HeaderButton from '../components/HeaderButton';
 
@@ -26,13 +27,14 @@ AboutsScreen.navigationOptions = navData => {
     headerTitle: 'About',
     headerLeft: (
       <HeaderButtons HeaderButtonComponent={HeaderButton}>
-        <Item
-          title="Menu"
-          iconName="ios-menu"
-          onPress={() => {
-            navData.navigation.toggleDrawer();
-          }}
-        />
+        <Icon
+            name="menu"
+            size={30}
+            color='white'
+                onPress={() => {
+                    navData.navigation.toggleDrawer();
+                }}
+            />
       </HeaderButtons>
     )
   };

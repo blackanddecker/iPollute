@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     height: 40,
     borderColor: colors.SILVER,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    marginBottom: 20
+    marginBottom: 10
   }
 });
 

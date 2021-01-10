@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {StyleSheet, Text, View, FlatList,  TextInput, Modal, TouchableHighlight, RefreshControl, TouchableOpacity,SafeAreaView, ScrollView   } from 'react-native';
 
 
-import Icon from 'react-native-vector-icons/FontAwesome';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Colors from '../constants/Colors';
 
 import BaseUrl from '../constants/Url';
@@ -55,7 +55,7 @@ class MealList extends Component {
     })
     .then((response) => response.json())
     .then((responseJson) => {
-        console.log(responseJson);
+        // console.log(responseJson);
         if(responseJson['success'] == true){
             alert("Energy Deleted Succefully");
             this.props._fetchData(this.state.userId, this.state.appliedFilters)
@@ -81,7 +81,7 @@ class MealList extends Component {
   }
   
   setDeletedItem = (item) => {
-    console.log("In:", item)
+    console.log("Set Deleted Item:", item)
     this.setState({deletedItem: item.energyId}, () =>{
         this.setState({isDeleteModalVisible:true})
     });
@@ -111,48 +111,48 @@ class MealList extends Component {
 
  renderItem = ({ item }) => {
 
-    var itemIcon = <Icon name="train-car" size={24} color={Colors.primaryColor} /> 
+    var itemIcon = <FontAwesome name="train-car" size={24} color={Colors.primaryColor} /> 
     if (item.itemId === 2 & item.energyType === 1){
-        itemIcon = <Icon name="car" size={24} color={Colors.primaryColor}/>
+        itemIcon = <FontAwesome name="car" size={24} color={Colors.primaryColor}/>
     }
     else if (item.itemId === 3 & item.energyType === 1){
-        itemIcon = <Icon name="car" size={24} color={Colors.primaryColor} />
+        itemIcon = <FontAwesome name="car" size={24} color={Colors.primaryColor} />
     }
     else if (item.itemId === 4 & item.energyType === 1){
-        itemIcon = <Icon name="train" size={24} color= {Colors.primaryColor} />
+        itemIcon = <FontAwesome name="train" size={24} color= {Colors.primaryColor} />
     }
     else if (item.itemId === 4 & item.energyType === 1){
-        itemIcon = <Icon name="directions-bus" size={24} color={Colors.primaryColor} />    
+        itemIcon = <FontAwesome name="directions-bus" size={24} color={Colors.primaryColor} />    
     }    
-    else if (item.itemId === 1 && item.energyType === 1){
-        itemIcon = <Icon name="plane" size={24} color= {Colors.primaryColor} />
+    else if (item.itemId === 1 && (item.energyType === 1 || item.energyType === 5 || item.energyType === 6) ){
+        itemIcon = <FontAwesome name="plane" size={24} color= {Colors.primaryColor} />
     }
     else if (item.itemId === 1 && item.energyType === 8){
-        itemIcon = <Icon name="bicycle" size={24} color= {Colors.primaryColor} />
+        itemIcon = <FontAwesome name="bicycle" size={24} color= {Colors.primaryColor} />
     }
     else if (item.itemId === 1 && item.energyType === 7){
-        itemIcon = <Icon name="motorcycle" size={24} color= {Colors.primaryColor} />
+        itemIcon = <FontAwesome name="motorcycle" size={24} color= {Colors.primaryColor} />
     }
     else if (item.energyType === 0 && item.itemId === 5 ){
-        itemIcon = <Icon name="coffee" size={24} color= {Colors.primaryColor} />
+        itemIcon = <FontAwesome name="mug-hot" size={24} color= {Colors.primaryColor} />
     }
     else if (item.itemId === 9 && item.energyType === 0){
-        <Icon name="fish" size={24} color= {Colors.primaryColor}/>   
+        itemIcon =<FontAwesome name="fish" size={24} color= {Colors.primaryColor}/>   
     }
     else if (item.itemId === 1 && item.energyType === 3){
-        <Icon name="oven" size={24} color= {Colors.primaryColor}/>   
+        itemIcon =<FontAwesome name="oven" size={24} color= {Colors.primaryColor}/>   
     }
     else if (item.energyType === 0 && item.itemId === 3 ){
-        itemIcon = <Icon name="cheese" size={24} color= {Colors.primaryColor} />
+        itemIcon = <FontAwesome name="cheese" size={24} color= {Colors.primaryColor} />
     }
     else if (item.energyType === 0 ){
-        itemIcon = <Icon name="food" size={24} color= {Colors.primaryColor} />
+        itemIcon = <FontAwesome name="food" size={24} color= {Colors.primaryColor} />
     }
     else if (item.energyType === 2 ){
-        itemIcon = <Icon name="recycle" size={24} color= {Colors.primaryColor} />
+        itemIcon = <FontAwesome name="recycle" size={24} color= {Colors.primaryColor} />
     }    
     else if (item.energyType === 3 ){
-        itemIcon = <Icon name="power" size={24} color= {Colors.primaryColor} />
+        itemIcon = <FontAwesome name="power" size={24} color= {Colors.primaryColor} />
     }
 
 
@@ -179,19 +179,19 @@ class MealList extends Component {
                 </View>
                 <View style = {styles.itemTexts}>
                     <Text style={styles.text}> Date: {item.energyDate} </Text>
-                    <Text style={styles.text}> {stringCost} {item.userCost}</Text> 
+                    <Text style={styles.text}> {item.description} : {item.userCost} Kg</Text> 
                     <Text style={styles.text}> Co2: {item.totalCost} Kg</Text>
                 </View>
                 
                 <View style={styles.iconStyles}>
                     <TouchableHighlight onPress={()=>this.openUpdateModal()}>
-                        <Icon name="pencil" size={25} color={Colors.primaryColor} />
+                        <FontAwesome name="pencil" size={25} color={Colors.primaryColor} />
                     </TouchableHighlight>
                 </View>
                 <View style={styles.iconStyles}>
 
                     <TouchableHighlight onPress={ ()=>this.setDeletedItem(item)}>
-                        <Icon name="trash" size={25} color={Colors.primaryColor} />
+                        <FontAwesome name="trash" size={25} color={Colors.primaryColor} />
                     </TouchableHighlight>
 
                 </View>
@@ -200,9 +200,9 @@ class MealList extends Component {
   };
 
   render() {
-      console.log("State data", this.state.data)
+    //   console.log("State data", this.state.data)
       var dataList = this.props['list'].sort((a, b) => { 
-        console.log(Date.parse(b.energyDate) , (a.energyDate))  
+        // console.log(Date.parse(b.energyDate) , (a.energyDate))  
         return Date.parse(b.energyDate) - Date.parse(a.energyDate); 
     })
       

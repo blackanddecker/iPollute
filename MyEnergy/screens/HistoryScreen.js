@@ -8,9 +8,9 @@ import BaseUrl from '../constants/Url';
 import AsyncStorage from '@react-native-community/async-storage'
 
 import Colors from '../constants/Colors';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { Icon } from 'react-native-elements';
 
 class HistoryScreen extends Component {
 
@@ -52,9 +52,9 @@ class HistoryScreen extends Component {
     .then((response) => response.json())
     .then((responseJson) => {
         var historyData = []
-        console.log(responseJson);
+        // console.log(responseJson);
          for (const key in responseJson['history']){
-           console.log("history key:",responseJson['history'][key])
+          //  console.log("history key:",responseJson['history'][key])
            historyData.push(responseJson['history'][key])
           }
   
@@ -77,24 +77,24 @@ class HistoryScreen extends Component {
 
   componentDidMount = () => {
 
-    const userId = AsyncStorage.getItem('userId').then((value) => {
+    var userId = AsyncStorage.getItem('userId').then((value) => {
       value = parseInt(value)
-      if(this.state.userId == -1){
-        this.setState({userId: value});
-      }
+      this.setState({userId: value});
       console.log("History User Id Async:",this.state.userId);
-
-      const appliedFilters = AsyncStorage.getItem('appliedFilters').then((value) => {    
-        console.log("Get appliedFilters Async History:",value);
-          this.setState({appliedFilters: value});
-          this.fetchData(this.state.userId, this.state.appliedFilters)
-        // }
-        return value
-        
-      })
       return value      
     })
-    this.setState({isFiltersApplied: true});
+    .then(userId => {
+      var appliedFilters = AsyncStorage.getItem('appliedFilters').then((appliedFilters) => {    
+        console.log("Get appliedFilters Async History:",appliedFilters);
+          this.setState({appliedFilters: JSON.parse(appliedFilters)});
+          this.fetchData(this.state.userId, this.state.appliedFilters)
+          this.setState({isFiltersApplied: true});
+        // }
+        return JSON.parse(appliedFilters)
+        
+      })
+      //do something else
+  });
     console.log("Component did mount")
   }
     
@@ -103,6 +103,23 @@ class HistoryScreen extends Component {
   };
   
   componentDidUpdate(){
+    const appliedFilters = AsyncStorage.getItem('appliedFilters').then((value) => {    
+      console.log("Get appliedFilters Async History:",value);
+      return JSON.parse(value) 
+    })
+    .then(appliedFilters => {
+      console.log("Compare filters:", this.state.appliedFilters, appliedFilters)
+      if (JSON.stringify(this.state.appliedFilters) !== JSON.stringify(appliedFilters)) {
+        console.log("Save new Filters")
+        this.setState({appliedFilters: appliedFilters});
+        this.fetchData(this.state.userId, appliedFilters)
+
+      }
+    });
+  }
+
+  componentWillUnmount() {
+    console.log("History Screen componentWillUnmount")
   }
 
   _onRefresh = () => {
@@ -193,13 +210,14 @@ HistoryScreen.navigationOptions = navData => {
     headerTitle: 'History',
     headerLeft:() =>
       <HeaderButtons HeaderButtonComponent={HeaderButton}>
-        <Item
-          title="Menu"
-          iconName="ios-menu"
-          onPress={() => {
-            navData.navigation.toggleDrawer();
-          }}
-        />
+        <Icon
+            name="menu"
+            size={30}
+            color='white'
+                onPress={() => {
+                    navData.navigation.toggleDrawer();
+                }}
+            />
       </HeaderButtons>
     
   };
