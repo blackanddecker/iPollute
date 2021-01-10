@@ -11,6 +11,11 @@ from src.user import getUserDetails
 from src.user import deleteUser
 from src.user import updateUser
 
+
+from src.rateMe import getUserRate
+from src.rateMe import saveUserRate
+
+
 from src.energy import insertEnergy
 from src.energy import deleteEnergy
 from src.energy import updateEnergy
@@ -131,6 +136,16 @@ def _getEnergyHistory():
 @app.route('/getFilterOptions', methods=['POST'])
 def _getFilterOptions():
     response, status = getFilterOptions.getFilterOptions(connection = getConnection(), data = request.get_json())
+    return response, status    
+
+@app.route('/getUserRate', methods=['POST'])
+def _getUserRate():
+    response, status = getUserRate.getUserRate(connection = getConnection(), data = request.get_json())
+    return response, status    
+
+@app.route('/saveUserRate', methods=['POST'])
+def _saveUserRate():
+    response, status = saveUserRate.saveUserRate(connection = getConnection(), data = request.get_json())
     return response, status    
 
 if __name__ == '__main__':
