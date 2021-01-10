@@ -16,6 +16,7 @@
     "@react-navigation/bottom-tabs": "^5.11.2",
     "@types/date-fns": "^2.6.0",
     "date-fns": "^2.16.1",
+    "native-base": "^2.15.2",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-minimal-pie-chart": "^8.1.0",

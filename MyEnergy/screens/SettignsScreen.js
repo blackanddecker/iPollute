@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity,  SafeAreaView, ScrollView  } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity,  SafeAreaView, ScrollView, Picker} from 'react-native';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -10,6 +10,7 @@ import Modal from 'react-native-modal';
 import BaseUrl from '../constants/Url';
 import AsyncStorage from '@react-native-community/async-storage'
 import { Icon } from 'react-native-elements';
+import Password from "../components/PasswordTextBox";
 
 class SettingsScreen extends Component {
     constructor(props){
@@ -25,8 +26,15 @@ class SettingsScreen extends Component {
         userEnergy: 0,
         isLoading: true,
         password:'',
+        passwordRepeat: '',
+        foodStr: '',
         favFood: '',
+        transportStr: '',
         favTransport: '',
+        foodData : [],
+        transportData: [],
+        electricityData: [],
+        recycledData: [],
         isUsernameModalVisible: false,
         isPasswordModalVisible: false,
         isDeleteAccountModalVisible:false,
@@ -56,6 +64,46 @@ class SettingsScreen extends Component {
 
       fetchData = (userId) => {
 
+        fetch(BaseUrl+'getEnergyObjects', {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                userId:userId,
+                appliedFilters: ''
+            }),
+            method: 'POST'
+        })
+        .then((response) => response.json())
+        .then((responseJson) => {
+            var transportData = []
+            var foodData = []
+            var electricityData = []
+            var recycledData = []
+            //console.log(responseJson);
+            for (const key in responseJson['transportObjects']){
+                transportData.push(responseJson['transportObjects'][key])
+            }
+            for (const key in responseJson['foodObjects']){
+                foodData.push(responseJson['foodObjects'][key])
+            }
+            for (const key in responseJson['recycledObjects']){
+                recycledData.push(responseJson['recycledObjects'][key])
+            }
+            for (const key in responseJson['electricityObjects']){
+                electricityData.push(responseJson['electricityObjects'][key])
+            }
+            this.setState({recycleStr:1, electricityStr:1, foodStr:1, transportStr:1})
+            this.setState({transportData:transportData, foodData:foodData, electricityData:electricityData, recycledData:recycledData})
+        })
+        .catch((error) => {
+            console.error(error);
+            alert("Transport data didnt fetch");
+            
+        });
+
+
         fetch(BaseUrl+'getUserDetails', {
             headers: {
                 'Accept': 'application/json',
@@ -75,6 +123,7 @@ class SettingsScreen extends Component {
                     username: responseJson['userDetails']['username'],
                     userEnergy: responseJson['userDetails']['energyTotal'],
                     password: responseJson['userDetails']['password'],
+                    passwordRepeat: responseJson['userDetails']['password'],
                     favFood: responseJson['userDetails']['favFood'],
                     favTransport: responseJson['userDetails']['favTransport'],
                     isLoading: !this.state.isLoading })
@@ -85,6 +134,14 @@ class SettingsScreen extends Component {
              console.error(error);
              alert("User data didnt fetch");
             });
+
+
+
+
+
+
+
+
         }
         
 
@@ -129,6 +186,10 @@ class SettingsScreen extends Component {
             this.setState({ password: password })
         }
 
+        updatePasswordRepeat = (password) => {
+            this.setState({ passwordRepeat: password })
+        }
+
         updateEmail = (email) => {
             this.setState({ email: email })
         }
@@ -137,16 +198,19 @@ class SettingsScreen extends Component {
             this.setState({ userEnergy: userEnergy })
         }
 
-        updateFavFood = (favFood) => {
-            this.setState({ favFood: favFood })
+        updateFavTransport = (transport) => {
+            this.setState({ favTransport: transport , transportStr: transport})
+            console.log("Update Transport Energy:", "Item", this.state.transportStr,  "User:", this.state.userId)
         }
-
-        updateFavTransport = (favTransport) => {
-            this.setState({ favTransport: favTransport })
+        updateFavFood = (food) => {this.setState({ favFood: food, foodStr:food })
+            console.log("Update Food Energy:", "Item", this.state.favFood,  "User:", this.state.userId)
         }
 
         updateSettings = () => {
-            
+            if (this.state.password !== this.state.passwordRepeat){
+                alert("Please enter the same password twice");
+                return
+            }
             fetch(BaseUrl+'updateUser', {
             headers: {
                 'Accept': 'application/json',
@@ -296,6 +360,65 @@ class SettingsScreen extends Component {
                         <Modal
                         animationType="slide"
                         transparent={true}
+                        visible={this.state.isPasswordModalVisible} 
+                        >
+                            <View style={styles.centeredView}>
+                                <View style={styles.modalView}>
+                                    <Text style = {styles.title}>Update Password </Text>
+                                        
+                                    <Password
+                                            label={'Password'}
+                                            onChange= {this.updatePassword}
+                                            height={30}
+                                            style = {styles.input}
+                                        />      
+
+                                    <Text style = {styles.title}>Repeat Password </Text>
+
+                                    {/* <TextInput style = {styles.input}
+                                        secureTextEntry={true}
+                                        underlineColorAndroid = "transparent"
+                                        placeholder = {"Repeat Password"}
+                                        autoCapitalize = "none"
+                                        onChangeText = {this.updatePasswordRepeat}/>  */}
+                                    <Password
+                                            label={'Repeat Password'}
+                                            style = {styles.input}
+                                            onChange={this.updatePasswordRepeat}
+                                            height={30}
+                                        />
+                            
+                                    <View style={{flexDirection:'row', marginTop:30}}>
+                                        <TouchableOpacity style={{backgroundColor:'red',width:'50%'}} onPress={()=>this.closePasswordModal()}>
+                                            <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity style={{backgroundColor:'green',width:'50%'}} onPress={()=>this.updateSettings()}>
+                                            <Text style={{color:'white',textAlign:'center',padding:10}}>Ok</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+
+                            </View>
+                        </Modal>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        <Modal
+                        animationType="slide"
+                        transparent={true}
                         visible={this.state.isUsernameModalVisible} 
                         >
                             <View style={styles.centeredView}>
@@ -310,7 +433,7 @@ class SettingsScreen extends Component {
                                         onChangeText = {this.updateUsername}/>         
                             
                             
-                                    <View style={{flexDirection:'row',}}>
+                                    <View style={{flexDirection:'row', marginTop:30}}>
                                         <TouchableOpacity style={{backgroundColor:'red',width:'50%'}} onPress={()=>this.closeUsernameModal()}>
                                             <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
                                         </TouchableOpacity>
@@ -365,15 +488,23 @@ class SettingsScreen extends Component {
                                 <View style={styles.modalView}>
                                     <Text style = {styles.title}>Update Favorite Food </Text>
                                         
-                                    <TextInput style = {styles.input}
-                                        underlineColorAndroid = "transparent"
-                                        placeholder = {this.state.email}
-                                        autoCapitalize = "none"
-                                        defaultValue={this.state.email}
-                                        onChangeText = {this.updateFavFood}/>         
+                                    <View style={styles.picker}>
+                                            <Picker selectedValue = {this.state.foodStr} 
+                                                    onValueChange = {this.updateFavFood} 
+                                                >
+                                                {this.state.foodData.map((foods, id) => {
+                                                    return <Picker.Item 
+                                                        value={foods.id} 
+                                                        label={foods.description}
+                                                        key={foods.id}    /> 
+                                                        
+                                                        }
+                                                        )}
+                                            </Picker>  
+                                        </View>       
                             
                             
-                                    <View style={{flexDirection:'row',}}>
+                                    <View style={{flexDirection:'row', marginTop:30}}>
                                         <TouchableOpacity style={{backgroundColor:'red',width:'50%'}} onPress={()=>this.closeFavFoodModal()}>
                                             <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
                                         </TouchableOpacity>
@@ -397,14 +528,22 @@ class SettingsScreen extends Component {
                                 <View style={styles.modalView}>
                                     <Text style = {styles.title}>Update Favorite Transport </Text>
                                         
-                                    <TextInput style = {styles.input}
-                                        underlineColorAndroid = "transparent"
-                                        placeholder = {this.state.email}
-                                        autoCapitalize = "none"
-                                        onChangeText = {this.updateFavTransport}/>         
+                                    <View style={styles.picker}>
+                                            <Picker selectedValue = {this.state.transportStr} 
+                                                onValueChange = {this.updateFavTransport} 
+                                                >
+                                                    {this.state.transportData.map((transports, id) => {
+                                                        return <Picker.Item 
+                                                            value={transports.id} 
+                                                            label={transports.description}
+                                                            key={transports.id}    /> 
+                                                            }
+                                                        )}
+                                            </Picker>     
+                                        </View>        
                             
                             
-                                    <View style={{flexDirection:'row',}}>
+                                    <View style={{flexDirection:'row', marginTop:30}}>
                                         <TouchableOpacity style={{backgroundColor:'red',width:'50%'}} onPress={()=>this.closeFavTransportModal()}>
                                             <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
                                         </TouchableOpacity>
@@ -430,8 +569,10 @@ class SettingsScreen extends Component {
                                         
                                     <TextInput style = {styles.input}
                                         underlineColorAndroid = "transparent"
-                                        placeholder = {this.state.email}
+                                        placeholder = {this.state.userEnergy.toString()}
                                         autoCapitalize = "none"
+                                        defaultValue={this.state.userEnergy.toString()}
+
                                         onChangeText = {this.updateUserEnergy}/>         
                             
                             
