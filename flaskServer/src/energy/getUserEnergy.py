@@ -6,25 +6,39 @@ def getUserEnergy(connection, data):
     '''
     Get User Energy 
     '''
+    appliedFilters = {
+        'isTransport': True, 
+        'isFood':True, 
+        'isElectricity': True,
+        'isRecycle': True
+    }
+
     if 'userId' not in data:
         return {'message':'userId missing!', 'success': False}, 400
+
+    print("/getEnergyHistory data:", data)
     try:
+        if 'appliedFilters' in data:
+            if str(data['appliedFilters']) != 'None':
+                appliedFilters = data['appliedFilters']
+
         with connection.cursor() as cursor:
             sql = "CALL getUserEnergy({});".format(data['userId'])
-            print(sql)
+            #print(sql)
             cursor.execute(sql)
             energy = cursor.fetchall()[0]
 
-            if energy['totalFoodCost'] is None:
-                energy['totalFoodCost'] = 0.0
-            
-            if energy['totalTransportCost'] is None:
+
+            if energy['totalTransportCost'] is None or appliedFilters['isTransport'] == False:
                 energy['totalTransportCost'] = 0.0
             
-            if energy['totalElectricityCost'] is None:
+            if energy['totalFoodCost'] is None or appliedFilters['isRecycle'] == False:
+                energy['totalFoodCost'] = 0.0
+            
+            if energy['totalElectricityCost'] is None or appliedFilters['isElectricity'] == False:
                 energy['totalElectricityCost'] = 0.0
 
-            if energy['totalRecycleCost'] is None:
+            if energy['totalRecycleCost'] is None or appliedFilters['isFood'] == False:
                 energy['totalRecycleCost'] = 0.0
                        
             energy['totalTransportCost'] = round(energy['totalTransportCost'],1)

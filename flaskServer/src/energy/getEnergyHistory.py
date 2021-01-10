@@ -12,50 +12,70 @@ def getEnergyHistory(connection, data):
     if 'userId' not in data:
         return {'message':'userId missing!', 'success': False}, 400
     try:
-        print("data:", data)
+        print("/getEnergyHistory data:", data)
+        appliedFilters = {
+            'isTransport': True, 
+            'isFood':True, 
+            'isElectricity': True,
+            'isRecycle': True
+        }
+
+        if 'appliedFilters' in data:
+            if str(data['appliedFilters']) != 'None':
+                appliedFilters = data['appliedFilters']
+
         history = []
         totalCo2 = 0 
         totalRecycledCo2 = 0
         totalCo2Reduced = 0 
         with connection.cursor() as cursor:
-            sql = "CALL getFoodEnergyHistory({});".format(data['userId'])
-            print(sql)
-            cursor.execute(sql)
-            transportHistory = cursor.fetchall()
-            history +=transportHistory
             
             sql = "CALL getTransportEnergyHistory({});".format(data['userId'])
-            print(sql)
+            # print(sql)
             cursor.execute(sql)
             transportHistory = cursor.fetchall()
-            history +=transportHistory
+            if appliedFilters['isTransport'] == True:
+                history +=transportHistory
+
+                
+            sql = "CALL getFoodEnergyHistory({});".format(data['userId'])
+            # print(sql)
+            cursor.execute(sql)
+            transportHistory = cursor.fetchall()
+            if appliedFilters['isFood'] == True:
+                history +=transportHistory
+            
 
             sql = "CALL getElectricityEnergyHistory({});".format(data['userId'])
-            print(sql)
+            # print(sql)
             cursor.execute(sql)
             transportHistory = cursor.fetchall()
-            history += transportHistory
+            if appliedFilters['isElectricity'] == True:
+                history +=transportHistory
 
             for item in history: 
-                print(item)
                 totalCo2 += item['totalCost'] 
             
             sql = "CALL getRecycledEnergyHistory({});".format(data['userId'])
-            print(sql)
+            # print(sql)
             cursor.execute(sql)
             recycledHistory = cursor.fetchall()
-            history +=recycledHistory
+            if appliedFilters['isElectricity'] == True:
+                history +=transportHistory
 
-            for item in recycledHistory: 
-                print(item)
-                totalRecycledCo2 += item['totalCost'] 
+                for item in recycledHistory: 
+                    totalRecycledCo2 += item['totalCost'] 
+
+
+
+
 
             curWeekCo2 = 0
             lastWeekCo2 = 0
             getCurDate = datetime.now() - timedelta(days=7)
             getLastWeekDate = datetime.now() - timedelta(days=14)
-            print("getCurDate", getCurDate)
-            print("getLastWeekDate", getLastWeekDate)
+            # print("getCurDate", getCurDate)
+            # print("getLastWeekDate", getLastWeekDate)
             
             for item in history: 
                 if item['energyType'] == 2:
@@ -65,10 +85,10 @@ def getEnergyHistory(connection, data):
 
                 if getCurDate < item['energyDate'] :
                     curWeekCo2 += cost
-                    print("Cost is", cost, "1date is:", item['energyDate'],curWeekCo2 )
+                    # print("Cost is", cost, "1date is:", item['energyDate'],curWeekCo2 )
                 elif getCurDate > item['energyDate'] and getLastWeekDate < item['energyDate']:
                     lastWeekCo2 += cost
-                    print("2Cost is", cost, "1date is:", item['energyDate'], lastWeekCo2 )
+                    # print("2Cost is", cost, "1date is:", item['energyDate'], lastWeekCo2 )
             if lastWeekCo2 == 0:
                 lastWeekCo2 = 0.0001
 

@@ -25,6 +25,7 @@ def insertEnergy(connection, data):
             
         with connection.cursor() as cursor:
             # add energy
+            print("------------> ADD ENERGY :",data['energyTypeId'], data['energyItemId'])
             sql = "CALL insertEnergy({}, {}, {}, {},'{}', {});".format(
                 data['userId'], data['energyTypeId'], data['energyItemId'], data['userCost'], data['datetime'],energyCost)
             

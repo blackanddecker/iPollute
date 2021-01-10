@@ -18,6 +18,8 @@ def updateUser(connection, data):
     if 'userEnergy' not in data:
         return {'message':'User Energy missing', 'success': False}, 400
     try:
+        print("/getEnergyHistory data:", data)
+
         with connection.cursor() as cursor:
             sql = "CALL updateUser({}, '{}', '{}', '{}', {}, @s);".format(
                 data['userId'], 
