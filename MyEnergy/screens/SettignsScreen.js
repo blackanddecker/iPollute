@@ -344,7 +344,7 @@ class SettingsScreen extends Component {
                                     <Text style={styles.buttonText}> Update User Energy</Text>
                                 </View>
                             </TouchableOpacity>
-                            
+                                
                             <TouchableOpacity    onPress={()=>this.openDeleteAccountModal()}    underlayColor="black">
                                 <View style={styles.button}>
                                     <View style={styles.iconStyle}>
@@ -670,6 +670,14 @@ const styles = StyleSheet.create({
         zIndex: 2,
         borderWidth:1,
         marginBottom:10
+    },
+    bottom: {
+        width: '100%',
+        height: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'absolute', //Here is the trick
+        bottom: 0, //Here is the trick
     },
     itemTexts: {
         justifyContent: 'flex-start',

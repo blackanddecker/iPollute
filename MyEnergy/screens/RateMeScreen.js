@@ -10,6 +10,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import BaseUrl from '../constants/Url';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 class RateMeScreen extends Component {
 
@@ -20,6 +21,7 @@ class RateMeScreen extends Component {
             comment: '',
             userId: -1, 
             comment: '',
+            showSaveAlert: false
 
         };
     }
@@ -70,6 +72,11 @@ class RateMeScreen extends Component {
     }
 
 
+    showAlert = () => {
+        this.setState({
+          showSaveAlert: true
+        });
+      };
 
     saveRatings = () => {
 
@@ -133,11 +140,11 @@ class RateMeScreen extends Component {
                 {`${this.state.starCount} of stars is displayed`}
                 </Text>
                 <StarRating
-                disabled={false}
-                maxStars={5}
-                fullStarColor={Colors.primaryColor}
-                rating={this.state.starCount}
-                selectedStar={(rating) => this.onStarRatingPress(rating)}
+                    disabled={false}
+                    maxStars={5}
+                    fullStarColor={Colors.primaryColor}
+                    rating={this.state.starCount}
+                    selectedStar={(rating) => this.onStarRatingPress(rating)}
                 />
 
                 <TextInput

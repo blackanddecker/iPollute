@@ -3,7 +3,7 @@ IPollute
 
 Ipollute is a carbon footprint tracker that helps you learn more about your carbon emissions and carbon footprint from your daily lifestyle. Ipollute can help you towards achieving a sustainable lifestyle, whether through sustainable travel, reducing your dietary carbon footprint, or removing CO2 by offsetting the CO2 emissions you can't avoid.
 
-### Development 
+## Development 
 
 To set up project for development mode
  
@@ -18,10 +18,8 @@ Create virtual python3 enviroment
 
 Add enviromental variables
 
-
-export FLASK_ENV=development
-
-export FLASK_APP=main.py
+    export FLASK_ENV=development
+    export FLASK_APP=main.py
 
 
 Start Server
@@ -51,5 +49,5 @@ Build Application
 
 ## Troubleshooting 
 
-
+    
     rm package-lock.json && rm -rf node_modules && rm -rf $TMPDIR/metro-* && rm -rf $TMPDIR/haste-map-* && npm install
