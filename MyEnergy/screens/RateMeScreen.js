@@ -94,7 +94,6 @@ class RateMeScreen extends Component {
             else{
                 alert("Fail to save ratings");
             }
-            
         })
         .catch((error) => {
             console.error(error);

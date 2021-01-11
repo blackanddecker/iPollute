@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, Component } from 'react';
-import { View, Text, StyleSheet, Switch, Platform, TouchableOpacity, ScrollView} from 'react-native';
+import { View, Text, StyleSheet, Thumb, Rail, RailSelected, Notch, Switch, Platform, TouchableOpacity, RefreshControl, ScrollView} from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { Slider } from 'react-native-elements';
 import DatePicker from 'react-native-datepicker'
@@ -10,35 +10,55 @@ import Colors from '../constants/Colors';
 import BaseUrl from '../constants/Url';
 import AsyncStorage from '@react-native-community/async-storage'
 import DateTimePicker from '@react-native-community/datetimepicker';
+
 import { Icon } from 'react-native-elements';
+import RangeSlider from 'rn-range-slider';
 
 
 class FiltersScreen extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            isLoading: true,
-            minDate : '',
-            maxDate: '',
-            maxKm: 0,
-            minKm: 0,
-            minKg: 0, 
-            maxKg: 0, 
-            transports: [],
-            foods: [],
-            currentKg:0,
-            currentKm:0,
-            maxCurrentDate: '',
-            minCurrentDate: '',
-            isTransport: true, 
-            isFood: true,
-            isRecycle: true,
-            isElectricity: true, 
-            date:"2016-05-15"
-        };
+    constructor(){
+        super();
+            this.forceUpdateHandler = this.forceUpdateHandler.bind(this);
       }
 
+    state = {
+        userId: -1,
+        isLoading: true,
+        minDate : '',
+        maxDate: '',
+        maxKm: 0,
+        minKm: 0,
+        minKg: 0,   
 
+        transports: [],
+        foods: [],
+        lowCurrentKg:0,
+        lowCurrentKm:0,
+        highCurrentKg:0,
+        highCurrentKm:0,
+        maxCurrentDate: '',
+        minCurrentDate: '',
+        isTransport: true, 
+        isFood: true,
+        isRecycle: true,
+        isElectricity: true, 
+        refreshing:false
+    };
+
+    forceUpdateHandler(){
+        this.forceUpdate();
+    };
+
+    componentDidUpdate(){
+    }
+
+    _onRefresh = () => {
+        this.setState({refreshing: true});
+        this.fetchData(this.state.userId)
+        this.setState({refreshing: false});
+     }
+
+     
     fetchData = (userId) => {
         fetch(BaseUrl+'getFilterOptions', {
             headers: {
@@ -46,22 +66,27 @@ class FiltersScreen extends Component {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                userId:1
+                userId:this.state.userId
             }),
             method: 'POST'
         })
         .then((response) => response.json())
         .then((responseJson) => {
-            console.log(responseJson);
             this.setState({
-                minDate : responseJson['filters']['minDate'],
-                maxDate: responseJson['filters']['maxDate'],
+                minDate : new Date(responseJson['filters']['minDate']),
+                maxDate: new Date(responseJson['filters']['maxDate']),
+                maxCurrentDate : new Date(responseJson['filters']['maxDate']),
+                minCurrentDate : new Date(responseJson['filters']['minDate']),
                 maxKm: responseJson['filters']['maxKm'],
                 minKm: responseJson['filters']['minKm'],
                 minKg: responseJson['filters']['minKg'], 
                 maxKg: responseJson['filters']['maxKg'], 
-                currentKg:responseJson['filters']['minKg'],
-                currentKm:responseJson['filters']['minKm'],
+
+                lowCurrentKg:responseJson['filters']['minKg'],
+                lowCurrentKm:responseJson['filters']['minKm'],
+                highCurrentKg:responseJson['filters']['maxKg'],
+                highCurrentKm:responseJson['filters']['maxKm'],
+
                 transports: [],
                 foods: [],
                 isLoading: !this.state.isLoading })
@@ -75,14 +100,16 @@ class FiltersScreen extends Component {
     }
 
     componentDidMount = () => {
-        const { navigation } = this.props;
-        const userId = navigation.getParam('userId', '-1');
+        const userId = AsyncStorage.getItem('userId').then((value) => {
+            value = parseInt(value)
+            this.setState({userId: value});
+            return value
+        })
+        .then(userId => {
+                this.fetchData(this.state.userId)
+        })
 
-        console.log("Get param1:",this.props.navigation.state.params);
-
-        this.setState({ userId: userId });
-
-        this.fetchData(userId)
+        console.log("Component did mount")
     }
 
     showMode = (currentMode) => {
@@ -99,7 +126,14 @@ class FiltersScreen extends Component {
             isTransport: this.state.isTransport,
             isFood:this.state.isFood,
             isElectricity:this.state.isElectricity,
-            isRecycle:this.state.isRecycle
+            isRecycle:this.state.isRecycle,
+            lowKm: this.state.lowCurrentKm,
+            highKm: this.state.highCurrenKm,
+            lowKg: this.state.lowCurrentKg,
+            highKg: this.state.highCurrenKg,
+            minCurrentDate: new Date(this.state.minCurrentDate), 
+            maxCurrentDate: new Date(this.state.maxCurrentDate), 
+
         };
         console.log("appliedFilters",appliedFilters)
         AsyncStorage.setItem('appliedFilters', JSON.stringify(appliedFilters))
@@ -108,8 +142,23 @@ class FiltersScreen extends Component {
         });
     }
 
-    updateMinCurrentDate = (minCurrentDate) => {
-        this.setState({ minCurrentDate: minCurrentDate })
+
+    restoreFilters = () => {
+        this.fetchData(this.state.userId)
+        this.setState({
+            isTransport: true, 
+            isFood: true,
+            isRecycle: true,
+            isElectricity: true
+        })
+
+    }
+
+    updateMinCurrentDate = (minCurDate) => {
+        this.setState({ minCurrentDate: new Date(minCurDate) })
+    }
+    updateMinCurrentDate = (maxCurDate) => {
+        this.setState({ maxCurrentDate: new Date(maxCurDate) })
     }
     setIsTransport = (isTransport) => {
         this.setState({ isTransport: isTransport })
@@ -126,28 +175,38 @@ class FiltersScreen extends Component {
     updateMaxCurrentDate = (maxCurrentDate) => {
         this.setState({ maxCurrentDate: maxCurrentDate })
     }
-    updateCurrentKm = (currentKm) => {
-        this.setState({ currentKm: currentKm })
+    updateCurrentKm = (low) => {
+        this.setState({ lowCurrentKm: low })
     }
-    updateCurrentKg = (currentKg) => {
-        this.setState({ currentKg: currentKg })
+    updateCurrentKg = (low) => {
+        this.setState({ lowCurrentKg: low })
     }
 
+
     render() {
-        return (
-            <ScrollView style={styles.screen}>
+        console.log()
+        return  (
+            <ScrollView
+                style={styles.screen}
+                refreshControl={
+                <RefreshControl
+                    refreshing={this.state.refreshing}
+                    onRefresh={this._onRefresh}
+                />
+                }
+            >
                         
                     <View style={styles.component}>
                     <Text style={styles.text}>Select Start Date</Text>
 
                     <DatePicker
                         style={{width: 200}}
-                        date={this.state.date}
+                        date={this.state.minCurrentDate}
                         mode="date"
                         placeholder="select date"
                         format="YYYY-MM-DD"
-                        minDate="2016-05-01"
-                        maxDate="2016-06-01"
+                        minDate={ this.state.minDate.getFullYear + '-' + this.state.minDate.getMonth +1 + '-' + this.state.minDate.getDate }
+                        maxDate={ this.state.maxDate.getFullYear + '-' + this.state.maxDate.getMonth +1 + '-' + this.state.maxDate.getDate }
                         confirmBtnText="Confirm"
                         cancelBtnText="Cancel"
                         customStyles={{
@@ -162,31 +221,19 @@ class FiltersScreen extends Component {
                         }
                         // ... You can check the source to find the other keys.
                         }}
-                        onDateChange={(date) => {this.setState({date: date})}}
+                        onDateChange={newValue => this.updateMinCurrentDate(newValue)}
                     />
-                    {/* <DateTimePicker
-                        style={{width: 300}}
-                        value={"2016-05-15"}
-                        mode="date"
-                        placeholder="select date"
-                        format="YYYY-MM-DD"
-                        minDate={"2016-05-15"}
-                        maxDate={"2016-05-15"}
-                        confirmBtnText="Confirm"
-                        cancelBtnText="Cancel"
-                        onDateChange={this.updateMinCurrentDate}
-                    /> */}
                 </View>
                 <View style={styles.component}>
                     <Text style={styles.text}>Select End Date</Text>
                     <DatePicker
                         style={{width: 200}}
-                        date={this.state.date}
+                        date={this.state.maxCurrentDate}
                         mode="date"
                         placeholder="select date"
                         format="YYYY-MM-DD"
-                        minDate="2016-05-01"
-                        maxDate="2016-06-01"
+                        minDate={ this.state.minDate.getFullYear + '-' + this.state.minDate.getMonth +1 + '-' + this.state.minDate.getDate }
+                        maxDate={ this.state.maxDate.getFullYear + '-' + this.state.maxDate.getMonth +1 + '-' + this.state.maxDate.getDate }
                         confirmBtnText="Confirm"
                         cancelBtnText="Cancel"
                         customStyles={{
@@ -201,7 +248,7 @@ class FiltersScreen extends Component {
                         }
                         // ... You can check the source to find the other keys.
                         }}
-                        onDateChange={(date) => {this.setState({date: date})}}
+                        onDateChange={newValue => this.updateMaxCurrentDate(newValue)}
                     />
                 </View>     
                 <View style={styles.componentRow}>
@@ -253,24 +300,38 @@ class FiltersScreen extends Component {
                     <View style={styles.slider}>
 
                         <Slider
-                            value={this.state.currentKg}
+                            value={this.state.lowCurrentKg}
                             onValueChange={this.updateCurrentKg}
                             maximumValue={this.state.maxKg}
                             minimumValue={this.state.minKg}
                             step={5}
                             trackStyle={{ height: 10, backgroundColor: 'transparent' }}
                             thumbStyle={{ height: 20, width: 20, backgroundColor: Colors.primaryColor }}
-                        />
+                        /> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                     </View>
-                    <Text style={styles.text}>Food Kg: {this.state.currentKg}</Text>
+                    <Text style={styles.text}>Food Kg: {this.state.lowCurrentKg}</Text>
                 </View>
 
                 <View style={styles.component}>
                     <View style={styles.slider}>
 
                         <Slider
-                            value={this.state.currentKm}
+                            value={this.state.lowCurrentKm}
                             onValueChange={this.updateCurrentKm}
                             maximumValue={this.state.maxKm}
                             minimumValue={this.state.minKm}
@@ -279,16 +340,24 @@ class FiltersScreen extends Component {
                             thumbStyle={{ height: 20, width: 20, backgroundColor: Colors.primaryColor }}
                         />
                     </View>
-                    <Text style={styles.text}>Transport Km: {this.state.currentKm}</Text>
+                    <Text style={styles.text}>Transport Km: {this.state.lowCurrentKm}</Text>
                 </View>
 
                 <TouchableOpacity    style={styles.SaveButton2} onPress={()=>this.saveFilters()} underlayColor="white">
-                    <View style={styles.SaveButton}>
+                    <View style={styles.Button}>
                         <FontAwesome name="save" size={24} color="black" />
 
                         <Text style={styles.buttonText}> Save </Text>
                     </View>
                 </TouchableOpacity>
+
+                <TouchableOpacity    style={styles.SaveButton2} onPress={()=>this.restoreFilters()} underlayColor="white">
+                    <View style={styles.RestoreButton}>
+                        <FontAwesome name="refresh" size={24} color="black" />
+                        <Text style={styles.buttonText}> Reload </Text>
+                    </View>
+                </TouchableOpacity>
+
         </ScrollView>
         )
 
@@ -337,9 +406,10 @@ const styles = StyleSheet.create({
         height: 30
     },
     SaveButton2:{
+        marginTop:10,
         alignItems: 'center'
     },
-    SaveButton: {
+    Button: {
         
         display: 'flex',
         flexDirection: 'row',
@@ -359,6 +429,27 @@ const styles = StyleSheet.create({
         backgroundColor:    Colors.thirdBlueColor
     },
     
+    RestoreButton: {
+        
+        display: 'flex',
+        flexDirection: 'row',
+        height: 60,
+        borderRadius: 6,
+        alignItems: 'center',
+        width: '85%',
+        backgroundColor: '#2AC062',
+        justifyContent: 'center',
+        shadowColor: '#2AC062',
+        shadowOpacity: 0.5,
+        shadowOffset: { 
+            height: 10, 
+            width: 0 
+        },
+        shadowRadius: 25,
+        backgroundColor: "white"
+    },
+
+
     component: {
         paddingLeft: 25,
         alignSelf: 'stretch',

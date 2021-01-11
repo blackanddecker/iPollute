@@ -58,4 +58,4 @@ def getEnergyObjects(connection, data):
         print(e)
         import traceback
         traceback.print_exc()
-        return {"foodObjects" : [] }, 500
+        return {"foodObjects" : [], "transportObjects" : [], "recycledObjects":  [], "electricityObjects": []}, 500

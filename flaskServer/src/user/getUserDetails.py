@@ -24,4 +24,4 @@ def getUserDetails(connection, data):
         print(e)
         import traceback
         traceback.print_exc()
-        return {"userDetails":{}, "success":False}, 500
+        return {"userDetails":{'energyTotal':0}, "success":False}, 500

@@ -21,6 +21,23 @@ class LoginScreen extends Component {
     passwordInputRef: ''
   }
 
+  clearAppData = async function() {
+    try {
+        const keys = await AsyncStorage.getAllKeys();
+        await AsyncStorage.multiRemove(keys);
+    } catch (error) {
+        console.error('Error clearing app data.');
+    }
+}
+
+  componentDidMount = () => {
+    // this.clearAppData()
+  }
+
+  // componentDidUpdate = () => {
+  //   this.clearAppData()
+  // }
+
   handleEmailChange = (email: string) => {
     this.setState({ email: email });
   };
@@ -67,17 +84,23 @@ class LoginScreen extends Component {
     .then((responseJson) => {
         console.log(responseJson);     
         if (responseJson['success'] == true){
-          AsyncStorage.setItem('userId', responseJson['user']['id'].toString());
-          console.log("Login: Set userId:", responseJson['user']['id']);
-          this.props.navigation.navigate({
-            routeName:'Categories', 
-            params:{
-              userId: responseJson['user']['id'],
-              email: responseJson['user']['email'],
-              username: responseJson['user']['username'],
-              fullname: responseJson['user']['fullname']
-            }
+
+
+          AsyncStorage.setItem('userId', responseJson['user']['id'].toString()).then((value) => {
+
+            console.log("Login: Set userId:", responseJson['user']['id']);
+            this.props.navigation.navigate({
+              routeName:'Categories', 
+              params:{
+                userId: responseJson['user']['id'],
+                email: responseJson['user']['email'],
+                username: responseJson['user']['username'],
+                fullname: responseJson['user']['fullname']
+              }
+            });
+
           });
+
 
           
         }
