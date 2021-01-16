@@ -1,6 +1,13 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+MyEnergy/package-lock.json
 package-lock.json
+flaskServer/__pycache__/
+flaskServer/src/__pycache__/
+flaskServer/src/user/__pycache__/
+*/__pycache__/*
+.vscode/
+*__pycache__/*
 # dependencies
 /node_modules
 /.pnp
