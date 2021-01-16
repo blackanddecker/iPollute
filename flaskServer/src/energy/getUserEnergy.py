@@ -41,10 +41,12 @@ def getUserEnergy(connection, data):
             if energy['totalRecycleCost'] is None or appliedFilters['isFood'] == False:
                 energy['totalRecycleCost'] = 0.0
                        
-            energy['totalTransportCost'] = round(energy['totalTransportCost'],1)
-            energy['totalFoodCost'] = round(energy['totalFoodCost'],1)
-            energy['totalElectricityCost'] = round(energy['totalElectricityCost'],1)
-            energy['totalRecycleCost'] = round(energy['totalRecycleCost'],1)
+            energy['totalUserEnergy'] = round(energy['totalUserEnergy'],1)
+            
+            energy['totalTransportCost'] = round(energy['totalTransportCost'] / energy['totalUserEnergy'] ,1)
+            energy['totalFoodCost'] = round(energy['totalFoodCost']/ energy['totalUserEnergy'],1)
+            energy['totalElectricityCost'] = round(energy['totalElectricityCost']/ energy['totalUserEnergy'],1)
+            energy['totalRecycleCost'] = round(energy['totalRecycleCost']/ energy['totalUserEnergy'],1)
 
             print(energy)
             

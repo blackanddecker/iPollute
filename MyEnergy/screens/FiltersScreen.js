@@ -24,8 +24,8 @@ class FiltersScreen extends Component {
     state = {
         userId: -1,
         isLoading: true,
-        minDate : '',
-        maxDate: '',
+        minDate : new Date(),
+        maxDate: new Date(),
         maxKm: 0,
         minKm: 0,
         minKg: 0,   
@@ -36,8 +36,8 @@ class FiltersScreen extends Component {
         lowCurrentKm:0,
         highCurrentKg:0,
         highCurrentKm:0,
-        maxCurrentDate: '',
-        minCurrentDate: '',
+        maxCurrentDate: new Date(),
+        minCurrentDate: new Date(),
         isTransport: true, 
         isFood: true,
         isRecycle: true,
@@ -72,11 +72,18 @@ class FiltersScreen extends Component {
         })
         .then((response) => response.json())
         .then((responseJson) => {
+
+            var minD = new Date(responseJson['filters']['minDate'])
+            var minD2 = minD.getFullYear() + '-' + minD.getMonth() +1 + '-' + minD.getDate()
+
+            var maxD = new Date(responseJson['filters']['maxDate'])
+            var maxD2 = maxD.getFullYear() + '-' + maxD.getMonth() +1 + '-' + maxD.getDate()
+
             this.setState({
-                minDate : new Date(responseJson['filters']['minDate']),
-                maxDate: new Date(responseJson['filters']['maxDate']),
-                maxCurrentDate : new Date(responseJson['filters']['maxDate']),
-                minCurrentDate : new Date(responseJson['filters']['minDate']),
+                minDate : minD2,
+                minCurrentDate : minD2,
+                maxDate: maxD2,
+                maxCurrentDate : maxD2,
                 maxKm: responseJson['filters']['maxKm'],
                 minKm: responseJson['filters']['minKm'],
                 minKg: responseJson['filters']['minKg'], 
@@ -131,8 +138,8 @@ class FiltersScreen extends Component {
             highKm: this.state.highCurrenKm,
             lowKg: this.state.lowCurrentKg,
             highKg: this.state.highCurrenKg,
-            minCurrentDate: new Date(this.state.minCurrentDate), 
-            maxCurrentDate: new Date(this.state.maxCurrentDate), 
+            minCurrentDate: this.state.minCurrentDate, 
+            maxCurrentDate: this.state.maxCurrentDate, 
 
         };
         console.log("appliedFilters",appliedFilters)
@@ -155,11 +162,17 @@ class FiltersScreen extends Component {
     }
 
     updateMinCurrentDate = (minCurDate) => {
-        this.setState({ minCurrentDate: new Date(minCurDate) })
+        var curDate = minCurDate.substring(0, 10);
+        console.log("Update minCurDate: ", minCurDate)
+        this.setState({ minCurrentDate: minCurDate })
     }
-    updateMinCurrentDate = (maxCurDate) => {
-        this.setState({ maxCurrentDate: new Date(maxCurDate) })
+
+    updateMaxCurrentDate = (maxCurrentDate) => {
+        console.log("Update maxCurrentDate: ", maxCurrentDate)
+        this.setState({ maxCurrentDate: maxCurrentDate })
     }
+
+
     setIsTransport = (isTransport) => {
         this.setState({ isTransport: isTransport })
     }
@@ -171,9 +184,6 @@ class FiltersScreen extends Component {
     }
     setIsFood = (isFood) => {
         this.setState({ isFood: isFood })
-    }
-    updateMaxCurrentDate = (maxCurrentDate) => {
-        this.setState({ maxCurrentDate: maxCurrentDate })
     }
     updateCurrentKm = (low) => {
         this.setState({ lowCurrentKm: low })
@@ -205,8 +215,8 @@ class FiltersScreen extends Component {
                         mode="date"
                         placeholder="select date"
                         format="YYYY-MM-DD"
-                        minDate={ this.state.minDate.getFullYear + '-' + this.state.minDate.getMonth +1 + '-' + this.state.minDate.getDate }
-                        maxDate={ this.state.maxDate.getFullYear + '-' + this.state.maxDate.getMonth +1 + '-' + this.state.maxDate.getDate }
+                        minDate={ this.state.minDate}
+                        maxDate={ this.state.maxDate}
                         confirmBtnText="Confirm"
                         cancelBtnText="Cancel"
                         customStyles={{
@@ -232,8 +242,8 @@ class FiltersScreen extends Component {
                         mode="date"
                         placeholder="select date"
                         format="YYYY-MM-DD"
-                        minDate={ this.state.minDate.getFullYear + '-' + this.state.minDate.getMonth +1 + '-' + this.state.minDate.getDate }
-                        maxDate={ this.state.maxDate.getFullYear + '-' + this.state.maxDate.getMonth +1 + '-' + this.state.maxDate.getDate }
+                        minDate={ this.state.minDate}
+                        maxDate={ this.state.maxDate}
                         confirmBtnText="Confirm"
                         cancelBtnText="Cancel"
                         customStyles={{
@@ -354,7 +364,7 @@ class FiltersScreen extends Component {
                 <TouchableOpacity    style={styles.SaveButton2} onPress={()=>this.restoreFilters()} underlayColor="white">
                     <View style={styles.RestoreButton}>
                         <FontAwesome name="refresh" size={24} color="black" />
-                        <Text style={styles.buttonText}> Reload </Text>
+                        <Text style={styles.buttonText}> Reset Filters </Text>
                     </View>
                 </TouchableOpacity>
 
@@ -391,20 +401,7 @@ FiltersScreen.navigationOptions = navData => {
                         }}
                     />
             </HeaderButtons>
-        ),
-        headerRight: (
-
-            <HeaderButtons HeaderButtonComponent={HeaderButton}>
-                <Icon
-                    name="refresh"
-                    size={30}
-                    color='white'
-                        onPress={() => {
-                            this.restoreFilters();
-                        }}
-                    />
-            </HeaderButtons>
-        )       
+        )    
     };
 };
 

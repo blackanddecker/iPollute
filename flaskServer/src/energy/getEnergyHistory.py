@@ -39,8 +39,8 @@ def getEnergyHistory(connection, data):
             cursor.execute(sql)
             transportHistory = cursor.fetchall()
             
-            appliedFilters['minCurrentDate'] = datetime.datetime.strptime(appliedFilters['minCurrentDate'], '%Y-%m-%dT%H:%M:%S.%fZ')
-            appliedFilters['maxCurrentDate'] = datetime.datetime.strptime(appliedFilters['maxCurrentDate'], '%Y-%m-%dT%H:%M:%S.%fZ')
+            appliedFilters['minCurrentDate'] = datetime.datetime.strptime(appliedFilters['minCurrentDate'], '%Y-%m-%d')
+            appliedFilters['maxCurrentDate'] = datetime.datetime.strptime(appliedFilters['maxCurrentDate'], '%Y-%m-%d')
 
             if appliedFilters['isTransport'] == True:
                 for i in range(len(transportHistory)): 

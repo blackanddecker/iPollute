@@ -70,7 +70,10 @@ class CategoriesScreen extends Component {
         isRecycleModalVisible:false,
         isElectricityModalVisible:false,
         refreshing: false,
-        appliedFilters:""
+        appliedFilters:"",
+        favTransport: '', 
+        favFood: '',
+        isLoading: true
     }
     
     _onRefresh = () => {
@@ -157,6 +160,35 @@ class CategoriesScreen extends Component {
             alert("User Energy didnt fetch");
             
         });
+
+
+
+        fetch(BaseUrl+'getUserDetails', {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                userId: this.state.userId
+            }),
+            method: 'POST'
+        })
+        .then((response) => response.json())
+        .then((responseJson) => {
+                console.log(responseJson);
+                this.setState({
+                    // userEnergy: responseJson['userDetails']['energyTotal'],
+                    favFood: responseJson['userDetails']['favFood'],
+                    favTransport: responseJson['userDetails']['favTransport'],
+                    isLoading: !this.state.isLoading })
+                console.log(this.state);
+                
+        })
+        .catch((error) => {
+             console.error(error);
+             alert("User data didnt fetch");
+            });
+
         
     }
     
@@ -316,28 +348,28 @@ class CategoriesScreen extends Component {
         const pieData = [
             {
               name: 'Transport',
-              population: (this.state.totalTransportCost / this.state.totalUserEnergy),
+              population: (this.state.totalTransportCost ),
               color: 'orange',
               legendFontColor: '#7F7F7F',
               legendFontSize: 15,
             },
             {
               name: 'Food',
-              population: (this.state.totalFoodCost/ this.state.totalUserEnergy),
+              population: (this.state.totalFoodCost),
               color: 'red',
               legendFontColor: '#7F7F7F',
               legendFontSize: 15,
             },
             {
               name: 'Electricity',
-              population: (this.state.totalElectricityCost/ this.state.totalUserEnergy),
+              population: (this.state.totalElectricityCost),
               color: 'yellow',
               legendFontColor: '#7F7F7F',
               legendFontSize: 15,
             },
             {
               name: 'Recycle',
-              population: (this.state.totalRecycleCost/ this.state.totalUserEnergy),            
+              population: (this.state.totalRecycleCost),            
               color: 'blue',
               legendFontColor: '#7F7F7F',
               legendFontSize: 15,
@@ -357,6 +389,12 @@ class CategoriesScreen extends Component {
                     />
                     }
                 >
+                    <View>
+                        <Text> Total: Kg CO2 </Text>
+                        <Text> Your limit is: Kg CO2 </Text>
+
+                    </View>
+
                     <PieChart
                         data={pieData}
                         width={Dimensions.get('window').width}
@@ -423,8 +461,10 @@ class CategoriesScreen extends Component {
                                         <Text></Text>
                                         <Text style = {styles.text}>Choose Transportation: </Text>
                                         <View style={styles.picker}>
-                                            <Picker selectedValue = {this.state.transportStr} 
+                                            <Picker 
+                                                selectedValue = {this.state.transportStr} 
                                                 onValueChange = {this.updateTransport} 
+                                                prompt='Choose Transport'
                                                 >
                                                     {this.state.transportData.map((transports, id) => {
                                                         return <Picker.Item 
@@ -476,6 +516,7 @@ class CategoriesScreen extends Component {
                                         <View style={styles.picker}>
                                             <Picker selectedValue = {this.state.foodStr} 
                                                     onValueChange = {this.updateFood} 
+                                                    prompt='Choose Food'
                                                 >
                                                         {this.state.foodData.map((foods, id) => {
                                                             return <Picker.Item 
