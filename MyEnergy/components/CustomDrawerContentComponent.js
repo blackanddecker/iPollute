@@ -3,6 +3,7 @@ import React from 'react'
 import { Text, ScrollView, StyleSheet, View, Image} from 'react-native';
 import { SafeAreaView } from 'react-navigation';
 import { DrawerNavigatorItems } from 'react-navigation-drawer';
+import { Avatar } from 'react-native-elements';
 
 import logoImage from "../assets/Smoke.png";
 
@@ -10,7 +11,13 @@ const CustomDrawerContentComponent = (props) => {
   return (
       <SafeAreaView style={styles.container}>   
       <View>
-        <Image source={logoImage} style={styles.profileImg}/>
+
+        <Avatar
+          rounded
+          source={logoImage}
+          style={styles.profileImg}
+        />
+
         <View style={styles.sidebarDivider}></View>
 
             <DrawerNavigatorItems {...props} />

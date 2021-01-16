@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Image, KeyboardAvoidingView, StyleSheet, View, TouchableOpacity, Text } from "react-native";
+import { Image, KeyboardAvoidingView, StyleSheet, View, TouchableOpacity, Text, TextInput } from "react-native";
 import Button from "../components/Button";
 import FormTextInput from "../components/FormTextInput";
 import imageLogo from "../assets/logo2.jpeg";
@@ -10,6 +10,7 @@ import MainNavigator from '../navigation/MealsNavigator';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import HeaderButton from '../components/HeaderButton';
 import AsyncStorage from '@react-native-community/async-storage'
+import Modal from 'react-native-modal';
 
 class LoginScreen extends Component {
   state= {
@@ -18,7 +19,9 @@ class LoginScreen extends Component {
     emailTouched: false,
     passwordTouched: false,
     userId:-1,
-    passwordInputRef: ''
+    passwordInputRef: '',
+    forgotPasswordEmail: '',
+    isForgotPasswordVisible: false
   }
 
   clearAppData = async function() {
@@ -52,6 +55,12 @@ class LoginScreen extends Component {
     }
   };
 
+  forgotPasswordEmail = (forgotPasswordEmail) => {
+    this.setState({ forgotPasswordEmail: forgotPasswordEmail })
+  }
+  openForgotPasswordModal = () =>{this.setState({isForgotPasswordVisible:true})}
+  toggleForgotPasswordModal = () =>{this.setState({isForgotPasswordVisible:!this.state.isForgotPasswordVisible})}
+  closeForgotPasswordModal = () =>{this.setState({isForgotPasswordVisible:false})}
   // ...and we update them in the input onBlur callback
   handleEmailBlur = () => {
     this.setState({ emailTouched: true });
@@ -65,6 +74,34 @@ class LoginScreen extends Component {
     this.props.navigation.navigate({routeName:'SignUp'})
   }
 
+
+  sendForgotPassword = () => {
+    fetch(BaseUrl+'forgotPassword', {
+      headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: this.state.forgotPasswordEmail
+      }),
+      method: 'POST'
+      })
+      .then((response) => response.json())
+      .then((responseJson) => {
+          console.log(responseJson);     
+          if (responseJson['success'] == true){
+            alert("Email Send");
+          }
+          else{
+            alert("Wrong Email");
+          }
+  
+      })
+      .catch((error) => {
+          console.error(error);
+          alert("Wrong Email");
+      });
+  }
 
   handleLoginPress = () => {
     
@@ -173,10 +210,41 @@ class LoginScreen extends Component {
             label={"Create New Account"}
             onPress={this.goToSignUp}
           />
-          <TouchableOpacity style={styles.text} onPress={()=>this.forgotPassword()}>
+          <TouchableOpacity style={styles.text} onPress={()=>this.openForgotPasswordModal()}>
               <Text style={styles.text} >Forgot Password</Text>
           </TouchableOpacity>
         </View>
+
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={this.state.isForgotPasswordVisible} 
+          >
+              <View style={styles.centeredView}>
+                  <View style={styles.modalView}>
+                      <Text style = {styles.title}>Give your E-mail </Text>
+                          
+                      <TextInput style = {styles.input}
+                          underlineColorAndroid = "transparent"
+                          placeholder = {"Email"}
+                          autoCapitalize = "none"
+                          defaultValue={this.state.forgotPasswordEmail}
+                          onChangeText = {this.forgotPasswordEmail}/>         
+              
+              
+                      <View style={{flexDirection:'row', marginTop:30}}>
+                          <TouchableOpacity style={{backgroundColor:'red',width:'50%'}} onPress={()=>this.closeForgotPasswordModal()}>
+                              <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity style={{backgroundColor:'green',width:'50%'}} onPress={() =>this.sendForgotPassword()}>
+                              <Text style={{color:'white',textAlign:'center',padding:10}}>Ok</Text>
+                          </TouchableOpacity>
+                      </View>
+                  </View>
+
+              </View>
+          </Modal>
       </View>
 
     );
@@ -226,7 +294,21 @@ const styles = StyleSheet.create({
     textAlign:'center',
     padding:10, 
     color:'blue'
-  }
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5
+  },
 });
 
 export default LoginScreen;

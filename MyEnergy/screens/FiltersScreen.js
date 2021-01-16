@@ -391,7 +391,20 @@ FiltersScreen.navigationOptions = navData => {
                         }}
                     />
             </HeaderButtons>
-        )
+        ),
+        headerRight: (
+
+            <HeaderButtons HeaderButtonComponent={HeaderButton}>
+                <Icon
+                    name="refresh"
+                    size={30}
+                    color='white'
+                        onPress={() => {
+                            this.restoreFilters();
+                        }}
+                    />
+            </HeaderButtons>
+        )       
     };
 };
 

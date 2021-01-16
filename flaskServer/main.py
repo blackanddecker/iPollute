@@ -1,9 +1,10 @@
 from flask import Flask, request
 from flask_cors import CORS, cross_origin 
+from flask_bcrypt import Bcrypt 
+from flask_mail import Mail, Message 
 import pymysql.cursors
 import yaml
 import jwt
-from flask_bcrypt import Bcrypt 
 
 from src.transports import getTransportObjects
 from src.foods import getFoodObjects
@@ -27,19 +28,33 @@ from src import getFilterOptions
 
 from src.user import login 
 from src.user import signin 
+from src.user import forgotPassword
 
-db = yaml.safe_load(open('configs/local.yml'))
+
+configs = yaml.safe_load(open('configs/local.yml'))
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
-app.config['SECRET_KEY'] = db['SECRET_KEY']
+app.config['SECRET_KEY'] = configs['SECRET_KEY']
 
 cors = CORS(app, resorces={r'/*': {"origins": '*'}})
 app.config['CORS_HEADER'] = 'Content-Type'
-app.config['MYSQL_HOST'] = db['DB_HOST']
-app.config['MYSQL_USER'] = db['DB_USER']
-app.config['MYSQL_PASSWORD'] = db['DB_PASSWORD']
-app.config['MYSQL_DB'] = db['DB']
+
+#database configs
+app.config['MYSQL_HOST'] = configs['DB_HOST']
+app.config['MYSQL_USER'] = configs['DB_USER']
+app.config['MYSQL_PASSWORD'] = configs['DB_PASSWORD']
+app.config['MYSQL_DB'] = configs['DB']
+
+#mail configs
+app.config['MAIL_SERVER']="smtp.gmail.com"
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = configs['MAIL_USER']
+app.config['MAIL_PASSWORD'] = configs['MAIL_PASS']
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+
+mail = Mail(app)
 
 
 def getConnection():
@@ -59,10 +74,26 @@ def getConnection():
     return connection
 
 
+@app.errorhandler(500)
+def server_error(e):
+	return {'error': 'An internal error occurred'}, 500
+
+@app.errorhandler(503)
+def service_unavailable(e):
+	return {'error': 'Service Unavailable'}, 503
+
+@app.errorhandler(404)
+def service_unavailable(e):
+	return {'error': 'Invalid Page'}, 404
+
+@app.errorhandler(400)
+def service_unavailable(e):
+	return {'error': 'Could not process the form!'}, 400
+
+
 @app.route('/')
 def _hello_world():
     return 'Hello, World!'
-
 
 @app.route('/signup', methods=['POST'])
 def _signin():
@@ -72,6 +103,11 @@ def _signin():
 @app.route('/login' , methods=['POST'])
 def _login():
     response, status = login.login(connection = getConnection(), data = request.get_json(), key = app.config['SECRET_KEY'], bcrypt = bcrypt)
+    return response, status
+
+@app.route('/forgotPassword' , methods=['POST'])
+def _forgotPassword():
+    response, status = forgotPassword.forgotPassword(connection = getConnection(), data = request.get_json(), mail =  mail)
     return response, status
 
 @app.route('/updateUser', methods=['POST'])
