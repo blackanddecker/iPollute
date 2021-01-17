@@ -20,12 +20,25 @@ def getEnergyHistory(connection, data):
         }
 
         if 'appliedFilters' in data:
-            if str(data['appliedFilters']) != 'None':
+            if str(data['appliedFilters']) == 'None':
+                appliedFilters['lowKm'] = 0 
+                appliedFilters['lowKg'] = 0 
+                appliedFilters['minCurrentDate'] = "2019-01-01"
+                appliedFilters['maxCurrentDate'] = "2031-01-01"
+            
+            elif str(data['appliedFilters']) != 'None':
                 appliedFilters = data['appliedFilters']
                 if appliedFilters['lowKm'] is None:
                     appliedFilters['lowKm'] = 0 
                 if appliedFilters['lowKg'] is None:
                     appliedFilters['lowKg'] = 0 
+                if appliedFilters['minCurrentDate'] is None:
+                    appliedFilters['minCurrentDate'] = datetime.timedelta(years=10)
+                if appliedFilters['maxCurrentDate'] is None:
+                    appliedFilters['maxCurrentDate'] = datetime.datetime.now() 
+
+
+
 
         history = []
         recycledHistory = []
