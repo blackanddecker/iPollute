@@ -153,6 +153,9 @@ class HistoryScreen extends Component {
         if (totalCo2Reduced > 0 ){
           var sinceLastWeekIcon = <FontAwesome name="chevron-up" size={25} color={Colors.primaryColor} />  
         }
+        else if (totalCo2Reduced == 0 ){
+          var sinceLastWeekIcon = <FontAwesome name="minus" size={25} color={"black"} />  
+        }
         else{
           var sinceLastWeekIcon = <FontAwesome name="chevron-down" size={25} color={Colors.red} />  
         }

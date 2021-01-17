@@ -20,11 +20,11 @@ def getUserRate(connection, data):
         if len(rate)>0:
             return {"ratings":rate[-1], "success":True}, 200
         else:
-            return {"ratings":{}, "success":False}, 200
+            return {"ratings":{"star": 3}, "success":False}, 200
 
     
     except Exception as e :
         print(e)
         import traceback
         traceback.print_exc()
-        return {"ratings":{}, "success":False}, 500
+        return {"ratings":{"star": 3}, "success":False}, 500

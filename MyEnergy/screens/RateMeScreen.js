@@ -17,7 +17,7 @@ class RateMeScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            starCount: 3.5,
+            starCount: 3,
             comment: '',
             userId: -1, 
             comment: '',
@@ -59,7 +59,6 @@ class RateMeScreen extends Component {
         .then((responseJson) => {
                 console.log(responseJson);
                 this.setState({
-                    userId: responseJson['ratings']['id_user'],
                     starCount: responseJson['ratings']['star']
                 })
                 console.log(this.state);
