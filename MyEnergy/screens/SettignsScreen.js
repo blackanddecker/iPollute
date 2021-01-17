@@ -389,10 +389,10 @@ class SettingsScreen extends Component {
                                         />
                             
                                     <View style={{flexDirection:'row', marginTop:30}}>
-                                        <TouchableOpacity style={{backgroundColor:'red',width:'50%'}} onPress={()=>this.closePasswordModal()}>
+                                        <TouchableOpacity style={{backgroundColor:Colors.red,width:'50%'}} onPress={()=>this.closePasswordModal()}>
                                             <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={{backgroundColor:'green',width:'50%'}} onPress={()=>this.updateSettings()}>
+                                        <TouchableOpacity style={{backgroundColor:Colors.primaryColor,width:'50%'}} onPress={()=>this.updateSettings()}>
                                             <Text style={{color:'white',textAlign:'center',padding:10}}>Ok</Text>
                                         </TouchableOpacity>
                                     </View>
@@ -434,10 +434,10 @@ class SettingsScreen extends Component {
                             
                             
                                     <View style={{flexDirection:'row', marginTop:30}}>
-                                        <TouchableOpacity style={{backgroundColor:'red',width:'50%'}} onPress={()=>this.closeUsernameModal()}>
+                                        <TouchableOpacity style={{backgroundColor:Colors.red,width:'50%'}} onPress={()=>this.closeUsernameModal()}>
                                             <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={{backgroundColor:'green',width:'50%'}} onPress={()=>this.updateSettings()}>
+                                        <TouchableOpacity style={{backgroundColor:Colors.primaryColor,width:'50%'}} onPress={()=>this.updateSettings()}>
                                             <Text style={{color:'white',textAlign:'center',padding:10}}>Ok</Text>
                                         </TouchableOpacity>
                                     </View>
@@ -466,10 +466,10 @@ class SettingsScreen extends Component {
                             
                             
                                     <View style={{flexDirection:'row',}}>
-                                        <TouchableOpacity style={{backgroundColor:'red',width:'50%'}} onPress={()=>this.closeEmailModal()}>
+                                        <TouchableOpacity style={{backgroundColor:Colors.red,width:'50%'}} onPress={()=>this.closeEmailModal()}>
                                             <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={{backgroundColor:'green',width:'50%'}} onPress={()=>this.updateSettings()}>
+                                        <TouchableOpacity style={{backgroundColor:Colors.primaryColor,width:'50%'}} onPress={()=>this.updateSettings()}>
                                             <Text style={{color:'white',textAlign:'center',padding:10}}>Ok</Text>
                                         </TouchableOpacity>
                                     </View>
@@ -505,10 +505,10 @@ class SettingsScreen extends Component {
                             
                             
                                     <View style={{flexDirection:'row', marginTop:30}}>
-                                        <TouchableOpacity style={{backgroundColor:'red',width:'50%'}} onPress={()=>this.closeFavFoodModal()}>
+                                        <TouchableOpacity style={{backgroundColor:Colors.red,width:'50%'}} onPress={()=>this.closeFavFoodModal()}>
                                             <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={{backgroundColor:'green',width:'50%'}} onPress={()=>this.updateSettings()}>
+                                        <TouchableOpacity style={{backgroundColor:Colors.primaryColor,width:'50%'}} onPress={()=>this.updateSettings()}>
                                             <Text style={{color:'white',textAlign:'center',padding:10}}>Ok</Text>
                                         </TouchableOpacity>
                                     </View>
@@ -544,10 +544,10 @@ class SettingsScreen extends Component {
                             
                             
                                     <View style={{flexDirection:'row', marginTop:30}}>
-                                        <TouchableOpacity style={{backgroundColor:'red',width:'50%'}} onPress={()=>this.closeFavTransportModal()}>
+                                        <TouchableOpacity style={{backgroundColor:Colors.red,width:'50%'}} onPress={()=>this.closeFavTransportModal()}>
                                             <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={{backgroundColor:'green',width:'50%'}} onPress={()=>this.updateSettings()}>
+                                        <TouchableOpacity style={{backgroundColor:Colors.primaryColor,width:'50%'}} onPress={()=>this.updateSettings()}>
                                             <Text style={{color:'white',textAlign:'center',padding:10}}>Ok</Text>
                                         </TouchableOpacity>
                                     </View>
@@ -577,10 +577,10 @@ class SettingsScreen extends Component {
                             
                             
                                     <View style={{flexDirection:'row',}}>
-                                        <TouchableOpacity style={{backgroundColor:'red',width:'50%'}} onPress={()=>this.closeEnergyModal()}>
+                                        <TouchableOpacity style={{backgroundColor:Colors.red,width:'50%'}} onPress={()=>this.closeEnergyModal()}>
                                             <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={{backgroundColor:'green',width:'50%'}} onPress={()=>this.updateSettings()}>
+                                        <TouchableOpacity style={{backgroundColor:Colors.primaryColor,width:'50%'}} onPress={()=>this.updateSettings()}>
                                             <Text style={{color:'white',textAlign:'center',padding:10}}>Ok</Text>
                                         </TouchableOpacity>
                                     </View>
@@ -602,10 +602,10 @@ class SettingsScreen extends Component {
                                              
                             
                                     <View style={{flexDirection:'row',}}>
-                                        <TouchableOpacity style={{backgroundColor:'red',width:'50%'}} onPress={()=>this.closeDeleteAccountModal()}>
+                                        <TouchableOpacity style={{backgroundColor:Colors.red,width:'50%'}} onPress={()=>this.closeDeleteAccountModal()}>
                                             <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={{backgroundColor:'green',width:'50%'}} onPress={()=>this.deleteUser()}>
+                                        <TouchableOpacity style={{backgroundColor:Colors.primaryColor,width:'50%'}} onPress={()=>this.deleteUser()}>
                                             <Text style={{color:'white',textAlign:'center',padding:10}}>Ok</Text>
                                         </TouchableOpacity>
                                     </View>

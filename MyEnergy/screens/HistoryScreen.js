@@ -150,6 +150,12 @@ class HistoryScreen extends Component {
       // }
 
       if(this.state.isLoading == false) {
+        if (totalCo2Reduced > 0 ){
+          var sinceLastWeekIcon = <FontAwesome name="chevron-up" size={25} color={Colors.primaryColor} />  
+        }
+        else{
+          var sinceLastWeekIcon = <FontAwesome name="chevron-down" size={25} color={Colors.red} />  
+        }
         return (
           <ScrollView
               refreshControl={
@@ -161,23 +167,25 @@ class HistoryScreen extends Component {
           >
               <View style= {styles.totals}>
                 <View style= {styles.Eachtotal}>
-                  <Text style={styles.text}> Total </Text>
-                  <Text style={styles.text}>{this.state.totalCo2}Kg</Text>
-                  <View style= {styles.Eachtotal}>
-                    <FontAwesome name="smog" size={25} color={Colors.primaryColor} />
-                  </View>
-                </View>
-                <View style= {styles.Eachtotal}>
-                  <Text style={styles.text}> Recycled </Text>
-                  <Text style={styles.text}>{this.state.totalRecycledCo2}Kg</Text>
-                  <View style= {styles.Eachtotal}>
+                  <FontAwesome name="cloud" size={25} color={Colors.primaryColor} />
+                  <Text style={styles.text}> Emissions</Text>
+                  <Text style={styles.text}>{this.state.totalCo2}</Text>
+                  <Text style={styles.text}>(kg CO2)</Text>
 
-                    <FontAwesome name="recycle" size={24} color={Colors.primaryColor} />
-                  </View>
                 </View>
+                  <View style= {styles.Eachtotal}>
+                      <FontAwesome name="recycle" size={25} color={Colors.primaryColor} />
+                      <Text style={styles.text}> Recycled</Text>
+                      <Text style={styles.text}> {this.state.totalRecycledCo2}</Text>
+                      <Text style={styles.text}>(kg CO2)</Text>
+
+                  </View>
                 <View style= {styles.Eachtotal}>
+                  {sinceLastWeekIcon} 
                   <Text style={styles.text}> Since last week </Text>
-                  <Text style={styles.text}> {totalCo2Reduced} %</Text>
+                  <Text style={styles.text}> {totalCo2Reduced}</Text>
+                  <Text style={styles.text}>(%)</Text>
+
                   {/* <MaterialCommunityIcons name="percent" size={24} color={Colors.primaryColor} /> */}
                 </View>
               </View>
@@ -229,20 +237,18 @@ const styles = StyleSheet.create({
 
       flex:1,
       marginTop: 15,
-      position: 'relative',
-      backgroundColor: '#ffffff'
-  },
+      position: 'relative'
+    },
   text: {
     textAlign: 'center',
     color: 'black',
-    fontWeight: 'bold',
     textAlign: "center",
-    marginTop:5 ,
+    marginTop:2 ,
     alignSelf: "center"
   },
   Eachtotal:{
     flex:1,
-
+    alignItems: 'center',
     textAlign: 'center',
     alignSelf: "center",
     justifyContent: "center"
@@ -252,9 +258,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'white'
   },
   totals:{
-    marginBottom: 15,
+    marginTop:10,
+    marginBottom: 5,
     textAlign: 'center',
-    // backgroundColor: '#6ED4C8',
     paddingBottom: 15,
     flexDirection: 'row',
     alignItems: 'stretch',

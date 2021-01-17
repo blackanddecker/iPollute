@@ -135,7 +135,7 @@ class RateMeScreen extends Component {
         return (
             <View style={styles.container}>
             
-                <Text style={styles.instructions}> Rate Me</Text>
+                <Text style={styles.instructions}> Rate Us</Text>
                 <Text style={styles.instructions}>
                 {`${this.state.starCount} of stars is displayed`}
                 </Text>
@@ -170,7 +170,7 @@ class RateMeScreen extends Component {
 
 RateMeScreen.navigationOptions = navData => {
     return {
-        headerTitle: 'Rate Me',
+        headerTitle: 'Rate Us',
         headerLeft: (
             <HeaderButtons HeaderButtonComponent={HeaderButton}>
                 <Icon

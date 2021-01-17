@@ -334,7 +334,7 @@ class FiltersScreen extends Component {
 
 
                     </View>
-                    <Text style={styles.text}>Food Kg: {this.state.lowCurrentKg}</Text>
+                    <Text style={styles.text}>Food (kg): {this.state.lowCurrentKg}</Text>
                 </View>
 
                 <View style={styles.component}>
@@ -350,23 +350,26 @@ class FiltersScreen extends Component {
                             thumbStyle={{ height: 20, width: 20, backgroundColor: Colors.primaryColor }}
                         />
                     </View>
-                    <Text style={styles.text}>Transport Km: {this.state.lowCurrentKm}</Text>
+                    <Text style={styles.text}>Transport (km): {this.state.lowCurrentKm}</Text>
                 </View>
 
-                <TouchableOpacity    style={styles.SaveButton2} onPress={()=>this.saveFilters()} underlayColor="white">
-                    <View style={styles.Button}>
-                        <FontAwesome name="save" size={24} color="black" />
+                <View>
+                    <TouchableOpacity    style={styles.SaveButton2} onPress={()=>this.saveFilters()} underlayColor="white">
+                        <View style={styles.Button}>
+                            <FontAwesome name="save" size={24} color="black" />
 
-                        <Text style={styles.buttonText}> Save </Text>
-                    </View>
-                </TouchableOpacity>
+                            <Text style={styles.buttonText}> Save </Text>
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity    style={styles.SaveButton2} onPress={()=>this.restoreFilters()} underlayColor="white">
+                        <View style={styles.RestoreButton}>
+                            <FontAwesome name="refresh" size={24} color="black" />
+                            <Text style={styles.RestorebuttonText}> Reset Filters </Text>
+                        </View>
+                    </TouchableOpacity>
 
-                <TouchableOpacity    style={styles.SaveButton2} onPress={()=>this.restoreFilters()} underlayColor="white">
-                    <View style={styles.RestoreButton}>
-                        <FontAwesome name="refresh" size={24} color="black" />
-                        <Text style={styles.buttonText}> Reset Filters </Text>
-                    </View>
-                </TouchableOpacity>
+
+                </View>
 
         </ScrollView>
         )
@@ -416,19 +419,17 @@ const styles = StyleSheet.create({
         height: 30
     },
     SaveButton2:{
-        marginTop:10,
         alignItems: 'center'
     },
     Button: {
-        
         display: 'flex',
         flexDirection: 'row',
         height: 60,
         borderRadius: 6,
         alignItems: 'center',
-        width: '85%',
-        backgroundColor: '#2AC062',
-        justifyContent: 'center',
+        justifyContent: "center",
+        width: '100%',
+        paddingLeft:20,
         shadowColor: '#2AC062',
         shadowOpacity: 0.5,
         shadowOffset: { 
@@ -436,19 +437,19 @@ const styles = StyleSheet.create({
             width: 0 
         },
         shadowRadius: 25,
-        backgroundColor:    Colors.thirdBlueColor
+        backgroundColor:    Colors.primaryColor
     },
     
     RestoreButton: {
-        
         display: 'flex',
         flexDirection: 'row',
         height: 60,
         borderRadius: 6,
         alignItems: 'center',
-        width: '85%',
-        backgroundColor: '#2AC062',
-        justifyContent: 'center',
+        justifyContent: "center",
+
+        width: '100%',
+        paddingLeft:20,
         shadowColor: '#2AC062',
         shadowOpacity: 0.5,
         shadowOffset: { 
@@ -456,7 +457,7 @@ const styles = StyleSheet.create({
             width: 0 
         },
         shadowRadius: 25,
-        backgroundColor: "white"
+        backgroundColor:    "white"
     },
 
 
@@ -466,7 +467,7 @@ const styles = StyleSheet.create({
         // justifyContent: 'center'
 
         backgroundColor: '#ffffff',
-        marginBottom: 15,
+        marginBottom: 8,
         display: 'flex',
         flexDirection: 'column',
         height: 70,
@@ -487,6 +488,11 @@ const styles = StyleSheet.create({
         padding: 20,
         color: 'black'
     },
+    RestorebuttonText: {
+        textAlign: 'center',
+        padding: 20,
+        color: 'black'
+    },
     componentRow:
     {
         backgroundColor: '#ffffff',
@@ -495,7 +501,7 @@ const styles = StyleSheet.create({
         alignSelf: 'stretch',
         // justifyContent: 'center'
         alignItems: 'stretch',
-        marginBottom: 15,
+        marginBottom: 8,
         display: 'flex',
         flexDirection: 'row',
         flex:1,

@@ -41,12 +41,16 @@ def getUserEnergy(connection, data):
             if energy['totalRecycleCost'] is None or appliedFilters['isFood'] == False:
                 energy['totalRecycleCost'] = 0.0
                        
-            energy['totalUserEnergy'] = round(energy['totalUserEnergy'],1)
             
-            energy['totalTransportCost'] = round(energy['totalTransportCost'] / energy['totalUserEnergy'] ,1)
-            energy['totalFoodCost'] = round(energy['totalFoodCost']/ energy['totalUserEnergy'],1)
-            energy['totalElectricityCost'] = round(energy['totalElectricityCost']/ energy['totalUserEnergy'],1)
-            energy['totalRecycleCost'] = round(energy['totalRecycleCost']/ energy['totalUserEnergy'],1)
+            energy['totalUserEnergyCost'] = round(energy['totalTransportCost'],1) + round(energy['totalFoodCost'],1) + round(energy['totalElectricityCost'],1)  #Total Garbage
+            energy['totalUserEnergyRecycle'] = round(energy['totalRecycleCost'],1) # Total Non Garbage
+            energy['totalUserSavings'] = round( 100 *(( energy['totalRecycleCost']) / energy['totalUserEnergyCost']),1) #Total Recycled /Total Garbage
+
+            # Total others 
+            energy['totalTransportCost'] = round(100 * ( energy['totalTransportCost'] / energy['totalUserEnergyCost']) ,1)
+            energy['totalFoodCost'] = round(100 *( energy['totalFoodCost']/ energy['totalUserEnergyCost']) ,1)
+            energy['totalElectricityCost'] = round(100 *( energy['totalElectricityCost']/ energy['totalUserEnergyCost']) ,1)
+            energy['totalUserEnergyRecycle'] = 0
 
             print(energy)
             
@@ -57,4 +61,4 @@ def getUserEnergy(connection, data):
         print(e)
         import traceback
         traceback.print_exc()
-        return {"userEnergy":{"totalTransportCost": 0, "totalFoodCost":0, "totalRecycleCost": 0, "totalElectricityCost":0}, "success":False}, 500
+        return {"userEnergy":{"totalTransportCost": 0, "totalFoodCost":0, "totalRecycleCost": 0, "totalElectricityCost":0, "totalUserEnergyCost": 0, "totalUserSavings": 0, "totalUserEnergyRecycle":0}, "success":False}, 500

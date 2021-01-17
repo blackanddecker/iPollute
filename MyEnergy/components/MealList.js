@@ -112,62 +112,56 @@ class MealList extends Component {
  renderItem = ({ item }) => {
 
     var itemIcon = <FontAwesome name="train-car" size={24} color={Colors.primaryColor} /> 
-    if (item.itemId === 2 & item.energyType === 1){
-        itemIcon = <FontAwesome name="car" size={24} color={Colors.primaryColor}/>
+    if (item.itemId === 1 & item.energyType === 1){
+        itemIcon = <FontAwesome name="plane" size={24} color={Colors.primaryColor}/>
     }
-    else if (item.itemId === 3 & item.energyType === 1){
+    else if (item.itemId === 2 & item.energyType === 1){
         itemIcon = <FontAwesome name="car" size={24} color={Colors.primaryColor} />
     }
-    else if (item.itemId === 4 & item.energyType === 1){
-        itemIcon = <FontAwesome name="train" size={24} color= {Colors.primaryColor} />
+    else if (item.itemId === 3 && item.energyType == 1){
+        itemIcon = <FontAwesome name="car" size={24} color= {Colors.primaryColor} />
     }
     else if (item.itemId === 4 & item.energyType === 1){
-        itemIcon = <FontAwesome name="directions-bus" size={24} color={Colors.primaryColor} />    
+        itemIcon = <FontAwesome name="bus" size={24} color={Colors.primaryColor} />    
     }    
-    else if (item.itemId === 1 && (item.energyType === 1 || item.energyType === 5 || item.energyType === 6) ){
+    else if (item.itemId === 5 && item.energyType == 1 ){
         itemIcon = <FontAwesome name="plane" size={24} color= {Colors.primaryColor} />
     }
-    else if (item.itemId === 1 && item.energyType === 8){
-        itemIcon = <FontAwesome name="bicycle" size={24} color= {Colors.primaryColor} />
+    else if (item.itemId === 6 &&  item.energyType == 1){
+        itemIcon = <FontAwesome name="plane" size={24} color= {Colors.primaryColor} />
     }
-    else if (item.itemId === 1 && item.energyType === 7){
+    else if (item.itemId === 7 && item.energyType === 1){
         itemIcon = <FontAwesome name="motorcycle" size={24} color= {Colors.primaryColor} />
     }
-    else if (item.energyType === 0 && item.itemId === 5 ){
-        itemIcon = <FontAwesome name="mug-hot" size={24} color= {Colors.primaryColor} />
+    else if (item.itemId === 8 && item.energyType === 1){
+        itemIcon = <FontAwesome name="bicycle" size={24} color= {Colors.primaryColor} />
     }
-    else if (item.itemId === 9 && item.energyType === 0){
-        itemIcon =<FontAwesome name="fish" size={24} color= {Colors.primaryColor}/>   
-    }
-    else if (item.itemId === 1 && item.energyType === 3){
-        itemIcon =<FontAwesome name="oven" size={24} color= {Colors.primaryColor}/>   
-    }
-    else if (item.energyType === 0 && item.itemId === 3 ){
-        itemIcon = <FontAwesome name="cheese" size={24} color= {Colors.primaryColor} />
+    else if (item.itemId === 9 & item.energyType === 1){
+        itemIcon = <FontAwesome name="train" size={24} color= {Colors.primaryColor} />
     }
     else if (item.energyType === 0 ){
-        itemIcon = <FontAwesome name="food" size={24} color= {Colors.primaryColor} />
+        itemIcon = <FontAwesome name="apple" size={24} color= {Colors.primaryColor} />
     }
     else if (item.energyType === 2 ){
         itemIcon = <FontAwesome name="recycle" size={24} color= {Colors.primaryColor} />
     }    
     else if (item.energyType === 3 ){
-        itemIcon = <FontAwesome name="power" size={24} color= {Colors.primaryColor} />
+        itemIcon = <FontAwesome name="bolt" size={24} color= {Colors.primaryColor} />
     }
 
 
     var stringCost = "Energy"
     if (item.energyType === 0 ){
-        stringCost = "Total Kg used: "
+        stringCost = " Kg"
     }
     else if (item.energyType === 1 ){
-        stringCost = "Total Km: "
+        stringCost = " Km"
     }
     else if (item.energyType === 2 ){
-        stringCost = "Total Kg of "+item.description+": "
+        stringCost = " Kg "
     }
     else if (item.energyType === 3 ){
-        stringCost = "Total hours: "
+        stringCost = " Hours"
     }
     return (
 
@@ -179,20 +173,20 @@ class MealList extends Component {
                 </View>
                 <View style = {styles.itemTexts}>
                     <Text style={styles.text}> Date: {item.energyDate} </Text>
-                    <Text style={styles.text}> {item.description} : {item.userCost} Kg</Text> 
+                    <Text style={styles.text}> {item.description} : {item.userCost} {stringCost}</Text> 
                     <Text style={styles.text}> Co2: {item.totalCost} Kg</Text>
                 </View>
                 
                 <View style={styles.iconStyles}>
-                    <TouchableHighlight onPress={()=>this.openUpdateModal()}>
+                    <TouchableOpacity onPress={()=>this.openUpdateModal()}>
                         <FontAwesome name="pencil" size={25} color={Colors.primaryColor} />
-                    </TouchableHighlight>
+                    </TouchableOpacity>
                 </View>
                 <View style={styles.iconStyles}>
 
-                    <TouchableHighlight onPress={ ()=>this.setDeletedItem(item)}>
+                    <TouchableOpacity onPress={ ()=>this.setDeletedItem(item)}>
                         <FontAwesome name="trash" size={25} color={Colors.primaryColor} />
-                    </TouchableHighlight>
+                    </TouchableOpacity>
 
                 </View>
             </View>
@@ -228,10 +222,10 @@ class MealList extends Component {
                                  
                 
                         <View style={{flexDirection:'row',}}>
-                            <TouchableOpacity style={{backgroundColor:'red',width:'50%'}} onPress={()=>this.closeDeleteModal()}>
+                            <TouchableOpacity style={{backgroundColor:Colors.red,width:'50%'}} onPress={()=>this.closeDeleteModal()}>
                                 <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={{backgroundColor:'green',width:'50%'}} onPress={()=>this.deleteEnergy()}>
+                            <TouchableOpacity style={{backgroundColor:Colors.primaryColor,width:'50%'}} onPress={()=>this.deleteEnergy()}>
                                 <Text style={{color:'white',textAlign:'center',padding:10}}>Ok</Text>
                             </TouchableOpacity>
                         </View>
@@ -263,11 +257,11 @@ class MealList extends Component {
                             onChangeText = {this.updateCost}/>  
                              
                         <View style={{flexDirection:'row'}}>
-                            <TouchableOpacity style={{backgroundColor:'red',width:'50%'}} onPress={()=>this.closeUpdateModal()}>
+                            <TouchableOpacity style={{backgroundColor:Colors.red,width:'50%'}} onPress={()=>this.closeUpdateModal()}>
                                 <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
                             </TouchableOpacity>
 
-                            <TouchableOpacity style={{backgroundColor:'green',width:'50%'}} onPress={()=>this.updateCost()}>
+                            <TouchableOpacity style={{backgroundColor:Colors.primaryColor,width:'50%'}} onPress={()=>this.updateCost()}>
                                 <Text style={{color:'white',textAlign:'center',padding:10}}>Ok</Text>
                             </TouchableOpacity>
                         </View>
@@ -301,7 +295,7 @@ const styles = StyleSheet.create({
         alignSelf: 'stretch'
     },
     contentContainer: {
-        backgroundColor: 'white',
+        // backgroundColor: 'white',
     },
     // item: {
     //     flexDirection: 'row',
@@ -317,7 +311,9 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         alignItems: 'stretch',
         width: '100%',
-        backgroundColor: '#F8F8FF',
+        backgroundColor: 'white',
+        borderTopWidth:1,
+        borderTopColor:'grey'
         },
     buttonText: {
         textAlign: 'left',
@@ -335,13 +331,6 @@ const styles = StyleSheet.create({
     },
     marginRight: {
         justifyContent: 'flex-end',
-    },
-    menu: {
-        width: 20,
-        height: 2,
-        backgroundColor: '#111',
-        margin: 2,
-        borderRadius: 3,
     },
     text: {
         fontSize: 12,

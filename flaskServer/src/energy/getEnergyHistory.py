@@ -113,8 +113,9 @@ def getEnergyHistory(connection, data):
             totalCo2Reduced = (lastWeekCo2- curWeekCo2) / lastWeekCo2 
 
 
-            print(history)
-            return {"history":history, "success":True, "totalStats": {"totalCo2": totalCo2, "totalRecycledCo2":totalRecycledCo2,  "totalCo2Reduced":round(totalCo2Reduced,1)} }, 200
+            for i in history:
+                print(i)
+            return {"history":history, "success":True, "totalStats": {"totalCo2": round(totalCo2,1), "totalRecycledCo2":round(totalRecycledCo2,1),  "totalCo2Reduced":round(totalCo2Reduced,1)} }, 200
 
     
     except Exception as e :

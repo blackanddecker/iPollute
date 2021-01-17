@@ -10,13 +10,17 @@ import {
     TouchableOpacity,
     ScrollView,
     RefreshControl,
-    NumberInput
+    NumberInput,
+    TouchableHighlight
 } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import Modal from 'react-native-modal';
 // import Icon from 'react-native-ionicons'
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { Icon } from 'react-native-elements';
+import * as Progress from 'react-native-progress';
+import {Surface, Shape} from '@react-native-community/art';
+import Dialog, { DialogContent } from 'react-native-popup-dialog';
 
 import { Dimensions } from 'react-native';
 
@@ -59,7 +63,9 @@ class CategoriesScreen extends Component {
         totalTransportCost: 0, 
         totalElectricityCost: 0, 
         totalRecycleCost: 0, 
-        totalUserEnergy:1,
+        totalUserEnergyCost:1,
+        totalUserEnergyRecycle: 0,
+        totalUserSavings: 0,
         
         // modal variables
         isTransportLoading: true,
@@ -73,7 +79,9 @@ class CategoriesScreen extends Component {
         appliedFilters:"",
         favTransport: '', 
         favFood: '',
-        isLoading: true
+        isLoading: true, 
+        popUpHelp:false,
+        popUpFoodHelp:false
     }
     
     _onRefresh = () => {
@@ -144,10 +152,13 @@ class CategoriesScreen extends Component {
                 
                 this.setState({
                     totalTransportCost: responseJson['userEnergy']['totalTransportCost'],
-                    totalUserEnergy: responseJson['userEnergy']['totalUserEnergy'] ,
+                    totalUserEnergyCost: responseJson['userEnergy']['totalUserEnergyCost'] ,
                     totalFoodCost: responseJson['userEnergy']['totalFoodCost'],
+                    totalElectricityCost: responseJson['userEnergy']['totalElectricityCost'],
+
                     totalRecycleCost: responseJson['userEnergy']['totalRecycleCost'],
-                    totalElectricityCost: responseJson['userEnergy']['totalElectricityCost']})
+                    totalUserSavings: responseJson['userEnergy']['totalUserSavings'],
+                    totalUserEnergyRecycle: responseJson['userEnergy']['totalUserEnergyRecycle']})
 
             }
             else{
@@ -347,28 +358,28 @@ class CategoriesScreen extends Component {
 
         const pieData = [
             {
-              name: 'Transport',
+              name: '% Transport',
               population: (this.state.totalTransportCost ),
               color: 'orange',
               legendFontColor: '#7F7F7F',
               legendFontSize: 15,
             },
             {
-              name: 'Food',
+              name: '% Food',
               population: (this.state.totalFoodCost),
               color: 'red',
               legendFontColor: '#7F7F7F',
               legendFontSize: 15,
             },
             {
-              name: 'Electricity',
+              name: '% Electricity',
               population: (this.state.totalElectricityCost),
               color: 'yellow',
               legendFontColor: '#7F7F7F',
               legendFontSize: 15,
             },
             {
-              name: 'Recycle',
+              name: '% Recycle',
               population: (this.state.totalRecycleCost),            
               color: 'blue',
               legendFontColor: '#7F7F7F',
@@ -377,6 +388,16 @@ class CategoriesScreen extends Component {
           ];
 
         if(!this.state.loading) {
+            if (this.state.totalUserSavings <= 100){
+                var explText = "Your C02 recyclings per emissions ratio is " + this.state.totalUserSavings +"%"
+                var colorCycle = Colors.red
+            }else{
+                var explText = "Your C02 recyclings per emissions ratio is " + this.state.totalUserSavings +"%"
+                var colorCycle = Colors.primaryColor
+            }
+
+            
+            
             return (
               
 
@@ -389,13 +410,34 @@ class CategoriesScreen extends Component {
                     />
                     }
                 >
-                    <View>
-                        <Text> Total: Kg CO2 </Text>
-                        <Text> Your limit is: Kg CO2 </Text>
-
+                    <View style={styles.progressStyle}> 
+                    {/* <View style={styles.infoHelp}>
+                        <FontAwesome name="info" size={20} color={Colors.primaryColor} onPress={() => {this.setState({ popUpHelp: true }); }}/>
+                    </View> */}
+                        {/* <Text> Total: {this.state.totalUserEnergyCost} Kg CO2 </Text> */}
+                        {/* <Text> {explText} </Text> */}
+                        <Text></Text>
+                        <TouchableOpacity onPress={() => {this.setState({ popUpHelp: true }); }}>
+                            <Progress.Circle 
+                                size={160} 
+                                indeterminate={false} 
+                                animated={true} 
+                                indeterminateAnimationDuration={1000} 
+                                progress={this.state.totalUserSavings/100}  
+                                borderWidth={3}
+                                showsText={true} 
+                                direction={"clockwise"} 
+                                thickness ={8} 
+                                unfilledColor={'rgba(255, 255, 255, 0.2)'}
+                                formatText = {()=>{return (this.state.totalUserSavings + "%")}}
+                                // unfilledColor = {colorCycle}
+                                
+                                />
+                        </TouchableOpacity>
+                            
                     </View>
 
-                    <PieChart
+                    {/* <PieChart
                         data={pieData}
                         width={Dimensions.get('window').width}
                         height={220}
@@ -404,7 +446,35 @@ class CategoriesScreen extends Component {
                         backgroundColor="transparent"
                         paddingLeft="15"
                         absolute
-                        />
+                        /> */}
+
+                <View style= {styles.totals}>
+                    <View style= {styles.Eachtotal}>
+                        <FontAwesome name="car" size={24} color={Colors.primaryColor} />
+                        <Text style={styles.text}> Transport </Text>
+                        <Text style={styles.text}> {this.state.totalTransportCost} %</Text>
+
+                    </View>
+                    <TouchableOpacity onPress = {() => {this.setState({ popUpFoodHelp: true }); }}>
+                    <View style= {styles.Eachtotal}>
+                            <FontAwesome name="apple" size={25} color={Colors.primaryColor}  />
+                            <Text style={styles.text}> Food </Text>
+                            <Text style={styles.text}> {this.state.totalFoodCost} %</Text>
+                    </View>
+                    </TouchableOpacity>
+                    <View style= {styles.Eachtotal}>
+                        <FontAwesome name="bolt" size={25} color={Colors.primaryColor} />
+                        <Text > Electricity</Text>
+                        <Text > {this.state.totalElectricityCost} %</Text>
+
+                    </View>
+                    <View style= {styles.Eachtotal}>
+                        <FontAwesome name="recycle" size={25} color={Colors.primaryColor} />
+                        <Text style={styles.text}> Recycled </Text>
+                        <Text style={styles.text}> {this.state.totalRecycleCost} (kg CO2) </Text>
+                    </View>
+              </View>
+
 
                     <View style={styles.inputLabels}>
                         <Text> </Text>
@@ -485,10 +555,10 @@ class CategoriesScreen extends Component {
                             
                             
                                     <View style={{flexDirection:'row',}}>
-                                        <TouchableOpacity style={{backgroundColor:'red',width:'50%'}} onPress={()=>this.closeTransportModal()}>
+                                        <TouchableOpacity style={{backgroundColor:Colors.red,width:'50%'}} onPress={()=>this.closeTransportModal()}>
                                             <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={{backgroundColor:'green',width:'50%'}} onPress={()=>this.insertEnergy()}>
+                                        <TouchableOpacity style={{backgroundColor:Colors.primaryColor,width:'50%'}} onPress={()=>this.insertEnergy()}>
                                             <Text style={{color:'white',textAlign:'center',padding:10}}>Ok</Text>
                                         </TouchableOpacity>
                                     </View>
@@ -541,10 +611,10 @@ class CategoriesScreen extends Component {
                             
                             
                                     <View style={{flexDirection:'row',}}>
-                                        <TouchableOpacity style={{backgroundColor:'red',width:'50%'}} onPress={()=>this.closeFoodModal()}>
+                                        <TouchableOpacity style={{backgroundColor:Colors.red,width:'50%'}} onPress={()=>this.closeFoodModal()}>
                                             <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={{backgroundColor:'green',width:'50%'}} onPress={()=>this.insertEnergy()}>
+                                        <TouchableOpacity style={{backgroundColor:Colors.primaryColor,width:'50%'}} onPress={()=>this.insertEnergy()}>
                                             <Text style={{color:'white',textAlign:'center',padding:10}}>Ok</Text>
                                         </TouchableOpacity>
                                     </View>
@@ -598,10 +668,10 @@ class CategoriesScreen extends Component {
                             
                             
                                     <View style={{flexDirection:'row',}}>
-                                        <TouchableOpacity style={{backgroundColor:'red',width:'50%'}} onPress={()=>this.closeRecycleModal()}>
+                                        <TouchableOpacity style={{backgroundColor:Colors.red,width:'50%'}} onPress={()=>this.closeRecycleModal()}>
                                             <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={{backgroundColor:'green',width:'50%'}} onPress={()=>this.insertEnergy()}>
+                                        <TouchableOpacity style={{backgroundColor:Colors.primaryColor,width:'50%'}} onPress={()=>this.insertEnergy()}>
                                             <Text style={{color:'white',textAlign:'center',padding:10}}>Ok</Text>
                                         </TouchableOpacity>
                                     </View>
@@ -650,10 +720,10 @@ class CategoriesScreen extends Component {
                             
                             
                                     <View style={{flexDirection:'row',}}>
-                                        <TouchableOpacity style={{backgroundColor:'red',width:'50%'}} onPress={()=>this.closeElectricityModal()}>
+                                        <TouchableOpacity style={{backgroundColor:Colors.red,width:'50%'}} onPress={()=>this.closeElectricityModal()}>
                                             <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={{backgroundColor:'green',width:'50%'}} onPress={()=>this.insertEnergy()}>
+                                        <TouchableOpacity style={{backgroundColor:Colors.primaryColor,width:'50%'}} onPress={()=>this.insertEnergy()}>
                                             <Text style={{color:'white',textAlign:'center',padding:10}}>Ok</Text>
                                         </TouchableOpacity>
                                     </View>
@@ -662,6 +732,37 @@ class CategoriesScreen extends Component {
                             </View>
                         </Modal>
 
+
+                        <Dialog
+                            visible={this.state.popUpHelp}
+                            style={styles.dialogView}
+                                onTouchOutside={() => {
+                                    this.setState({ popUpHelp: false });
+                                }}
+                            >
+                            <DialogContent>
+                                    <FontAwesome name="info" size={25} color={Colors.primaryColor} style={{alignSelf: 'center'}} ></FontAwesome>
+                                    <Text style={styles.text}>Total: {this.state.totalUserEnergyCost} (kg CO2) </Text>
+                                    <Text style={styles.text}>{explText}</Text>
+
+                                </DialogContent>
+                        </Dialog>
+
+
+                        <Dialog
+                            style={styles.dialogView}
+                            visible={this.state.popUpFoodHelp}
+                                onTouchOutside={() => {
+                                    this.setState({ popUpFoodHelp: false });
+                                }}
+                            >
+                                <DialogContent>
+                                    <FontAwesome name="info" size={25} color={Colors.primaryColor} style={{alignSelf: 'center'}}></FontAwesome>
+                                    <Text style={styles.text}>Food's carbon footprint, or foodprint, is the greenhouse gas emissions produced by growing, rearing, 
+                                        farming, processing, transporting, storing, cooking and disposing of the food you eat </Text>
+                                </DialogContent>
+
+                        </Dialog>
 
                 </ScrollView>
 
@@ -776,13 +877,34 @@ const styles = StyleSheet.create({
         color: 'white'
     },
     centeredView: {
-        flex: 1,
+        flex: 1
         },
+    progressStyle: {
+        display: 'flex',
+        flex: 1,
+        alignItems: 'center',
+        textAlign: 'center'
+    },
     modalView: {
         margin: 20,
         backgroundColor: "white",
         borderRadius: 20,
         padding: 35,
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5
+        },
+
+    dialogView: {
+        margin: 1,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 5,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -791,7 +913,32 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
         elevation: 5
-        },
+    },
+    totals:{
+        marginBottom: 2,
+        marginTop: 10,
+
+        // textAlign: 'center',
+        // backgroundColor: '#6ED4C8',
+        
+        flexDirection: 'row',
+        // alignItems: 'stretch',
+        alignSelf: 'center',
+        // justifyContent: 'center'
+    },
+    infoStyle:{
+        flexDirection: 'row'
+    },
+    Eachtotal:{
+        flex:1,
+        textAlign: 'center',
+        alignSelf: 'center',
+        alignItems: 'center',
+        // justifyContent: 'center'
+    },
+    infoHelp:{
+        padding:10
+    }
 
 });
 

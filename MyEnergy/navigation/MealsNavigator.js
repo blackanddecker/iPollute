@@ -191,7 +191,7 @@ const RateMeNavigator = createStackNavigator(
   },
   {
     navigationOptions: {
-      drawerLabel: 'Rate Me'
+      drawerLabel: 'Rate Us'
     },
     defaultNavigationOptions: defaultStackNavOptions
   }
