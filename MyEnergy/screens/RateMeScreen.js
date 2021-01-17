@@ -11,6 +11,7 @@ import BaseUrl from '../constants/Url';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AwesomeAlert from 'react-native-awesome-alerts';
+import base64 from 'react-native-base64'
 
 class RateMeScreen extends Component {
 
@@ -49,6 +50,8 @@ class RateMeScreen extends Component {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
+                'Authorization': "Basic " + base64.encode("iPolluteUserName:iPolluteHiddenPassword#901")
+
             },
             body: JSON.stringify({
                 userId: this.state.userId
@@ -83,6 +86,8 @@ class RateMeScreen extends Component {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
+            'Authorization': "Basic " + "iPolluteUserName:iPolluteHiddenPassword#901"
+
         },
         body: JSON.stringify({
             userId: this.state.userId,

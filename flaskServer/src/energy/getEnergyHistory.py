@@ -37,6 +37,12 @@ def getEnergyHistory(connection, data):
                 if appliedFilters['maxCurrentDate'] is None:
                     appliedFilters['maxCurrentDate'] = datetime.datetime.now() 
 
+        elif 'appliedFilters' not in str(data):
+            appliedFilters['lowKm'] = 0 
+            appliedFilters['lowKg'] = 0 
+            appliedFilters['minCurrentDate'] = "2019-01-01"
+            appliedFilters['maxCurrentDate'] = "2031-01-01"
+
 
 
 
@@ -51,7 +57,7 @@ def getEnergyHistory(connection, data):
             # print(sql)
             cursor.execute(sql)
             transportHistory = cursor.fetchall()
-            
+            print(appliedFilters)
             appliedFilters['minCurrentDate'] = datetime.datetime.strptime(appliedFilters['minCurrentDate'], '%Y-%m-%d')
             appliedFilters['maxCurrentDate'] = datetime.datetime.strptime(appliedFilters['maxCurrentDate'], '%Y-%m-%d')
 

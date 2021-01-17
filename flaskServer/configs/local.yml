@@ -6,3 +6,4 @@ OPERATION: "DEVELOPMENT"
 SECRET_KEY: "!@#$$%^"
 MAIL_USER: "baggelisfoufikos@gmail.com"
 MAIL_PASS: "ipollute1975"
+BASIC_AUTH: 'iPolluteHiddenPassword#901'

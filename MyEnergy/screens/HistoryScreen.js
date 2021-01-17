@@ -11,6 +11,7 @@ import Colors from '../constants/Colors';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Icon } from 'react-native-elements';
+import base64 from 'react-native-base64'
 
 class HistoryScreen extends Component {
 
@@ -42,6 +43,7 @@ class HistoryScreen extends Component {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
+        'Authorization': "Basic " + base64.encode("iPolluteUserName:iPolluteHiddenPassword#901")
       },
       method: 'POST',
       body: JSON.stringify({

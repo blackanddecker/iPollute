@@ -9,6 +9,7 @@ import BaseUrl from '../constants/Url';
 import MainNavigator from '../navigation/MealsNavigator';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import HeaderButton from '../components/HeaderButton';
+import base64 from 'react-native-base64'
 
 import AsyncStorage from '@react-native-community/async-storage'
 
@@ -80,6 +81,8 @@ class SignUpScreen extends Component {
     headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
+        'Authorization': "Basic " + base64.encode("iPolluteUserName:iPolluteHiddenPassword#901")
+
     },
     body: JSON.stringify({
         email: this.state.email,

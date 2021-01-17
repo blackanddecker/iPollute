@@ -6,6 +6,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Colors from '../constants/Colors';
 
 import BaseUrl from '../constants/Url';
+import base64 from 'react-native-base64'
 
 class MealList extends Component {
   constructor(props) {
@@ -46,6 +47,7 @@ class MealList extends Component {
     headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
+        'Authorization': "Basic " + base64.encode("iPolluteUserName:iPolluteHiddenPassword#901")
     },
     body: JSON.stringify({
         userId: this.state.userId,

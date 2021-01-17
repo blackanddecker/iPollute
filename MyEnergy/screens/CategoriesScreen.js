@@ -27,6 +27,7 @@ import { Dimensions } from 'react-native';
 import HeaderButton from '../components/HeaderButton';
 import Colors from '../constants/Colors';
 import { format } from "date-fns";
+import base64 from 'react-native-base64'
 
 import BaseUrl from '../constants/Url';
 import AsyncStorage from '@react-native-community/async-storage'
@@ -97,6 +98,7 @@ class CategoriesScreen extends Component {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
+                'Authorization': "Basic " + base64.encode("iPolluteUserName:iPolluteHiddenPassword#901")
             },
             body: JSON.stringify({
                 userId:userId,
@@ -139,6 +141,7 @@ class CategoriesScreen extends Component {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
+                'Authorization': "Basic " + base64.encode("iPolluteUserName:iPolluteHiddenPassword#901")
             },
             body: JSON.stringify({
                 userId:userId,
@@ -178,6 +181,7 @@ class CategoriesScreen extends Component {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
+                'Authorization': "Basic " + base64.encode("iPolluteUserName:iPolluteHiddenPassword#901")
             },
             body: JSON.stringify({
                 userId: this.state.userId
@@ -263,6 +267,7 @@ class CategoriesScreen extends Component {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
+                'Authorization': "Basic " + "iPolluteUserName:iPolluteHiddenPassword#901"
             },
             method: 'POST',
             body: JSON.stringify({

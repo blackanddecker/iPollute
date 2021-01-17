@@ -2,6 +2,8 @@ from flask import Flask, request
 from flask_cors import CORS, cross_origin 
 from flask_bcrypt import Bcrypt 
 from flask_mail import Mail, Message 
+from flask_httpauth import HTTPBasicAuth
+from werkzeug.security import generate_password_hash, check_password_hash
 import pymysql.cursors
 import yaml
 import jwt
@@ -54,7 +56,19 @@ app.config['MAIL_PASSWORD'] = configs['MAIL_PASS']
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 
+
 mail = Mail(app)
+auth = HTTPBasicAuth()
+
+
+@auth.verify_password
+def verify_password(username, password):
+    print(username, password)
+    if username == 'iPolluteUserName':
+        check_password_hash(password,  configs['BASIC_AUTH'])
+        return username
+    return None
+
 
 
 def getConnection():
@@ -90,70 +104,85 @@ def service_unavailable(e):
 def service_unavailable(e):
 	return {'error': 'Could not process the form!'}, 400
 
+@app.errorhandler(401)
+def service_unavailable(e):
+	return {'error': 'Error in authentication method'}, 401
 
 @app.route('/')
 def _hello_world():
     return 'Hello, World!'
 
 @app.route('/signup', methods=['POST'])
+@auth.login_required
 def _signin():
     response, status = signin.signin(connection = getConnection(), data = request.get_json(), key = app.config['SECRET_KEY'], bcrypt = bcrypt)
     return response, status
 
 @app.route('/login' , methods=['POST'])
+@auth.login_required
 def _login():
     response, status = login.login(connection = getConnection(), data = request.get_json(), key = app.config['SECRET_KEY'], bcrypt = bcrypt)
     return response, status
 
 @app.route('/forgotPassword' , methods=['POST'])
+@auth.login_required
 def _forgotPassword():
     response, status = forgotPassword.forgotPassword(connection = getConnection(), data = request.get_json(), mail =  mail)
     return response, status
 
 @app.route('/updateUser', methods=['POST'])
+@auth.login_required
 def _updateCustomer():
     response, status = updateUser.updateUser(connection = getConnection(), data = request.get_json())
     return response, status
 
 @app.route('/deleteUser', methods=['POST'])
+@auth.login_required
 def _deleteCustomer():
     response, status = deleteUser.deleteUser(connection = getConnection(), data = request.get_json())
     return response, status
 
-
 @app.route('/getUserDetails', methods=['POST'])
+@auth.login_required
 def _getUserDetails():
     response, status = getUserDetails.getUserDetails(connection = getConnection(), data = request.get_json())
     return response, status
 
+
 @app.route('/getEnergyObjects', methods=['POST'])
+@auth.login_required
 def _getEnergyObjects():
     response, status = getEnergyObjects.getEnergyObjects(connection = getConnection(), data = request.get_json())
     return response, status
 
 @app.route('/getTransportObjects', methods=['POST'])
+@auth.login_required
 def _getTransportObjects():
     response, status = getTransportObjects.getTransportObjects(connection = getConnection(), data = request.get_json())
     return response, status
 
 @app.route('/getFoodObjects', methods=['POST'])
+@auth.login_required
 def _getFoodObjects():
     response, status = getFoodObjects.getFoodObjects(connection = getConnection(), data = request.get_json())
     return response, status
 
 
 @app.route('/deleteEnergy', methods=['POST'])
+@auth.login_required
 def _deleteEnergy():
     response, status = deleteEnergy.deleteEnergy(connection = getConnection(), data = request.get_json())
     return response, status
 
 
 @app.route('/insertEnergy', methods=['POST'])
+@auth.login_required
 def _insertEnergy():
     response, status = insertEnergy.insertEnergy(connection = getConnection(), data = request.get_json())
     return response, status
 
 @app.route('/updateEnergy', methods=['POST'])
+@auth.login_required
 def _updateEnergy():
     response, status = updateEnergy.updateEnergy(connection = getConnection(), data = request.get_json())
     return response, status
@@ -164,22 +193,26 @@ def _getUserEnergy():
     return response, status
 
 @app.route('/getEnergyHistory', methods=['POST'])
+@auth.login_required
 def _getEnergyHistory():
     response, status = getEnergyHistory.getEnergyHistory(connection = getConnection(), data = request.get_json())
     return response, status
 
 
 @app.route('/getFilterOptions', methods=['POST'])
+@auth.login_required
 def _getFilterOptions():
     response, status = getFilterOptions.getFilterOptions(connection = getConnection(), data = request.get_json())
     return response, status    
 
 @app.route('/getUserRate', methods=['POST'])
+@auth.login_required
 def _getUserRate():
     response, status = getUserRate.getUserRate(connection = getConnection(), data = request.get_json())
     return response, status    
 
 @app.route('/saveUserRate', methods=['POST'])
+@auth.login_required
 def _saveUserRate():
     response, status = saveUserRate.saveUserRate(connection = getConnection(), data = request.get_json())
     return response, status    

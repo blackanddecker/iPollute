@@ -11,6 +11,7 @@ import BaseUrl from '../constants/Url';
 import AsyncStorage from '@react-native-community/async-storage'
 import { Icon } from 'react-native-elements';
 import Password from "../components/PasswordTextBox";
+import base64 from 'react-native-base64'
 
 class SettingsScreen extends Component {
     constructor(props){
@@ -68,6 +69,7 @@ class SettingsScreen extends Component {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
+                'Authorization': "Basic " + base64.encode("iPolluteUserName:iPolluteHiddenPassword#901")
             },
             body: JSON.stringify({
                 userId:userId,
@@ -108,6 +110,7 @@ class SettingsScreen extends Component {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
+                'Authorization': "Basic " + base64.encode("iPolluteUserName:iPolluteHiddenPassword#901")
             },
             body: JSON.stringify({
                 userId: this.state.userId
@@ -215,6 +218,7 @@ class SettingsScreen extends Component {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
+                'Authorization': "Basic " + base64.encode("iPolluteUserName:iPolluteHiddenPassword#901")
             },
             body: JSON.stringify({
                 userId: this.state.userId,
@@ -255,10 +259,12 @@ class SettingsScreen extends Component {
         
         deleteUser = (userId) => {
             
-            fetch('http://192.168.1.4:5000/deleteUser', {
+            fetch( BaseUrl+'deleteUser', {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
+                'Authorization': "Basic " + base64.encode("iPolluteUserName:iPolluteHiddenPassword#901")
+
             },
             body: JSON.stringify({
                 userId: this.state.userId

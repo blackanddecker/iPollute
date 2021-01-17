@@ -11,6 +11,7 @@ import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import HeaderButton from '../components/HeaderButton';
 import AsyncStorage from '@react-native-community/async-storage'
 import Modal from 'react-native-modal';
+import base64 from 'react-native-base64'
 
 class LoginScreen extends Component {
   state= {
@@ -80,6 +81,7 @@ class LoginScreen extends Component {
       headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
+          'Authorization': "Basic " + base64.encode("iPolluteUserName:iPolluteHiddenPassword#901")
       },
       body: JSON.stringify({
         email: this.state.forgotPasswordEmail
@@ -109,6 +111,7 @@ class LoginScreen extends Component {
     headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
+        'Authorization': "Basic " + base64.encode("iPolluteUserName:iPolluteHiddenPassword#901")
     },
     body: JSON.stringify({
         email: this.state.email,

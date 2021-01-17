@@ -12,7 +12,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 import { Icon } from 'react-native-elements';
-import RangeSlider from 'rn-range-slider';
+import base64 from 'react-native-base64'
 
 
 class FiltersScreen extends Component {
@@ -64,6 +64,8 @@ class FiltersScreen extends Component {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
+                'Authorization': "Basic " + base64.encode("iPolluteUserName:iPolluteHiddenPassword#901")
+
             },
             body: JSON.stringify({
                 userId:this.state.userId
