@@ -267,7 +267,8 @@ class CategoriesScreen extends Component {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': "Basic " + "iPolluteUserName:iPolluteHiddenPassword#901"
+                'Authorization': "Basic " + base64.encode("iPolluteUserName:iPolluteHiddenPassword#901")
+
             },
             method: 'POST',
             body: JSON.stringify({
@@ -714,7 +715,7 @@ class CategoriesScreen extends Component {
                                             </Picker>  
                                         </View>
                                         <Text></Text>
-                                        <Text style = {styles.text}>How Many: </Text>
+                                        <Text style = {styles.text}>How Many Hours: </Text>
 
                                         <TextInput style = {styles.input}
                                             underlineColorAndroid = "transparent"

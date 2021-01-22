@@ -98,7 +98,7 @@ def service_unavailable(e):
 
 @app.errorhandler(404)
 def service_unavailable(e):
-	return {'error': 'Invalid Page'}, 404
+	return {'error': 'Not Found'}, 404
 
 @app.errorhandler(400)
 def service_unavailable(e):

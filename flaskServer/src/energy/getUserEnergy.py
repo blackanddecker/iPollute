@@ -44,12 +44,17 @@ def getUserEnergy(connection, data):
             
             energy['totalUserEnergyCost'] = round(energy['totalTransportCost'],1) + round(energy['totalFoodCost'],1) + round(energy['totalElectricityCost'],1)  #Total Garbage
             energy['totalUserEnergyRecycle'] = round(energy['totalRecycleCost'],1) # Total Non Garbage
-            energy['totalUserSavings'] = round( 100 *(( energy['totalRecycleCost']) / energy['totalUserEnergyCost']),1) #Total Recycled /Total Garbage
-
+            if energy['totalUserEnergyCost'] != 0: 
+                energy['totalUserSavings'] = round( 100 *(( energy['totalRecycleCost']) / energy['totalUserEnergyCost']),1) #Total Recycled /Total Garbage
+                energy['totalTransportCost'] = round(100 * ( energy['totalTransportCost'] / energy['totalUserEnergyCost']) ,1)
+                energy['totalFoodCost'] = round(100 *( energy['totalFoodCost']/ energy['totalUserEnergyCost']) ,1)
+                energy['totalElectricityCost'] = round(100 *( energy['totalElectricityCost']/ energy['totalUserEnergyCost']) ,1)
+            else:
+                energy['totalUserSavings'] = 0
+                energy['totalTransportCost'] = 0
+                energy['totalFoodCost'] = 0
+                energy['totalElectricityCost'] = 0
             # Total others 
-            energy['totalTransportCost'] = round(100 * ( energy['totalTransportCost'] / energy['totalUserEnergyCost']) ,1)
-            energy['totalFoodCost'] = round(100 *( energy['totalFoodCost']/ energy['totalUserEnergyCost']) ,1)
-            energy['totalElectricityCost'] = round(100 *( energy['totalElectricityCost']/ energy['totalUserEnergyCost']) ,1)
             energy['totalUserEnergyRecycle'] = 0
 
             print(energy)

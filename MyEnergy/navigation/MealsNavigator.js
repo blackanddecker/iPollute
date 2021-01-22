@@ -172,17 +172,17 @@ const SettingsNavigator = createStackNavigator(
 );
 
 
-const CityNavigator = createStackNavigator(
-  {
-    City: CityScreen
-  },
-  {
-    navigationOptions: {
-      drawerLabel: 'City'
-    },
-    defaultNavigationOptions: defaultStackNavOptions
-  }
-);
+// const CityNavigator = createStackNavigator(
+//   {
+//     City: CityScreen
+//   },
+//   {
+//     navigationOptions: {
+//       drawerLabel: 'City'
+//     },
+//     defaultNavigationOptions: defaultStackNavOptions
+//   }
+// );
 
 
 const RateMeNavigator = createStackNavigator(
@@ -253,15 +253,15 @@ const MainNavigator = createDrawerNavigator(
           )
       }
     },
-    City: {
-      screen:CityNavigator,
-      navigationOptions: {
-        drawerLabel: 'City',
-        drawerIcon: tabInfo =>  (
-          <FontAwesome name="building" size={25} color={tabInfo.tintColor} />
-          )
-      }
-    },
+    // City: {
+    //   screen:CityNavigator,
+    //   navigationOptions: {
+    //     drawerLabel: 'City',
+    //     drawerIcon: tabInfo =>  (
+    //       <FontAwesome name="building" size={25} color={tabInfo.tintColor} />
+    //       )
+    //   }
+    // },
     Settings: {
       screen:SettingsNavigator,
       navigationOptions: {

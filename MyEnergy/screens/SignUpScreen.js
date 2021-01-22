@@ -223,7 +223,7 @@ class SignUpScreen extends Component {
           />
 
           <Button
-            label={"Go to login page"}
+            label={"Log In"}
             onPress={this.goToLogin}
           />
         </View>

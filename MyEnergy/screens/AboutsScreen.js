@@ -39,9 +39,9 @@ const AboutsScreen = props => {
         />
       </View>
 
-      <View style={styles.bottom}>
+      {/* <View style={styles.bottom}>
         <Text style={styles.text}>Copyrights 2020 </Text>
-      </View>
+      </View> */}
 
 
       </View>

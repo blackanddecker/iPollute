@@ -214,7 +214,7 @@ class LoginScreen extends Component {
             onPress={this.goToSignUp}
           />
           <TouchableOpacity style={styles.text} onPress={()=>this.openForgotPasswordModal()}>
-              <Text style={styles.text} >Forgot Password</Text>
+              <Text style={styles.text} >Forgot Password?</Text>
           </TouchableOpacity>
         </View>
 

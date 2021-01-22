@@ -336,7 +336,7 @@ class FiltersScreen extends Component {
 
 
                     </View>
-                    <Text style={styles.text}>Food (kg): {this.state.lowCurrentKg}</Text>
+                    <Text style={styles.text}>Food (kg) {String(">")} {this.state.lowCurrentKg}</Text>
                 </View>
 
                 <View style={styles.component}>
@@ -352,7 +352,7 @@ class FiltersScreen extends Component {
                             thumbStyle={{ height: 20, width: 20, backgroundColor: Colors.primaryColor }}
                         />
                     </View>
-                    <Text style={styles.text}>Transport (km): {this.state.lowCurrentKm}</Text>
+                    <Text style={styles.text}>Transport (km) {String(">")} {this.state.lowCurrentKm}</Text>
                 </View>
 
                 <View>

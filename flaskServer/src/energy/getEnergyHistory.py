@@ -128,8 +128,9 @@ def getEnergyHistory(connection, data):
                     # print("2Cost is", cost, "1date is:", item['energyDate'], lastWeekCo2 )
             if lastWeekCo2 == 0:
                 lastWeekCo2 = 0.0001
-
-            totalCo2Reduced = (lastWeekCo2- curWeekCo2) / lastWeekCo2 
+                totalCo2Reduced = 0
+            else:
+                totalCo2Reduced = (lastWeekCo2- curWeekCo2) / lastWeekCo2 
 
 
             for i in history:

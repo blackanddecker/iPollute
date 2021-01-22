@@ -220,7 +220,9 @@ class MealList extends Component {
                 >
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
-                        <Text style = {styles.title}>Do you want to delete this action ? </Text>
+                        <Text style = {styles.title}>Delete </Text>
+
+                        <Text style = {styles.textModal}>Do you want to delete this action ? </Text>
                                  
                 
                         <View style={{flexDirection:'row',}}>
@@ -249,7 +251,7 @@ class MealList extends Component {
                         <Text style = {styles.title}>Update Action</Text>
                                  
                 
-                        <Text style = {styles.text}>How Many: </Text>
+                        <Text style = {styles.textModal}>How Many: </Text>
 
                         <TextInput style = {styles.input}
                             underlineColorAndroid = "transparent"
@@ -290,11 +292,12 @@ const styles = StyleSheet.create({
     },
     title: {
         fontFamily: 'open-sans-bold',
-        fontSize: 12,
         margin: 20,
         textAlign: 'center',
         justifyContent: 'flex-start',
-        alignSelf: 'stretch'
+        alignSelf: 'stretch',
+        fontSize: 20,
+        fontWeight: 'bold'
     },
     contentContainer: {
         // backgroundColor: 'white',
@@ -338,6 +341,11 @@ const styles = StyleSheet.create({
         fontSize: 12,
         fontWeight: 'bold',
         marginLeft: 10,
+        
+    },
+    textModal: {
+        fontSize: 12,
+        margin: 10,  
     },
     iconStyles:{
         width: '10%',
