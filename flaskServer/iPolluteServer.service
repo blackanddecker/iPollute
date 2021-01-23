@@ -1,0 +1,18 @@
+#at /etc/systemd/system/iPolluteServer.service
+
+[Unit]
+Description=Gunicorn instance to serve iPolluteServer
+After=network.target
+
+[Service]
+User=evangelos
+Group=www-data
+WorkingDirectory=/home/evangelos/iPolluteServer
+Environment="PATH=/home/evangelos/iPolluteServer/env/bin"
+Environment="GOOGLE_APPLICATION_CREDENTIALS=/home/evangelos/iPolluteServer/service_account.json"
+ExecStart=/home/evangelos/iPolluteServer/env/bin/gunicorn -b 0.0.0.0:5050 --timeout 500 --workers 8 --bind unix:iPolluteServer.sock -m 007 main:app
+StandardOutput=file:/var/log/iPolluteServer-logfile.log
+StandardError=file:/var/log/iPolluteServer-errorfile.log
+
+[Install]
+WantedBy=multi-user.target
