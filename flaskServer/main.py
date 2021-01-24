@@ -1,12 +1,19 @@
+''' Flask Server to support iPollute Mobile Application'''
+# Flask Expansions
 from flask import Flask, request
 from flask_cors import CORS, cross_origin 
 from flask_bcrypt import Bcrypt 
 from flask_mail import Mail, Message 
 from flask_httpauth import HTTPBasicAuth
+import flask_monitoringdashboard as dashboard
 from werkzeug.security import generate_password_hash, check_password_hash
+# Database Library
 import pymysql.cursors
+# Other Libraries
 import yaml
 import jwt
+
+# Our Libraries
 
 from src.transports import getTransportObjects
 from src.foods import getFoodObjects
@@ -36,6 +43,11 @@ from src.user import forgotPassword
 configs = yaml.safe_load(open('configs/local.yml'))
 
 app = Flask(__name__)
+
+if configs['OPERATION'] == "DEVELOPMENT":
+    dashboard.config.init_from(file='/configs/flaskMonitoring.cfg')
+    dashboard.bind(app)
+
 bcrypt = Bcrypt(app)
 app.config['SECRET_KEY'] = configs['SECRET_KEY']
 
@@ -198,7 +210,6 @@ def _getEnergyHistory():
     response, status = getEnergyHistory.getEnergyHistory(connection = getConnection(), data = request.get_json())
     return response, status
 
-
 @app.route('/getFilterOptions', methods=['POST'])
 @auth.login_required
 def _getFilterOptions():
@@ -218,4 +229,5 @@ def _saveUserRate():
     return response, status    
 
 if __name__ == '__main__':
+    app.debug = True
     app.run()

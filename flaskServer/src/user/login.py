@@ -44,7 +44,7 @@ def login(connection, data, key , bcrypt):
                     #print(check)
                     if check[0]['@s'] == 1:
                         #with connection.cursor() as cursor:
-                        sql = "CALL getUserInfo({})".format(result[0]['id'])
+                        sql = "CALL getUserDetails({})".format(result[0]['id'])
                         #print(sql)
                         cursor.execute(sql)
                         result = cursor.fetchall()
@@ -53,14 +53,7 @@ def login(connection, data, key , bcrypt):
                             'sub':result[0]['id'], 'username':result[0]['username'], 'iat':datetime.datetime.utcnow()+datetime.timedelta(minutes =30)} ,
                              key , algorithm='HS256')
 
-                        #with connection.cursor() as cursor:
-                        # check_token = 0
-                        # sql = "CALL update_check_token({}, {})".format(result[0]['id'], check_token)
-                        # #print(sql)
-                        # cursor.execute(sql)
-                        # connection.commit()
-
-                        return jsonify({'success': True, 'message': 'You have successfully logged in' ,'token':token.decode('UTF-8') , 'user':{'email': data['email'], 'id': result[0]['id']}}) , 200
+                        return jsonify({'success': True, 'message': 'You have successfully logged in' ,'token':token, 'user':{'email': data['email'], 'id': result[0]['id']}}) , 200
 
                     else:            
                         return jsonify({'success': False, 'message':'Incorrect email or password!'}), 401 

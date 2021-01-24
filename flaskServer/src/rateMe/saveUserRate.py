@@ -9,9 +9,9 @@ def saveUserRate(connection, data):
     if 'userId' not in data:
         return {'message':'userId missing!', 'success': False}, 400
     if 'comment' not in data:
-        return {'message':'userId missing!', 'success': False}, 400
+        return {'message':'comment missing!', 'success': False}, 400
     if 'star' not in data:
-        return {'message':'userId missing!', 'success': False}, 400
+        return {'message':'star missing!', 'success': False}, 400
     try:
         with connection.cursor() as cursor:
             sql = "CALL saveUserRate({}, {}, '{}');".format(data['userId'], data['star'], data['comment'])
