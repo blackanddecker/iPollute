@@ -1,0 +1,9 @@
+DB_HOST : "127.0.0.1"
+DB_USER : "root"
+DB_PASSWORD: "password"
+DB: "ipollute"
+OPERATION: "PRODUCTION"
+SECRET_KEY: "!@#$$%^"
+MAIL_USER: "baggelisfoufikos@gmail.com"
+MAIL_PASS: "ipollute1975"
+BASIC_AUTH: 'iPolluteHiddenPassword#901'
