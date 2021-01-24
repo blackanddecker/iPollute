@@ -21,6 +21,7 @@ import { Icon } from 'react-native-elements';
 import * as Progress from 'react-native-progress';
 import {Surface, Shape} from '@react-native-community/art';
 import Dialog, { DialogContent } from 'react-native-popup-dialog';
+import { Slider } from 'react-native-elements';
 
 import { Dimensions } from 'react-native';
 
@@ -567,14 +568,18 @@ class CategoriesScreen extends Component {
                                             </Picker>     
                                         </View>
                                         <Text></Text>
-                                        <Text style = {styles.text}>Add Kilometers done: </Text>
-                                        <TextInput style = {styles.input}
-                                            underlineColorAndroid = "transparent"
-                                            placeholder = "0.0"
-                                            keyboardType={'number-pad'}
-                                            onChangeText = {this.updateCost}/>         
+                                        <Text style = {styles.text}>Add Kilometers: {this.state.userCost}</Text>     
                             
-                            
+                                        <Slider
+                                            value={this.state.userCost}
+                                            onValueChange={this.updateCost}
+                                            maximumValue={1000}
+                                            minimumValue={1}
+                                            step={1}
+                                            trackStyle={{ height: 10, backgroundColor: 'transparent' }}
+                                            thumbStyle={{ height: 20, width: 20, backgroundColor: Colors.primaryColor }}
+                                        /> 
+                                        <Text></Text>
                                     <View style={{flexDirection:'row',}}>
                                         <TouchableOpacity style={{backgroundColor:Colors.red,width:'50%'}} onPress={()=>this.closeTransportModal()}>
                                             <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
@@ -620,17 +625,18 @@ class CategoriesScreen extends Component {
                                             </Picker>  
                                         </View>
                                         <Text></Text>
-                                        <Text style = {styles.text}>Add Kilograms of Food: </Text>
-
-                                        <TextInput style = {styles.input}
-                                            underlineColorAndroid = "transparent"
-                                            keyboardType = 'decimal-pad'
-                                            placeholder = "0.0"
-                                            placeholderTextColor = "black"
-                                            maxLength={10}
-                                            onChangeText = {this.updateCost}/>         
-                            
-                            
+                                        <Text style = {styles.text}>Add Kilograms: {this.state.userCost}</Text>  
+                                        
+                                        <Slider
+                                            value={this.state.userCost}
+                                            onValueChange={this.updateCost}
+                                            maximumValue={10}
+                                            minimumValue={1}
+                                            step={1}
+                                            trackStyle={{ height: 10, backgroundColor: 'transparent' }}
+                                            thumbStyle={{ height: 20, width: 20, backgroundColor: Colors.primaryColor }}
+                                        /> 
+                                        <Text></Text>
                                     <View style={{flexDirection:'row',}}>
                                         <TouchableOpacity style={{backgroundColor:Colors.red,width:'50%'}} onPress={()=>this.closeFoodModal()}>
                                             <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
@@ -678,14 +684,18 @@ class CategoriesScreen extends Component {
                                             </Picker>  
                                         </View>
                                         <Text></Text>
-                                        <Text style = {styles.text}>How Many: </Text>
+                                        <Text style = {styles.text}>Recycled Kilograms: {this.state.userCost}</Text>
 
-                                        <TextInput style = {styles.input}
-                                            underlineColorAndroid = "transparent"
-                                            placeholder = "0.0"
-                                            placeholderTextColor = "black"
-                                            keyboardType = 'numeric'
-                                            onChangeText = {this.updateCost}/>         
+                                        <Slider
+                                            value={this.state.userCost}
+                                            onValueChange={this.updateCost}
+                                            maximumValue={5000}
+                                            minimumValue={1}
+                                            step={1}
+                                            trackStyle={{ height: 10, backgroundColor: 'transparent' }}
+                                            thumbStyle={{ height: 20, width: 20, backgroundColor: Colors.primaryColor }}
+                                        /> 
+                                        <Text></Text>      
                             
                             
                                     <View style={{flexDirection:'row',}}>
@@ -730,14 +740,18 @@ class CategoriesScreen extends Component {
                                             </Picker>  
                                         </View>
                                         <Text></Text>
-                                        <Text style = {styles.text}>How Many Hours: </Text>
+                                        <Text style = {styles.text}>How Many KWh: {this.state.userCost}</Text>
 
-                                        <TextInput style = {styles.input}
-                                            underlineColorAndroid = "transparent"
-                                            placeholder = "0.0"
-                                            placeholderTextColor = "black"
-                                            autoCapitalize = "none"
-                                            onChangeText = {this.updateCost}/>         
+                                        <Slider
+                                            value={this.state.userCost}
+                                            onValueChange={this.updateCost}
+                                            maximumValue={1000}
+                                            minimumValue={1}
+                                            step={1}
+                                            trackStyle={{ height: 10, backgroundColor: 'transparent' }}
+                                            thumbStyle={{ height: 20, width: 20, backgroundColor: Colors.primaryColor }}
+                                        /> 
+                                        <Text></Text>      
                             
                             
                                     <View style={{flexDirection:'row',}}>

@@ -16,11 +16,32 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `energy`
+--
+
+DROP TABLE IF EXISTS `energy`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `energy` (
+  `energyId` int(11) NOT NULL AUTO_INCREMENT,
+  `energyDate` datetime DEFAULT NULL,
+  `energyType` int(11) DEFAULT NULL,
+  `userCost` float DEFAULT '0',
+  `active` tinyint(4) DEFAULT '1',
+  `totalCost` float DEFAULT NULL,
+  `energyItem` int(11) DEFAULT NULL,
+  `userId` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`energyId`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `energy`
 --
 
 LOCK TABLES `energy` WRITE;
 /*!40000 ALTER TABLE `energy` DISABLE KEYS */;
+INSERT INTO `energy` VALUES (1,'2021-01-24 19:09:41',1,10,0,1710,4,'1'),(2,'2021-01-21 19:09:41',1,23,0,1710,3,'1'),(3,'2021-01-24 19:57:08',0,5,1,300,1,'1'),(4,'2021-01-21 20:00:45',1,5,1,300,1,'1'),(5,'2021-01-22 20:03:00',0,5,1,300,1,'1'),(6,'2021-01-24 20:05:12',2,23,1,46,1,'1'),(7,'2021-01-24 20:32:19',1,95,1,9975,4,'1');
 /*!40000 ALTER TABLE `energy` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -33,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-01-24 13:13:10
+-- Dump completed on 2021-01-24 20:39:33

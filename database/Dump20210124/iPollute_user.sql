@@ -16,12 +16,34 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `user`
+--
+
+DROP TABLE IF EXISTS `user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `email` varchar(90) DEFAULT NULL,
+  `password` varchar(45) DEFAULT NULL,
+  `username` varchar(45) DEFAULT NULL,
+  `energyCurrent` float DEFAULT '0',
+  `active` int(11) DEFAULT '1',
+  `userEnergy` float DEFAULT '0',
+  `favFood` int(11) DEFAULT '1',
+  `favTransport` int(11) DEFAULT '1',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email_UNIQUE` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `user`
 --
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'a','a','a',0,1,0,1,1),(2,'b','b','b',21,1,12,1,1);
+INSERT INTO `user` VALUES (1,'a','a','a',10321,1,0,1,1),(2,'b','b','b',21,1,12,1,1);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -34,4 +56,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-01-24 13:13:10
+-- Dump completed on 2021-01-24 20:39:33

@@ -7,6 +7,7 @@ import Colors from '../constants/Colors';
 
 import BaseUrl from '../constants/Url';
 import base64 from 'react-native-base64'
+import { Slider } from 'react-native-elements';
 
 class MealList extends Component {
   constructor(props) {

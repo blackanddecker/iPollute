@@ -124,7 +124,7 @@ class SettingsScreen extends Component {
                     userId: responseJson['userDetails']['id'],
                     email: responseJson['userDetails']['email'],
                     username: responseJson['userDetails']['username'],
-                    userEnergy: responseJson['userDetails']['energyTotal'],
+                    userEnergy: responseJson['userDetails']['userEnergy'],
                     password: responseJson['userDetails']['password'],
                     passwordRepeat: responseJson['userDetails']['password'],
                     favFood: responseJson['userDetails']['favFood'],
