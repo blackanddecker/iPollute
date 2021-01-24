@@ -82,7 +82,10 @@ class CategoriesScreen extends Component {
         favFood: '',
         isLoading: true, 
         popUpHelp:false,
-        popUpFoodHelp:false
+        popUpFoodHelp:false,
+        popUpElectricityHelp:false,
+        popUpRecycleHelp:false,
+        popUpTransportHelp:false
     }
     
     _onRefresh = () => {
@@ -403,7 +406,6 @@ class CategoriesScreen extends Component {
             }
 
             
-            
             return (
               
 
@@ -435,11 +437,15 @@ class CategoriesScreen extends Component {
                                 direction={"clockwise"} 
                                 thickness ={8} 
                                 unfilledColor={'rgba(255, 255, 255, 0.2)'}
-                                formatText = {()=>{return (this.state.totalUserSavings + "%")}}
+                                formatText = {()=>{return (
+                                    this.state.totalUserSavings + "%"
+                                    
+                                    )}}
                                 // unfilledColor = {colorCycle}
                                 
                                 />
                         </TouchableOpacity>
+                            <Text style={{size: 5}}> CO2/Saved C02 </Text>
                             
                     </View>
 
@@ -455,30 +461,39 @@ class CategoriesScreen extends Component {
                         /> */}
 
                 <View style= {styles.totals}>
-                    <View style= {styles.Eachtotal}>
-                        <FontAwesome name="car" size={24} color={Colors.primaryColor} />
-                        <Text style={styles.text}> Transport </Text>
-                        <Text style={styles.text}> {this.state.totalTransportCost} %</Text>
+                    <TouchableOpacity style= {styles.Eachtotal} onPress = {() => {this.setState({ popUpTransportHelp: true }); }}>
+                        <View style= {styles.Eachtotal}>
+                            <FontAwesome name="car" size={24} color={Colors.primaryColor} />
+                            <Text style={styles.text}> Transport </Text>
+                            <Text style={styles.text}> {this.state.totalTransportCost} %</Text>
 
-                    </View>
-                    <TouchableOpacity onPress = {() => {this.setState({ popUpFoodHelp: true }); }}>
-                    <View style= {styles.Eachtotal}>
-                            <FontAwesome name="apple" size={25} color={Colors.primaryColor}  />
-                            <Text style={styles.text}> Food </Text>
-                            <Text style={styles.text}> {this.state.totalFoodCost} %</Text>
-                    </View>
+                        </View>
                     </TouchableOpacity>
-                    <View style= {styles.Eachtotal}>
-                        <FontAwesome name="bolt" size={25} color={Colors.primaryColor} />
-                        <Text > Electricity</Text>
-                        <Text > {this.state.totalElectricityCost} %</Text>
+                    <TouchableOpacity style= {styles.Eachtotal} onPress = {() => {this.setState({ popUpFoodHelp: true }); }}>
+                        <View style= {styles.Eachtotal}>
+                                <FontAwesome name="apple" size={25} color={Colors.primaryColor}  />
+                                <Text style={styles.text}> Food </Text>
+                                <Text style={styles.text}> {this.state.totalFoodCost} %</Text>
+                        </View>
+                    </TouchableOpacity>
+                    
+                    <TouchableOpacity style= {styles.Eachtotal} onPress = {() => {this.setState({ popUpElectricityHelp: true }); }}>
+                        <View style= {styles.Eachtotal}>
+                            <FontAwesome name="bolt" size={25} color={Colors.primaryColor} />
+                            <Text > Electricity</Text>
+                            <Text > {this.state.totalElectricityCost} %</Text>
+                        </View>
+                    </TouchableOpacity>
 
-                    </View>
-                    <View style= {styles.Eachtotal}>
-                        <FontAwesome name="recycle" size={25} color={Colors.primaryColor} />
-                        <Text style={styles.text}> Recycled </Text>
-                        <Text style={styles.text}> {this.state.totalRecycleCost} (kg CO2) </Text>
-                    </View>
+                    <TouchableOpacity style= {styles.Eachtotal} onPress = {() => {this.setState({ popUpRecycleHelp: true }); }}>
+
+                        <View style= {styles.Eachtotal}>
+                            <FontAwesome name="recycle" size={25} color={Colors.primaryColor}/>
+                            <Text style={styles.text}> Recycled </Text>
+                            <Text style={styles.text}> {this.state.totalRecycleCost} (kg CO2) </Text>
+                        </View>
+                    </TouchableOpacity>
+
               </View>
 
 
@@ -747,7 +762,7 @@ class CategoriesScreen extends Component {
                                 }}
                             >
                             <DialogContent>
-                                    <FontAwesome name="info" size={25} color={Colors.primaryColor} style={{alignSelf: 'center'}} ></FontAwesome>
+                                    <FontAwesome name="info" size={35} color={Colors.primaryColor} style={{alignSelf: 'center', margin:20}} ></FontAwesome>
                                     <Text style={styles.text}>Total: {this.state.totalUserEnergyCost} (kg CO2) </Text>
                                     <Text style={styles.text}>{explText}</Text>
 
@@ -763,9 +778,55 @@ class CategoriesScreen extends Component {
                                 }}
                             >
                                 <DialogContent>
-                                    <FontAwesome name="info" size={25} color={Colors.primaryColor} style={{alignSelf: 'center'}}></FontAwesome>
+                                    <FontAwesome name="info" size={35} color={Colors.primaryColor} style={{alignSelf: 'center', margin:20}}></FontAwesome>
                                     <Text style={styles.text}>Food's carbon footprint, or foodprint, is the greenhouse gas emissions produced by growing, rearing, 
                                         farming, processing, transporting, storing, cooking and disposing of the food you eat </Text>
+                                </DialogContent>
+
+                        </Dialog>
+
+                        <Dialog
+                            style={styles.dialogView}
+                            visible={this.state.popUpRecycleHelp}
+                                onTouchOutside={() => {
+                                    this.setState({ popUpRecycleHelp: false });
+                                }}
+                            >
+                                <DialogContent>
+                                    <FontAwesome name="info" size={35} color={Colors.primaryColor} style={{alignSelf: 'center', margin:20}}></FontAwesome>
+                                    <Text style={styles.text}>Recycling causes certain carbon emissions by itself, from the fuel used by collection trucks, to the energy taken to treat the waste. Thus, recycling is only beneficial in tackling climate change if the process emits less greenhouse gas than would otherwise be emitted.
+                                     This means that net emission savings will be different for different types of waste. </Text>
+                                </DialogContent>
+
+                        </Dialog>
+
+                        <Dialog
+                            style={styles.dialogView}
+                            visible={this.state.popUpElectricityHelp}
+                                onTouchOutside={() => {
+                                    this.setState({ popUpElectricityHelp: false });
+                                }}
+                            >
+                                <DialogContent>
+                                    <FontAwesome name="info" size={35} color={Colors.primaryColor} style={{alignSelf: 'center', margin:20}}></FontAwesome>
+                                    <Text style={styles.text}>In order to accurately calculate the CO2 emissions of one's home, one must calculate all the activities that are done daily 
+                                        for heating and lighting, for cooking and for recreational activities, etc.
+                                    </Text>
+                                </DialogContent>
+
+                        </Dialog>
+
+                        <Dialog
+                            style={styles.dialogView}
+                            visible={this.state.popUpTransportHelp}
+                                onTouchOutside={() => {
+                                    this.setState({ popUpTransportHelp: false });
+                                }}
+                            >
+                                <DialogContent>
+                                    <FontAwesome name="info" size={35} color={Colors.primaryColor} style={{alignSelf: 'center', margin:20}}></FontAwesome>
+                                    <Text style={styles.text}>The carbon footprint of the trip is measured in grams of carbon dioxide equivalent per kilometer of passenger. 
+                                    This includes carbon dioxide, but also other greenhouse gases, and increased heating by air emissions at altitude </Text>
                                 </DialogContent>
 
                         </Dialog>
