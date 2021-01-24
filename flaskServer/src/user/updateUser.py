@@ -36,7 +36,7 @@ def updateUser(connection, data):
             )
             print(sql)
             cursor.execute(sql)
-            result = connection.commit()
+            connection.commit()
             cursor.execute('select @s;')
             check = cursor.fetchall()
 

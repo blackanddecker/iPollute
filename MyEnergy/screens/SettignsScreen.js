@@ -12,6 +12,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { Icon } from 'react-native-elements';
 import Password from "../components/PasswordTextBox";
 import base64 from 'react-native-base64'
+import { Slider } from 'react-native-elements';
 
 class SettingsScreen extends Component {
     constructor(props){
@@ -579,14 +580,16 @@ class SettingsScreen extends Component {
                                 <View style={styles.modalView}>
                                     <Text style = {styles.title}>Update User Energy </Text>
                                         
-                                    <TextInput style = {styles.input}
-                                        underlineColorAndroid = "transparent"
-                                        placeholder = {this.state.userEnergy.toString()}
-                                        autoCapitalize = "none"
-                                        defaultValue={this.state.userEnergy.toString()}
-
-                                        onChangeText = {this.updateUserEnergy}/>         
-                            
+                                        <Text style = {styles.text}> User Energy Is : {this.state.userEnergy}</Text>
+                                        <Slider
+                                            value={this.state.userEnergy}
+                                            onValueChange={this.updateUserEnergy}
+                                            maximumValue={500}
+                                            minimumValue={1}
+                                            step={1}
+                                            trackStyle={{ height: 10, backgroundColor: 'transparent' }}
+                                            thumbStyle={{ height: 20, width: 20, backgroundColor: Colors.primaryColor }}
+                                        /> 
                                     <Text></Text>
                                     <View style={{flexDirection:'row',}}>
                                         <TouchableOpacity style={{backgroundColor:Colors.red,width:'50%'}} onPress={()=>this.closeEnergyModal()}>

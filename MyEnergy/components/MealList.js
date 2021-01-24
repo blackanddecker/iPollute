@@ -20,6 +20,7 @@ class MealList extends Component {
         editedItem: 0, 
         deletedItem : '',
         updatedItem: '',
+        updatedUserCost: 0,
         userId :this.props.userId,
         appliedFilters:this.props.appliedFilters,
         refreshing: false
@@ -75,6 +76,54 @@ class MealList extends Component {
         });
     }
 
+    updateEnergy = (userId, energy) => {
+        console.log("Set Updated item :", energy)
+        fetch(BaseUrl+'updateEnergy', {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': "Basic " + base64.encode("iPolluteUserName:iPolluteHiddenPassword#901")
+        },
+        body: JSON.stringify({
+            userId: this.state.userId,
+            energyId: this.state.updatedItem.energyId,
+            userCost: this.state.updatedUserCost,
+            energyItemId: this.state.updatedItem.energyItem,
+            energyTypeId: this.state.updatedItem.energyType
+        }),
+        method: 'POST'
+        })
+        .then((response) => response.json())
+        .then((responseJson) => {
+            // console.log(responseJson);
+            if(responseJson['success'] == true){
+                alert("Energy updated Succefully");
+                this.props._fetchData(this.state.userId, this.state.appliedFilters)
+                this.closeUpdateModal()
+                }
+            else{
+                alert("Energy updated Failed", userId, energy);
+            }
+            
+        })
+        .catch((error) => {
+            console.error(error);
+            alert("Update Failed", userId, energy);
+            });
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
   setInputText = (text) => {
       this.setState({ inputText: text })
   }
@@ -93,7 +142,7 @@ class MealList extends Component {
 
   setUpdateItem = (item) => {
     console.log("In:", item)
-    this.setState({updatedItem: item.energyId}, () =>{
+    this.setState({updatedItem: item}, () =>{
         this.setState({isUpdateModalVisible:true})
     });
   }
@@ -110,6 +159,7 @@ class MealList extends Component {
   }
 
 
+  updateUserCost = (cost) => {this.setState({ updatedUserCost: cost })}
 
 
  renderItem = ({ item }) => {
@@ -167,7 +217,7 @@ class MealList extends Component {
         stringCost = " Kg "
     }
     else if (item.energyType === 3 ){
-        stringCost = " Hours"
+        stringCost = " KWh"
     }
     return (
 
@@ -184,7 +234,7 @@ class MealList extends Component {
                 </View>
                 
                 <View style={styles.iconStyles}>
-                    <TouchableOpacity onPress={()=>this.openUpdateModal()}>
+                    <TouchableOpacity onPress={()=>this.setUpdateItem(item)}>
                         <FontAwesome name="pencil" size={25} color={Colors.primaryColor} />
                     </TouchableOpacity>
                 </View>
@@ -218,10 +268,10 @@ class MealList extends Component {
             {  this.state.isDeleteModalVisible &&
                 
                 <Modal
-                animationType="slide"
-                transparent={true}
-                visible={this.state.isDeleteModalVisible} 
-                onBackdropPress={() => {this.closeDeleteModal()}}
+                    animationType="slide"
+                    transparent={true}
+                    visible={this.state.isDeleteModalVisible} 
+                    onBackdropPress={() => {this.closeDeleteModal()}}
 
                 >
                 <View style={styles.centeredView}>
@@ -247,31 +297,33 @@ class MealList extends Component {
 
             {  this.state.isUpdateModalVisible &&
                 <Modal
-                animationType="slide"
-                transparent={true}
-                visible={this.state.isUpdateModalVisible} 
-                onBackdropPress={() => {this.closeUpdateModal()}}
+                    animationType="slide"
+                    transparent={true}
+                    visible={this.state.isUpdateModalVisible} 
+                    onBackdropPress={() => {this.closeUpdateModal()}}
                 >
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
                         <Text style = {styles.title}>Update Action</Text>
                                  
                 
-                        <Text style = {styles.textModal}>How Many: </Text>
-
-                        <TextInput style = {styles.input}
-                            underlineColorAndroid = "transparent"
-                            placeholder = "0.0"
-                            placeholderTextColor = "black"
-                            autoCapitalize = "none"
-                            onChangeText = {this.updateCost}/>  
-                             
+                        <Text style = {styles.textModal}>How Many: {this.state.updatedUserCost}</Text>
+ 
+                            <Slider
+                                value={this.state.updatedUserCost}
+                                onValueChange={this.updateUserCost}
+                                maximumValue={1000}
+                                minimumValue={1}
+                                step={1}
+                                trackStyle={{ height: 10, backgroundColor: 'transparent' }}
+                                thumbStyle={{ height: 20, width: 20, backgroundColor: Colors.primaryColor }}
+                            /> 
                         <View style={{flexDirection:'row'}}>
                             <TouchableOpacity style={{backgroundColor:Colors.red,width:'50%'}} onPress={()=>this.closeUpdateModal()}>
                                 <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
                             </TouchableOpacity>
 
-                            <TouchableOpacity style={{backgroundColor:Colors.primaryColor,width:'50%'}} onPress={()=>this.updateCost()}>
+                            <TouchableOpacity style={{backgroundColor:Colors.primaryColor,width:'50%'}} onPress={()=>this.updateEnergy()}>
                                 <Text style={{color:'white',textAlign:'center',padding:10}}>Ok</Text>
                             </TouchableOpacity>
                         </View>
