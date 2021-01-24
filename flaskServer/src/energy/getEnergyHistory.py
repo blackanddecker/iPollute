@@ -51,10 +51,15 @@ def getEnergyHistory(connection, data):
         totalCo2 = 0 
         totalRecycledCo2 = 0
         totalCo2Reduced = 0 
+        totalRecycleCost = 0 
+        totalTransportCost = 0 
+        totalFoodCost = 0
+        totalElectricityCost = 0
+
         with connection.cursor() as cursor:
             
-            sql = "CALL getTransportEnergyHistory({});".format(data['userId'])
-            # print(sql)
+            sql = "CALL getEnergyHistory({}, 1);".format(data['userId'])
+            print(sql)
             cursor.execute(sql)
             transportHistory = cursor.fetchall()
             print(appliedFilters)
@@ -65,8 +70,9 @@ def getEnergyHistory(connection, data):
                 for i in range(len(transportHistory)): 
                     if float(transportHistory[i]['userCost']) >= float(appliedFilters['lowKm']) and transportHistory[i]['energyDate'] >= appliedFilters['minCurrentDate'] and transportHistory[i]['energyDate'] <= appliedFilters['maxCurrentDate']:
                         history.append(transportHistory[i])
+                        totalTransportCost += transportHistory[i]['totalCost']
                 
-            sql = "CALL getFoodEnergyHistory({});".format(data['userId'])
+            sql = "CALL getEnergyHistory({}, 0);".format(data['userId'])
             # print(sql)
             cursor.execute(sql)
             transportHistory = cursor.fetchall()
@@ -74,9 +80,11 @@ def getEnergyHistory(connection, data):
                 for i in range(len(transportHistory)): 
                     if float(transportHistory[i]['userCost']) >= float(appliedFilters['lowKg']) and transportHistory[i]['energyDate'] >= appliedFilters['minCurrentDate'] and transportHistory[i]['energyDate'] <= appliedFilters['maxCurrentDate'] : 
                         history.append(transportHistory[i])
+                        totalFoodCost += transportHistory[i]['totalCost']
+
             
 
-            sql = "CALL getElectricityEnergyHistory({});".format(data['userId'])
+            sql = "CALL getEnergyHistory({}, 3);".format(data['userId'])
             # print(sql)
             cursor.execute(sql)
             transportHistory = cursor.fetchall()
@@ -84,6 +92,7 @@ def getEnergyHistory(connection, data):
                 for i in range(len(transportHistory)): 
                     if transportHistory[i]['energyDate'] >= appliedFilters['minCurrentDate'] and transportHistory[i]['energyDate'] <= appliedFilters['maxCurrentDate']:
                         history.append(transportHistory[i])
+                        totalElectricityCost += transportHistory[i]['totalCost']
 
 
 
@@ -91,7 +100,7 @@ def getEnergyHistory(connection, data):
             for item in history: 
                 totalCo2 += item['totalCost'] 
             
-            sql = "CALL getRecycledEnergyHistory({});".format(data['userId'])
+            sql = "CALL getEnergyHistory({}, 2);".format(data['userId'])
             # print(sql)
             cursor.execute(sql)
             recycled = cursor.fetchall()
@@ -101,6 +110,8 @@ def getEnergyHistory(connection, data):
                     if recycled[i]['energyDate'] >= appliedFilters['minCurrentDate'] and recycled[i]['energyDate'] <= appliedFilters['maxCurrentDate']:
                         recycledHistory.append(recycled[i])
                         history.append(recycled[i])
+                        totalRecycleCost += transportHistory[i]['totalCost']
+
 
 
             for item in recycledHistory: 
@@ -135,11 +146,52 @@ def getEnergyHistory(connection, data):
 
             for i in history:
                 print(i)
-            return {"history":history, "success":True, "totalStats": {"totalCo2": round(totalCo2,1), "totalRecycledCo2":round(totalRecycledCo2,1),  "totalCo2Reduced":round(totalCo2Reduced,1)} }, 200
+
+            energy = {}
+            energy['totalTransportCost'] = totalTransportCost
+            energy['totalFoodCost'] = totalFoodCost
+            energy['totalElectricityCost'] = totalElectricityCost
+            energy['totalRecycleCost'] = totalRecycleCost
+
+            energy['totalUserEnergyCost'] = round(energy['totalTransportCost'],1) + round(energy['totalFoodCost'],1) + round(energy['totalElectricityCost'],1)  #Total Garbage
+            energy['totalUserEnergyRecycle'] = round(energy['totalRecycleCost'],1) # Total Non Garbage
+            if energy['totalUserEnergyCost'] != 0: 
+                energy['totalUserSavings'] = round( 100 *(( energy['totalRecycleCost']) / energy['totalUserEnergyCost']),1) #Total Recycled /Total Garbage
+                energy['totalTransportCost'] = round(100 * ( energy['totalTransportCost'] / energy['totalUserEnergyCost']) ,1)
+                energy['totalFoodCost'] = round(100 *( energy['totalFoodCost']/ energy['totalUserEnergyCost']) ,1)
+                energy['totalElectricityCost'] = round(100 *( energy['totalElectricityCost']/ energy['totalUserEnergyCost']) ,1)
+            else:
+                energy['totalUserSavings'] = 0
+                energy['totalTransportCost'] = 0
+                energy['totalFoodCost'] = 0
+                energy['totalElectricityCost'] = 0
+
+            return {
+                "history":history,
+                "success":True, 
+                "userEnergy": energy,
+                "totalStats": {"totalCo2": round(totalCo2,1), "totalRecycledCo2":round(totalRecycledCo2,1),  "totalCo2Reduced":round(totalCo2Reduced,1)} }, 200
 
     
     except Exception as e :
-        print(e)
+        print(e, sql )
         import traceback
         traceback.print_exc()
-        return {"history":[], "totalStats": {"totalCo2": 0, "totalRecycledCo2":0,  "totalCo2Reduced":0}, "success":False}, 500
+        return {
+                "history":[],
+                "totalStats": {
+                    "totalCo2": 0,
+                    "totalRecycledCo2":0,
+                    "totalCo2Reduced":0
+                    },
+                "userEnergy":{
+                    "totalTransportCost": 0,
+                    "totalFoodCost":0,
+                    "totalRecycleCost": 0,
+                    "totalElectricityCost":0,
+                    "totalUserEnergyCost": 0,
+                    "totalUserSavings": 0, 
+                    "totalUserEnergyRecycle":0
+                    }, 
+                "success":False
+                }, 500

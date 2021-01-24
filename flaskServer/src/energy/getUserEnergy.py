@@ -66,4 +66,12 @@ def getUserEnergy(connection, data):
         print(e)
         import traceback
         traceback.print_exc()
-        return {"userEnergy":{"totalTransportCost": 0, "totalFoodCost":0, "totalRecycleCost": 0, "totalElectricityCost":0, "totalUserEnergyCost": 0, "totalUserSavings": 0, "totalUserEnergyRecycle":0}, "success":False}, 500
+        return {"userEnergy":{
+                    "totalTransportCost": 0,
+                    "totalFoodCost":0,
+                    "totalRecycleCost": 0,
+                    "totalElectricityCost":0,
+                    "totalUserEnergyCost": 0,
+                    "totalUserSavings": 0, 
+                    "totalUserEnergyRecycle":0
+                    }, "success":False}, 500

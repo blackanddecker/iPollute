@@ -137,7 +137,7 @@ class CategoriesScreen extends Component {
         });
         
         
-        fetch(BaseUrl+'getUserEnergy', {
+        fetch(BaseUrl+'getEnergyHistory', {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
