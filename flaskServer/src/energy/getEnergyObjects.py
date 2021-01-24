@@ -11,7 +11,7 @@ def getEnergyObjects(connection, data):
     try:
         with connection.cursor() as cursor:
             sql = "CALL getFoodObjects({});".format(data['userId'])
-            print(sql)
+            #print(sql)
             cursor.execute(sql)
             foods = cursor.fetchall()
             if len(foods)>0:
@@ -21,7 +21,7 @@ def getEnergyObjects(connection, data):
 
         with connection.cursor() as cursor:
             sql = "CALL getTransportObjects({});".format(data['userId'])
-            print(sql)
+            #print(sql)
             cursor.execute(sql)
             transports = cursor.fetchall()
             if len(transports)>0:
@@ -32,7 +32,7 @@ def getEnergyObjects(connection, data):
 
         with connection.cursor() as cursor:
             sql = "CALL getRecycleObjects({});".format(data['userId'])
-            print(sql)
+            #print(sql)
             cursor.execute(sql)
             recycles = cursor.fetchall()
             if len(recycles)>0:
@@ -41,8 +41,8 @@ def getEnergyObjects(connection, data):
                     recycles[i]['energyType'] = 2
 
         with connection.cursor() as cursor:
-            sql = "CALL geElectricityObjects({});".format(data['userId'])
-            print(sql)
+            sql = "CALL getElectricityObjects({});".format(data['userId'])
+            #print(sql)
             cursor.execute(sql)
             electricity = cursor.fetchall()
             if len(electricity)>0:
@@ -55,7 +55,7 @@ def getEnergyObjects(connection, data):
 
     
     except Exception as e :
-        print(e)
+        print(e, sql)
         import traceback
         traceback.print_exc()
         return {"foodObjects" : [], "transportObjects" : [], "recycledObjects":  [], "electricityObjects": []}, 500

@@ -367,6 +367,8 @@ class SettingsScreen extends Component {
                         animationType="slide"
                         transparent={true}
                         visible={this.state.isPasswordModalVisible} 
+                        onBackdropPress={() => {this.closePasswordModal()}}
+
                         >
                             <View style={styles.centeredView}>
                                 <View style={styles.modalView}>
@@ -381,12 +383,6 @@ class SettingsScreen extends Component {
 
                                     <Text style = {styles.title}>Repeat Password </Text>
 
-                                    {/* <TextInput style = {styles.input}
-                                        secureTextEntry={true}
-                                        underlineColorAndroid = "transparent"
-                                        placeholder = {"Repeat Password"}
-                                        autoCapitalize = "none"
-                                        onChangeText = {this.updatePasswordRepeat}/>  */}
                                     <Password
                                             label={'Repeat Password'}
                                             style = {styles.input}
@@ -423,9 +419,10 @@ class SettingsScreen extends Component {
 
 
                         <Modal
-                        animationType="slide"
-                        transparent={true}
-                        visible={this.state.isUsernameModalVisible} 
+                            animationType="slide"
+                            transparent={true}
+                            visible={this.state.isUsernameModalVisible} 
+                            onBackdropPress={() => {this.closeUsernameModal()}}
                         >
                             <View style={styles.centeredView}>
                                 <View style={styles.modalView}>
@@ -436,7 +433,9 @@ class SettingsScreen extends Component {
                                         placeholder = {"Username"}
                                         autoCapitalize = "none"
                                         defaultValue={this.state.username}
-                                        onChangeText = {this.updateUsername}/>         
+                                        onChangeText = {this.updateUsername}
+                                        maxLength={30}
+                                        />         
                             
                             
                                     <View style={{flexDirection:'row', marginTop:30}}>
@@ -458,6 +457,8 @@ class SettingsScreen extends Component {
                         animationType="slide"
                         transparent={true}
                         visible={this.state.isEmailModalVisible} 
+                        onBackdropPress={() => {this.closeEmailModal()}}
+
                         >
                             <View style={styles.centeredView}>
                                 <View style={styles.modalView}>
@@ -468,9 +469,11 @@ class SettingsScreen extends Component {
                                         placeholder = {this.state.email}
                                         autoCapitalize = "none"
                                         defaultValue={this.state.email}
-                                        onChangeText = {this.updateEmail}/>         
+                                        onChangeText = {this.updateEmail}
+                                        maxLength={30}/>         
                             
-                            
+                                    <Text></Text>
+
                                     <View style={{flexDirection:'row',}}>
                                         <TouchableOpacity style={{backgroundColor:Colors.red,width:'50%'}} onPress={()=>this.closeEmailModal()}>
                                             <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
@@ -489,6 +492,7 @@ class SettingsScreen extends Component {
                         animationType="slide"
                         transparent={true}
                         visible={this.state.isFavFoodVisible} 
+                        onBackdropPress={() => {this.closeFavFoodModal()}}
                         >
                             <View style={styles.centeredView}>
                                 <View style={styles.modalView}>
@@ -529,6 +533,7 @@ class SettingsScreen extends Component {
                         animationType="slide"
                         transparent={true}
                         visible={this.state.isFavTransportVisible} 
+                        onBackdropPress={() => {this.closeFavTransportModal()}}
                         >
                             <View style={styles.centeredView}>
                                 <View style={styles.modalView}>
@@ -567,7 +572,8 @@ class SettingsScreen extends Component {
                         <Modal
                             animationType="slide"
                             transparent={true}
-                            visible={this.state.isEnergyModalVisible} 
+                            visible={this.state.isEnergyModalVisible}
+                            onBackdropPress={() => {this.closeEnergyModal()}} 
                         >
                             <View style={styles.centeredView}>
                                 <View style={styles.modalView}>
@@ -581,7 +587,7 @@ class SettingsScreen extends Component {
 
                                         onChangeText = {this.updateUserEnergy}/>         
                             
-                            
+                                    <Text></Text>
                                     <View style={{flexDirection:'row',}}>
                                         <TouchableOpacity style={{backgroundColor:Colors.red,width:'50%'}} onPress={()=>this.closeEnergyModal()}>
                                             <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
@@ -601,6 +607,8 @@ class SettingsScreen extends Component {
                             animationType="slide"
                             transparent={true}
                             visible={this.state.isDeleteAccountModalVisible} 
+                            onBackdropPress={() => {this.closeDeleteAccountModal()}} 
+
                         >
                             <View style={styles.centeredView}>
                                 <View style={styles.modalView}>
@@ -663,19 +671,29 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         padding: 10
     },
+    picker: {
+        borderColor: 'black', 
+        borderWidth: 1 ,
+        height: 50,
+        textAlign: 'center',
+        color: 'black'
+    },
     title: {
         fontFamily: 'open-sans-bold',
-        fontSize: 12,
+        fontSize: 20,
         margin: 20,
+        fontWeight: 'bold',
         textAlign: 'center',
         justifyContent: 'flex-start',
         alignSelf: 'stretch'
     },
+
     input:{
         width: "100%",
         zIndex: 2,
-        borderWidth:1,
-        marginBottom:10
+        marginBottom:10,
+        borderBottomColor: 'grey',
+        borderBottomWidth: 1,
     },
     bottom: {
         width: '100%',
@@ -690,6 +708,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         borderBottomColor: 'grey',
         alignItems: 'flex-start',
+        
     },
     button: {
         marginBottom: 15,

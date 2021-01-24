@@ -47,7 +47,7 @@ class CategoriesScreen extends Component {
         //insert energy variables
 
         energyTypeId: 0,
-        userCost:'',
+        userCost:0,
         energyItemId:0,
         transportStr: '',
         foodStr:'',
@@ -263,10 +263,15 @@ class CategoriesScreen extends Component {
     // }
 
     insertEnergy = () => {
-        var curDate = new Date()
-        
+        if (this.state.userCost <= 0 ){
+            alert("User Cost must be greater than Zero");
+            return
+        }
+        var curDate = new Date() 
         var formattedDate = format(curDate, 'yyyy-MM-dd HH:mm:ss');
         console.log("InserEnergy:", "Type", this.state.energyTypeId,"Item", this.state.energyItemId,  "User:", this.state.userId)
+
+
         fetch(BaseUrl+'insertEnergy', {
             headers: {
                 'Accept': 'application/json',
@@ -411,7 +416,11 @@ class CategoriesScreen extends Component {
               
 
                 <ScrollView
-                    style={styles.centeredView}
+                    style={{
+                            flex: 1,
+                            backgroundColor: (this.state.isFoodModalVisible ||  this.state.isElectricityModalVisible  || this.state.isRecycleModalVisible 
+                                || this.state.isTransportModalVisible)? 'rgba(0, 0, 0, 0.4)' : 'transparent'
+                        }}
                     refreshControl={
                     <RefreshControl
                         refreshing={this.state.refreshing}
@@ -505,7 +514,7 @@ class CategoriesScreen extends Component {
                                 <View style={styles.iconsStyles}>
                                     <FontAwesome name="plus-circle" size={24} color="white" />
                                 </View>
-                                <Text style={styles.buttonText}> Transport Emission</Text>
+                                <Text style={styles.buttonText}> Transport Emissions</Text>
                             </View>
                         </TouchableOpacity>
                         <Text> </Text>
@@ -514,7 +523,7 @@ class CategoriesScreen extends Component {
                                 <View style={styles.iconsStyles}>
                                     <FontAwesome name="plus-circle" size={24} color="white" />
                                 </View>
-                                <Text style={styles.buttonText}> Food Emission</Text>
+                                <Text style={styles.buttonText}> Food Emissions</Text>
                             </View>
                         </TouchableOpacity>
                         <Text> </Text>
@@ -524,7 +533,7 @@ class CategoriesScreen extends Component {
                                 <View style={styles.iconsStyles}>
                                     <FontAwesome name="plus-circle" size={24} color="white" />
                                 </View>
-                                <Text style={styles.buttonText}> Electricity </Text>
+                                <Text style={styles.buttonText}> House Emissions </Text>
                             </View>
                         </TouchableOpacity>
 
@@ -541,11 +550,13 @@ class CategoriesScreen extends Component {
                     </View>
 
                 
-                
+                    <View  style={styles.wrapper}>
                     <Modal
                         animationType="slide"
                         transparent={true}
                         visible={this.state.isTransportModalVisible} 
+                        onBackdropPress={() => {this.closeTransportModal()}}
+
                         >
                             <View style={styles.centeredView}>
                                 <View style={styles.modalView}>
@@ -603,6 +614,8 @@ class CategoriesScreen extends Component {
                             animationType="slide"
                             transparent={true}
                             visible={this.state.isFoodModalVisible} 
+                            onBackdropPress={() => {this.closeFoodModal()}}
+
                         >
                             <View style={styles.centeredView}>
                                 <View style={styles.modalView}>
@@ -659,6 +672,8 @@ class CategoriesScreen extends Component {
                             animationType="slide"
                             transparent={true}
                             visible={this.state.isRecycleModalVisible} 
+                            onBackdropPress={() => {this.closeRecycleModal()}}
+
                             >
                             <View style={styles.centeredView}>
                                 <View style={styles.modalView}>
@@ -719,6 +734,7 @@ class CategoriesScreen extends Component {
                             animationType="slide"
                             transparent={true}
                             visible={this.state.isElectricityModalVisible} 
+                            onBackdropPress={() => {this.closeElectricityModal()}}
                         >
                             <View style={styles.centeredView}>
                                 <View style={styles.modalView}>
@@ -766,6 +782,7 @@ class CategoriesScreen extends Component {
                                 
                             </View>
                         </Modal>
+                        </View>
 
 
                         <Dialog
@@ -879,6 +896,9 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold'
     },
+    wrapper: {
+        backgroundColor:'rgba(255,255,255,0.5)'
+      },
     input: {
         marginBottom: 15,
         height: 50,
@@ -957,9 +977,7 @@ const styles = StyleSheet.create({
         padding: 20,
         color: 'white'
     },
-    centeredView: {
-        flex: 1
-        },
+
     progressStyle: {
         display: 'flex',
         flex: 1,

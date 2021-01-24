@@ -34,7 +34,8 @@ class HistoryScreen extends Component {
     totalCo2Reduced:0,
     userId:-1,
     appliedFilters:"",
-    isFiltersApplied: false
+    isFiltersApplied: false,
+    isUpdateModalVisible:false
   }
 
 
@@ -130,6 +131,13 @@ class HistoryScreen extends Component {
     this.setState({refreshing: false});
   }
 
+
+  _onRefresh = () => {
+    this.setState({refreshing: true});
+    this.fetchData(this.state.userId, this.state.appliedFilters)
+    this.setState({refreshing: false});
+  }
+
     render() {
       console.log("Render")
 
@@ -170,25 +178,27 @@ class HistoryScreen extends Component {
               />
               }
           >
+            <View style = {{ backgroundColor: (this.state.isUpdateModalVisible)? 'rgba(0, 0, 0, 0.4)' : 'transparent'}}>
+
               <View style= {styles.totals}>
                 <View style= {styles.Eachtotal}>
                   <FontAwesome name="cloud" size={25} color={Colors.primaryColor} />
                   <Text style={styles.text}> Emissions</Text>
-                  <Text style={styles.text}>{this.state.totalCo2}</Text>
+                  <Text style={styles.text}>{this.state.totalCo2.toFixed(1)}</Text>
                   <Text style={styles.text}>(kg CO2)</Text>
 
                 </View>
                   <View style= {styles.Eachtotal}>
                       <FontAwesome name="recycle" size={25} color={Colors.primaryColor} />
                       <Text style={styles.text}> Recycled</Text>
-                      <Text style={styles.text}> {this.state.totalRecycledCo2}</Text>
+                      <Text style={styles.text}> {this.state.totalRecycledCo2.toFixed(1)}</Text>
                       <Text style={styles.text}>(kg CO2)</Text>
 
                   </View>
                 <View style= {styles.Eachtotal}>
                   {sinceLastWeekIcon} 
                   <Text style={styles.text}> Since last week </Text>
-                  <Text style={styles.text}> {totalCo2Reduced}</Text>
+                  <Text style={styles.text}> {totalCo2Reduced.toFixed(1)}</Text>
                   <Text style={styles.text}>(%)</Text>
 
                   {/* <MaterialCommunityIcons name="percent" size={24} color={Colors.primaryColor} /> */}
@@ -205,6 +215,8 @@ class HistoryScreen extends Component {
                     />
 
               </View>
+            </View>
+
             </ScrollView>
 
         )

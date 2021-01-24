@@ -115,31 +115,31 @@ class MealList extends Component {
  renderItem = ({ item }) => {
 
     var itemIcon = <FontAwesome name="train-car" size={24} color={Colors.primaryColor} /> 
-    if (item.itemId === 1 & item.energyType === 1){
+    if (item.energyItem === 1 & item.energyType === 1){
         itemIcon = <FontAwesome name="plane" size={24} color={Colors.primaryColor}/>
     }
-    else if (item.itemId === 2 & item.energyType === 1){
+    else if (item.energyItem === 2 & item.energyType === 1){
         itemIcon = <FontAwesome name="car" size={24} color={Colors.primaryColor} />
     }
-    else if (item.itemId === 3 && item.energyType == 1){
+    else if (item.energyItem === 3 && item.energyType == 1){
         itemIcon = <FontAwesome name="car" size={24} color= {Colors.primaryColor} />
     }
-    else if (item.itemId === 4 & item.energyType === 1){
+    else if (item.energyItem === 4 & item.energyType === 1){
         itemIcon = <FontAwesome name="bus" size={24} color={Colors.primaryColor} />    
     }    
-    else if (item.itemId === 5 && item.energyType == 1 ){
+    else if (item.energyItem === 5 && item.energyType == 1 ){
         itemIcon = <FontAwesome name="plane" size={24} color= {Colors.primaryColor} />
     }
-    else if (item.itemId === 6 &&  item.energyType == 1){
+    else if (item.energyItem === 6 &&  item.energyType == 1){
         itemIcon = <FontAwesome name="plane" size={24} color= {Colors.primaryColor} />
     }
-    else if (item.itemId === 7 && item.energyType === 1){
+    else if (item.energyItem === 7 && item.energyType === 1){
         itemIcon = <FontAwesome name="motorcycle" size={24} color= {Colors.primaryColor} />
     }
-    else if (item.itemId === 8 && item.energyType === 1){
+    else if (item.energyItem === 8 && item.energyType === 1){
         itemIcon = <FontAwesome name="bicycle" size={24} color= {Colors.primaryColor} />
     }
-    else if (item.itemId === 9 & item.energyType === 1){
+    else if (item.energyItem === 9 & item.energyType === 1){
         itemIcon = <FontAwesome name="train" size={24} color= {Colors.primaryColor} />
     }
     else if (item.energyType === 0 ){
@@ -147,10 +147,13 @@ class MealList extends Component {
     }
     else if (item.energyType === 2 ){
         itemIcon = <FontAwesome name="recycle" size={24} color= {Colors.primaryColor} />
-    }    
-    else if (item.energyType === 3 ){
+    }  
+    else if (item.energyItem === 2 & item.energyType === 3  ){
         itemIcon = <FontAwesome name="bolt" size={24} color= {Colors.primaryColor} />
     }
+    else if (item.energyType === 3){
+        itemIcon = <FontAwesome name="home" size={24} color= {Colors.primaryColor} />
+    }  
 
 
     var stringCost = "Energy"
@@ -177,7 +180,7 @@ class MealList extends Component {
                 <View style = {styles.itemTexts}>
                     <Text style={styles.text}> Date: {item.energyDate} </Text>
                     <Text style={styles.text}> {item.description} : {item.userCost} {stringCost}</Text> 
-                    <Text style={styles.text}> Co2: {item.totalCost} Kg</Text>
+                    <Text style={styles.text}> Co2: {item.totalCost.toFixed(1)} Kg</Text>
                 </View>
                 
                 <View style={styles.iconStyles}>
@@ -217,7 +220,9 @@ class MealList extends Component {
                 <Modal
                 animationType="slide"
                 transparent={true}
-                visible={this.state.isDeleteAccountModalVisible} 
+                visible={this.state.isDeleteModalVisible} 
+                onBackdropPress={() => {this.closeDeleteModal()}}
+
                 >
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
@@ -241,11 +246,11 @@ class MealList extends Component {
             }
 
             {  this.state.isUpdateModalVisible &&
-                
                 <Modal
                 animationType="slide"
                 transparent={true}
                 visible={this.state.isUpdateModalVisible} 
+                onBackdropPress={() => {this.closeUpdateModal()}}
                 >
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>

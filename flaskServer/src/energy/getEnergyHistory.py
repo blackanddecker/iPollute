@@ -3,7 +3,7 @@ import flask
 from flask import Flask , request ,make_response ,jsonify
 from src.utils.costCalculations import costCalculations
 import datetime
-
+from datetime import timedelta  
 def getEnergyHistory(connection, data):
     '''
     Get User Energy History
@@ -62,9 +62,9 @@ def getEnergyHistory(connection, data):
             print(sql)
             cursor.execute(sql)
             transportHistory = cursor.fetchall()
-            print(appliedFilters)
             appliedFilters['minCurrentDate'] = datetime.datetime.strptime(appliedFilters['minCurrentDate'], '%Y-%m-%d')
-            appliedFilters['maxCurrentDate'] = datetime.datetime.strptime(appliedFilters['maxCurrentDate'], '%Y-%m-%d')
+            appliedFilters['maxCurrentDate'] = datetime.datetime.strptime(appliedFilters['maxCurrentDate'], '%Y-%m-%d') + timedelta(days=1)
+            print("> appliedFilters", appliedFilters)
 
             if appliedFilters['isTransport'] == True:
                 for i in range(len(transportHistory)): 
