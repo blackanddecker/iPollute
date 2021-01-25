@@ -116,13 +116,13 @@ class SignUpScreen extends Component {
           this.handleEmailChange("")
         }
         else{
-          alert("Login Failed");
+          alert("SignIn Failed");
         }
 
     })
     .catch((error) => {
         console.error(error);
-        alert("Login Failed");
+        alert("SignIn Failed");
         });
 
   };

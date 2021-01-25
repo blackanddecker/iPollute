@@ -20,7 +20,8 @@ def signin(connection, data, key , bcrypt):
         return jsonify({'success': False, 'message':'Incorrect email or password!'}), 400
     if 'password' not in data:
         return jsonify({'success': False, 'message':'Incorrect email or password!'}), 400 
-
+    if 'username' not in data:
+        return jsonify({'success': False, 'message':'Incorrect email or password!'}), 400 
     try:
 
         auth = request.authorization
