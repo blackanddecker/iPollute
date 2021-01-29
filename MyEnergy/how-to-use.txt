@@ -24,3 +24,12 @@ rm package-lock.json && rm -rf node_modules && rm -rf $TMPDIR/metro-* && rm -rf 
  npm run android
 
  npx react-native start
+
+
+
+ To build app for production 
+
+$ cd android
+$ ./gradlew bundleRelease
+
+The apk is in path : /home/vaggelis/Desktop/Project/iPollute/MyEnergy/android/app/build/outputs/apk/release
