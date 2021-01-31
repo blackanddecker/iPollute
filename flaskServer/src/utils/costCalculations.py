@@ -51,10 +51,10 @@ def updateUserEnergy(connection, userId, energy):
 def findMessage(energy):
     
     if (energy % 5 == 0 ): 
-        message = str(1.9 *energy ) + " Kg of gasoline consumed"
+        message = str(int(1.9 *energy) ) + " Kg of gasoline consumed"
     elif energy % 2 == 0 : 
-        message = str(4 *energy ) + " Km driven by an average passenger vehicle"
+        message = str(int(4 *energy) ) + " Km driven by an average passenger vehicle"
     else : 
-        message = str(128 * energy ) + " number of smartphones charged"
+        message = str(int(128 * energy) ) + " number of smartphones charged"
 
     return message
