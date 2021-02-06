@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity,  SafeAreaView, ScrollView, Picker} from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity,  SafeAreaView, ScrollView, Picker, ActivityIndicator} from 'react-native';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -215,6 +215,7 @@ class SettingsScreen extends Component {
                 alert("Please enter the same password twice");
                 return
             }
+            this.setState({isLoading:true})
             fetch(BaseUrl+'updateUser', {
             headers: {
                 'Accept': 'application/json',
@@ -243,6 +244,7 @@ class SettingsScreen extends Component {
                     this.closeFavTransportModal()
                     this.closeFavFoodModal()
                     this.closeEnergyModal()
+                    this.setState({isLoading:false})
 
 
 
@@ -293,8 +295,7 @@ class SettingsScreen extends Component {
 
 
         render() {
-            var placeholderUsername = this.state.username
-            if(!this.state.loading) {
+            if(this.state.isLoading === false) {
                 return (
                     <SafeAreaView style={styles.centeredView}>
                         <ScrollView style={styles.scrollView}>
@@ -346,9 +347,9 @@ class SettingsScreen extends Component {
                             <TouchableOpacity    onPress={()=>this.openEnergyModal()}    underlayColor="black">
                                 <View style={styles.button}>
                                     <View style={styles.iconStyle}>
-                                        <FontAwesome name="bolt" size={24} color="black" />
+                                        <FontAwesome name="warning" size={24} color="black" />
                                     </View>
-                                    <Text style={styles.buttonText}> Update User Energy</Text>
+                                    <Text style={styles.buttonText}> Add Warning</Text>
                                 </View>
                             </TouchableOpacity>
                                 
@@ -578,13 +579,13 @@ class SettingsScreen extends Component {
                         >
                             <View style={styles.centeredView}>
                                 <View style={styles.modalView}>
-                                    <Text style = {styles.title}>Update User Energy </Text>
+                                    <Text style = {styles.title}>Add Warning </Text>
                                         
-                                        <Text style = {styles.text}> User Energy Is : {this.state.userEnergy}</Text>
+                                        <Text style = {styles.text}> Add Warning in Carbon / Recycle Percentage of : {this.state.userEnergy}</Text>
                                         <Slider
                                             value={this.state.userEnergy}
                                             onValueChange={this.updateUserEnergy}
-                                            maximumValue={500}
+                                            maximumValue={100}
                                             minimumValue={1}
                                             step={1}
                                             trackStyle={{ height: 10, backgroundColor: 'transparent' }}
@@ -639,7 +640,9 @@ class SettingsScreen extends Component {
                 )
             }
             else {
-                return(<ActivityIndicator size={"large"} ></ActivityIndicator>)
+                return( <View style={{ flex: 1,justifyContent: "center"}}>
+                            <ActivityIndicator size="large" color= {Colors.primaryColor} />
+                        </View>)
             }
         }
 

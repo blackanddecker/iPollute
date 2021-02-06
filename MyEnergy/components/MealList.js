@@ -8,6 +8,7 @@ import Colors from '../constants/Colors';
 import BaseUrl from '../constants/Url';
 import base64 from 'react-native-base64'
 import { Slider } from 'react-native-elements';
+import { TextComponent } from 'react-native';
 
 class MealList extends Component {
   constructor(props) {
@@ -29,7 +30,7 @@ class MealList extends Component {
 
   openUpdateModal = () =>{this.setState({isUpdateModalVisible:true})}
   toggleUpdateModal = () =>{this.setState({isUpdateModalVisible:!this.state.isUpdateModalVisible})}
-  closeUpdateModal = () =>{this.setState({isUpdateModalVisible:false})}
+  closeUpdateModal = () =>{this.setState({isUpdateModalVisible:false, updatedUserCost: 0})}
 
   openDeleteModal = () =>{this.setState({isDeleteModalVisible:true})}
   toggleDeleteModal = () =>{this.setState({isDeleteModalVisible:!this.state.isDeleteModalVisible})}
@@ -276,10 +277,10 @@ class MealList extends Component {
                 >
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
-                        <Text style = {styles.title}>Delete </Text>
+                        <Text style = {styles.title}>Delete Action</Text>
 
                         <Text style = {styles.textModal}>Do you want to delete this action ? </Text>
-                                 
+                        <Text></Text>
                 
                         <View style={{flexDirection:'row',}}>
                             <TouchableOpacity style={{backgroundColor:Colors.red,width:'50%'}} onPress={()=>this.closeDeleteModal()}>

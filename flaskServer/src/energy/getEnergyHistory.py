@@ -20,7 +20,7 @@ def getEnergyHistory(connection, data):
         }
 
         if 'appliedFilters' in data:
-            if str(data['appliedFilters']) == 'None':
+            if str(data['appliedFilters']) == 'None' or str(data['appliedFilters']) == '':
                 appliedFilters['lowKm'] = 0 
                 appliedFilters['lowKg'] = 0 
                 appliedFilters['minCurrentDate'] = "2019-01-01"
@@ -83,6 +83,7 @@ def getEnergyHistory(connection, data):
                         totalFoodCost += transportHistory[i]['totalCost']
 
             
+        with connection.cursor() as cursor:
 
             sql = "CALL getEnergyHistory({}, 3);".format(data['userId'])
             # print(sql)
@@ -120,6 +121,8 @@ def getEnergyHistory(connection, data):
 
             curWeekCo2 = 0
             lastWeekCo2 = 0
+            lastWeekCo2Recycled = 0
+            curWeekCo2Recycled = 0
             getCurDate = datetime.datetime.now() - datetime.timedelta(days=7)
             getLastWeekDate = datetime.datetime.now() - datetime.timedelta(days=14)
             # print("getCurDate", getCurDate)
@@ -127,25 +130,40 @@ def getEnergyHistory(connection, data):
             
             for item in history: 
                 if item['energyType'] == 2:
-                    cost = (-1) * item['totalCost']
-                else:
-                    cost = item['totalCost']
+                    if getCurDate < item['energyDate'] :
+                        curWeekCo2Recycled +=  item['totalCost']
+                    elif getCurDate > item['energyDate'] and getLastWeekDate < item['energyDate']:
+                        lastWeekCo2Recycled +=  item['totalCost']
 
-                if getCurDate < item['energyDate'] :
-                    curWeekCo2 += cost
-                    # print("Cost is", cost, "1date is:", item['energyDate'],curWeekCo2 )
-                elif getCurDate > item['energyDate'] and getLastWeekDate < item['energyDate']:
-                    lastWeekCo2 += cost
-                    # print("2Cost is", cost, "1date is:", item['energyDate'], lastWeekCo2 )
-            if lastWeekCo2 == 0:
+                else:
+                    if getCurDate < item['energyDate'] :
+                        curWeekCo2 +=  item['totalCost']
+                    elif getCurDate > item['energyDate'] and getLastWeekDate < item['energyDate']:
+                        lastWeekCo2 +=  item['totalCost']
+
+
+
+            if lastWeekCo2 == 0 or curWeekCo2 == 0 :
                 lastWeekCo2 = 0.0001
+                curWeekCo2 = 0.0001
                 totalCo2Reduced = 0
             else:
-                totalCo2Reduced = (lastWeekCo2- curWeekCo2) / lastWeekCo2 
+                totalCo2Reduced = (curWeekCo2 - lastWeekCo2 ) / (curWeekCo2 + lastWeekCo2) * 100
 
 
-            for i in history:
-                print(i)
+            if lastWeekCo2Recycled == 0 or curWeekCo2Recycled == 0:
+                curWeekCo2Recycled = 0.0001
+                lastWeekCo2Recycled = 0.001
+                totalCo2RecycledReduced = 0
+            else:
+                totalCo2RecycledReduced = (curWeekCo2Recycled - lastWeekCo2Recycled ) / (curWeekCo2Recycled + lastWeekCo2Recycled) * 100
+
+            print("lastWeekCo2", lastWeekCo2)
+            print("curWeekCo2", curWeekCo2)
+            print("totalCo2Reduced", totalCo2Reduced)
+
+            # for i in history:
+            #     print(i)
 
             energy = {}
             energy['totalTransportCost'] = totalTransportCost
@@ -153,24 +171,37 @@ def getEnergyHistory(connection, data):
             energy['totalElectricityCost'] = totalElectricityCost
             energy['totalRecycleCost'] = totalRecycleCost
 
-            energy['totalUserEnergyCost'] = round(energy['totalTransportCost'],1) + round(energy['totalFoodCost'],1) + round(energy['totalElectricityCost'],1)  #Total Garbage
+            energy['totalUserEnergyCost'] = energy['totalTransportCost'] + energy['totalFoodCost'] + energy['totalElectricityCost']  #Total Garbage
             energy['totalUserEnergyRecycle'] = round(energy['totalRecycleCost'],1) # Total Non Garbage
             if energy['totalUserEnergyCost'] != 0: 
                 energy['totalUserSavings'] = round( 100 *(( energy['totalRecycleCost']) / energy['totalUserEnergyCost']),1) #Total Recycled /Total Garbage
                 energy['totalTransportCost'] = round(100 * ( energy['totalTransportCost'] / energy['totalUserEnergyCost']) ,1)
                 energy['totalFoodCost'] = round(100 *( energy['totalFoodCost']/ energy['totalUserEnergyCost']) ,1)
                 energy['totalElectricityCost'] = round(100 *( energy['totalElectricityCost']/ energy['totalUserEnergyCost']) ,1)
+                energy['totalUserEnergyCost'] = round(energy['totalUserEnergyCost'],1)
             else:
                 energy['totalUserSavings'] = 0
                 energy['totalTransportCost'] = 0
                 energy['totalFoodCost'] = 0
                 energy['totalElectricityCost'] = 0
-
-            return {
+            
+            
+            response = {
                 "history":history,
                 "success":True, 
                 "userEnergy": energy,
-                "totalStats": {"totalCo2": round(totalCo2,1), "totalRecycledCo2":round(totalRecycledCo2,1),  "totalCo2Reduced":round(totalCo2Reduced,1)} }, 200
+                "totalStats": {
+                    "totalCo2": round(totalCo2,1),
+                    "totalRecycledCo2":round(totalRecycledCo2,1),
+                    "totalCo2Reduced":round(totalCo2Reduced,1),
+                    "totalCo2RecycledReduced": round(totalCo2RecycledReduced,1),
+                    "curWeekCo2": round(curWeekCo2,1),
+                    "lastWeekCo2": round(lastWeekCo2,1),
+                    "curWeekCo2Recycled": round(curWeekCo2Recycled,1),
+                    "lastWeekCo2Recycled": round(lastWeekCo2Recycled,1)
+                    } }
+            print(response)
+            return response, 200
 
     
     except Exception as e :
@@ -182,7 +213,12 @@ def getEnergyHistory(connection, data):
                 "totalStats": {
                     "totalCo2": 0,
                     "totalRecycledCo2":0,
-                    "totalCo2Reduced":0
+                    "totalCo2Reduced":0,
+                    "lastWeekCo2":0,
+                    "curWeekCo2":0,
+                    "curWeekCo2Recycled":0,
+                    "lastWeekCo2Recycled":0,
+                    "totalCo2RecycledReduced":0
                     },
                 "userEnergy":{
                     "totalTransportCost": 0,

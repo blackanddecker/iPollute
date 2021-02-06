@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, Component } from 'react';
-import { View, Text, StyleSheet, Thumb, Rail, RailSelected, Notch, Switch, Platform, TouchableOpacity, RefreshControl, ScrollView} from 'react-native';
+import { View, Text, StyleSheet, Thumb, Rail, RailSelected, Notch, Switch, Platform, TouchableOpacity, RefreshControl, ScrollView, ActivityIndicator} from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { Slider } from 'react-native-elements';
 import DatePicker from 'react-native-datepicker'
@@ -60,6 +60,7 @@ class FiltersScreen extends Component {
 
      
     fetchData = (userId) => {
+        this.setState({isLoading: true })
         fetch(BaseUrl+'getFilterOptions', {
             headers: {
                 'Accept': 'application/json',
@@ -196,17 +197,18 @@ class FiltersScreen extends Component {
 
 
     render() {
-        console.log()
-        return  (
-            <ScrollView
-                style={styles.screen}
-                refreshControl={
-                <RefreshControl
-                    refreshing={this.state.refreshing}
-                    onRefresh={this._onRefresh}
-                />
-                }
-            >
+        
+        if(this.state.isLoading === false) {
+            return  (
+                <ScrollView
+                    style={styles.screen}
+                    refreshControl={
+                    <RefreshControl
+                        refreshing={this.state.refreshing}
+                        onRefresh={this._onRefresh}
+                    />
+                    }
+                >
                         
                     <View style={styles.component}>
                     <Text style={styles.text}>Select Start Date</Text>
@@ -235,91 +237,91 @@ class FiltersScreen extends Component {
                         }}
                         onDateChange={newValue => this.updateMinCurrentDate(newValue)}
                     />
-                </View>
-                <View style={styles.component}>
-                    <Text style={styles.text}>Select End Date</Text>
-                    <DatePicker
-                        style={{width: 200}}
-                        date={this.state.maxCurrentDate}
-                        mode="date"
-                        placeholder="select date"
-                        format="YYYY-MM-DD"
-                        minDate={ this.state.minDate}
-                        maxDate={ this.state.maxDate}
-                        confirmBtnText="Confirm"
-                        cancelBtnText="Cancel"
-                        customStyles={{
-                        dateIcon: {
-                            position: 'absolute',
-                            left: 0,
-                            top: 4,
-                            marginLeft: 0
-                        },
-                        dateInput: {
-                            marginLeft: 36
-                        }
-                        // ... You can check the source to find the other keys.
-                        }}
-                        onDateChange={newValue => this.updateMaxCurrentDate(newValue)}
-                    />
-                </View>     
-                <View style={styles.componentRow}>
-                    <Text> Transport</Text>
-                    <Switch style={styles.switch}
-                        value = {this.state.isTransport} 
-                        trackColor = {{true: Colors.primaryColor}}
-                        thumbColor = {Colors.primaryColor}
-                        onValueChange = {newValue => this.setIsTransport(newValue)}>
-                    </Switch>
-                </View>  
-                <View style={styles.componentRow}>
-                    <Text> Food</Text>
-                    <View style={styles.switch}>
-                        <Switch 
-                            value = {this.state.isFood}
+                    </View>
+                    <View style={styles.component}>
+                        <Text style={styles.text}>Select End Date</Text>
+                        <DatePicker
+                            style={{width: 200}}
+                            date={this.state.maxCurrentDate}
+                            mode="date"
+                            placeholder="select date"
+                            format="YYYY-MM-DD"
+                            minDate={ this.state.minDate}
+                            maxDate={ this.state.maxDate}
+                            confirmBtnText="Confirm"
+                            cancelBtnText="Cancel"
+                            customStyles={{
+                            dateIcon: {
+                                position: 'absolute',
+                                left: 0,
+                                top: 4,
+                                marginLeft: 0
+                            },
+                            dateInput: {
+                                marginLeft: 36
+                            }
+                            // ... You can check the source to find the other keys.
+                            }}
+                            onDateChange={newValue => this.updateMaxCurrentDate(newValue)}
+                        />
+                    </View>     
+                    <View style={styles.componentRow}>
+                        <Text> Transport</Text>
+                        <Switch style={styles.switch}
+                            value = {this.state.isTransport} 
                             trackColor = {{true: Colors.primaryColor}}
                             thumbColor = {Colors.primaryColor}
-                            onValueChange = {newValue => this.setIsFood(newValue)}
+                            onValueChange = {newValue => this.setIsTransport(newValue)}>
+                        </Switch>
+                    </View>  
+                    <View style={styles.componentRow}>
+                        <Text> Food</Text>
+                        <View style={styles.switch}>
+                            <Switch 
+                                value = {this.state.isFood}
+                                trackColor = {{true: Colors.primaryColor}}
+                                thumbColor = {Colors.primaryColor}
+                                onValueChange = {newValue => this.setIsFood(newValue)}
+                            ></Switch>
+                        </View>
+                    </View>  
+                    <View style={styles.componentRow}>
+                        <Text> Electricity </Text>
+                        <Switch 
+                            style={styles.switch}
+                            value = {this.state.isElectricity}
+                            trackColor = {{true: Colors.primaryColor}}
+                            thumbColor = {Colors.primaryColor}
+                            onValueChange = {newValue => this.setIsElectricity(newValue)}
                         ></Switch>
-                    </View>
-                </View>  
-                <View style={styles.componentRow}>
-                    <Text> Electricity </Text>
-                    <Switch 
-                        style={styles.switch}
-                        value = {this.state.isElectricity}
-                        trackColor = {{true: Colors.primaryColor}}
-                        thumbColor = {Colors.primaryColor}
-                        onValueChange = {newValue => this.setIsElectricity(newValue)}
-                    ></Switch>
-                </View>  
-                <View style={styles.componentRow}>
-                    <Text> Recycle </Text>
-                    <Switch 
-                        style={styles.switch}
-                        value = {this.state.isRecycle}
-                        trackColor = {{true: Colors.primaryColor}}
-                        thumbColor = {Colors.primaryColor}
-                        onValueChange = {newValue => this.setIsRecycle(newValue)}
+                    </View>  
+                    <View style={styles.componentRow}>
+                        <Text> Recycle </Text>
+                        <Switch 
+                            style={styles.switch}
+                            value = {this.state.isRecycle}
+                            trackColor = {{true: Colors.primaryColor}}
+                            thumbColor = {Colors.primaryColor}
+                            onValueChange = {newValue => this.setIsRecycle(newValue)}
 
-                    ></Switch>
-                </View> 
+                        ></Switch>
+                    </View> 
 
 
 
-                <View style={styles.component}>
-                    
-                    <View style={styles.slider}>
+                    <View style={styles.component}>
+                        
+                        <View style={styles.slider}>
 
-                        <Slider
-                            value={this.state.lowCurrentKg}
-                            onValueChange={this.updateCurrentKg}
-                            maximumValue={this.state.maxKg}
-                            minimumValue={this.state.minKg}
-                            step={5}
-                            trackStyle={{ height: 10, backgroundColor: 'transparent' }}
-                            thumbStyle={{ height: 20, width: 20, backgroundColor: Colors.primaryColor }}
-                        /> 
+                            <Slider
+                                value={this.state.lowCurrentKg}
+                                onValueChange={this.updateCurrentKg}
+                                maximumValue={this.state.maxKg}
+                                minimumValue={this.state.minKg}
+                                step={5}
+                                trackStyle={{ height: 10, backgroundColor: 'transparent' }}
+                                thumbStyle={{ height: 20, width: 20, backgroundColor: Colors.primaryColor }}
+                            /> 
 
 
 
@@ -335,47 +337,54 @@ class FiltersScreen extends Component {
 
 
 
-                    </View>
-                    <Text style={styles.text}>Food (kg) {String(">")} {this.state.lowCurrentKg}</Text>
-                </View>
-
-                <View style={styles.component}>
-                    <View style={styles.slider}>
-
-                        <Slider
-                            value={this.state.lowCurrentKm}
-                            onValueChange={this.updateCurrentKm}
-                            maximumValue={this.state.maxKm}
-                            minimumValue={this.state.minKm}
-                            step={5}
-                            trackStyle={{ height: 10, backgroundColor: 'transparent' }}
-                            thumbStyle={{ height: 20, width: 20, backgroundColor: Colors.primaryColor }}
-                        />
-                    </View>
-                    <Text style={styles.text}>Transport (km) {String(">")} {this.state.lowCurrentKm}</Text>
-                </View>
-
-                <View>
-                    <TouchableOpacity    style={styles.SaveButton2} onPress={()=>this.saveFilters()} underlayColor="white">
-                        <View style={styles.Button}>
-                            <FontAwesome name="save" size={24} color="black" />
-
-                            <Text style={styles.buttonText}> Save </Text>
                         </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity    style={styles.SaveButton2} onPress={()=>this.restoreFilters()} underlayColor="white">
-                        <View style={styles.RestoreButton}>
-                            <FontAwesome name="refresh" size={24} color="black" />
-                            <Text style={styles.RestorebuttonText}> Reset Filters </Text>
+                        <Text style={styles.text}>Food (kg) {String(">")} {this.state.lowCurrentKg}</Text>
+                    </View>
+
+                    <View style={styles.component}>
+                        <View style={styles.slider}>
+
+                            <Slider
+                                value={this.state.lowCurrentKm}
+                                onValueChange={this.updateCurrentKm}
+                                maximumValue={this.state.maxKm}
+                                minimumValue={this.state.minKm}
+                                step={5}
+                                trackStyle={{ height: 10, backgroundColor: 'transparent' }}
+                                thumbStyle={{ height: 20, width: 20, backgroundColor: Colors.primaryColor }}
+                            />
                         </View>
-                    </TouchableOpacity>
+                        <Text style={styles.text}>Transport (km) {String(">")} {this.state.lowCurrentKm}</Text>
+                    </View>
+
+                    <View>
+                        <TouchableOpacity    style={styles.SaveButton2} onPress={()=>this.saveFilters()} underlayColor="white">
+                            <View style={styles.Button}>
+                                <FontAwesome name="save" size={24} color="black" />
+
+                                <Text style={styles.buttonText}> Save </Text>
+                            </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity    style={styles.SaveButton2} onPress={()=>this.restoreFilters()} underlayColor="white">
+                            <View style={styles.RestoreButton}>
+                                <FontAwesome name="refresh" size={24} color="black" />
+                                <Text style={styles.RestorebuttonText}> Reset Filters </Text>
+                            </View>
+                        </TouchableOpacity>
 
 
+                    </View>
+
+            </ScrollView>
+            )
+        }
+        else{
+            return(  
+                <View style={{ flex: 1,justifyContent: "center"}}>
+                    <ActivityIndicator size="large" color= {Colors.primaryColor} />
                 </View>
-
-        </ScrollView>
-        )
-
+            )
+        }
     }
 };
 

@@ -38,7 +38,7 @@ def signin(connection, data, key , bcrypt):
 
             if check[0]['@s'] > 0:
                 #with connection.cursor() as cursor:
-                sql = "CALL getUserInfo({})".format(check[0]['@s'])
+                sql = "CALL getUserDetails({})".format(check[0]['@s'])
                 #print(sql)
                 cursor.execute(sql)
                 result = cursor.fetchall()
@@ -47,7 +47,7 @@ def signin(connection, data, key , bcrypt):
                     'sub':check[0]['@s'], 'username':result[0]['username'], 'iat':datetime.datetime.utcnow()+datetime.timedelta(minutes =30)} ,
                         key , algorithm='HS256')
 
-                return jsonify({'success': True, 'message': 'You have successfully signed in' ,'token':token.decode('UTF-8') , 'user':{'email': data['email'], 'id': check[0]['@s']}}) , 200
+                return jsonify({'success': True, 'message': 'You have successfully signed in' ,'token':token, 'user':{'email': data['email'], 'id': check[0]['@s']}}) , 200
 
             else:            
                 return jsonify({'success': False, 'message':'User Exists'}), 401 

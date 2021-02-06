@@ -27,7 +27,7 @@ import { Dimensions } from 'react-native';
 
 import HeaderButton from '../components/HeaderButton';
 import Colors from '../constants/Colors';
-import { format } from "date-fns";
+import { format, set } from "date-fns";
 import base64 from 'react-native-base64'
 
 import BaseUrl from '../constants/Url';
@@ -36,6 +36,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import {
     ProgressChart, PieChart
 } from 'react-native-chart-kit'
+import { TextComponent } from 'react-native';
 
 class CategoriesScreen extends Component {
     constructor(){
@@ -45,7 +46,7 @@ class CategoriesScreen extends Component {
     state = {
         userId: -1,
         //insert energy variables
-
+        initState : [],
         energyTypeId: 0,
         userCost:0,
         energyItemId:0,
@@ -68,6 +69,7 @@ class CategoriesScreen extends Component {
         totalUserEnergyCost:1,
         totalUserEnergyRecycle: 0,
         totalUserSavings: 0,
+        warningEnergy: 100,
         
         // modal variables
         isTransportLoading: true,
@@ -86,7 +88,8 @@ class CategoriesScreen extends Component {
         popUpFoodHelp:false,
         popUpElectricityHelp:false,
         popUpRecycleHelp:false,
-        popUpTransportHelp:false
+        popUpTransportHelp:false,
+        openWarningEnergyModal:false
     }
     
     _onRefresh = () => {
@@ -97,7 +100,6 @@ class CategoriesScreen extends Component {
 
 
     fetchData = (userId, appliedFilters) => {
-
         fetch(BaseUrl+'getEnergyObjects', {
             headers: {
                 'Accept': 'application/json',
@@ -197,10 +199,15 @@ class CategoriesScreen extends Component {
                 console.log(responseJson);
                 this.setState({
                     // userEnergy: responseJson['userDetails']['energyTotal'],
+                    isLoading:false,
                     favFood: responseJson['userDetails']['favFood'],
-                    favTransport: responseJson['userDetails']['favTransport'],
-                    isLoading: !this.state.isLoading })
+                    warningEnergy: responseJson['userDetails']['userEnergy'],
+                    favTransport: responseJson['userDetails']['favTransport']})
                 console.log(this.state);
+
+                if ((this.state.warningEnergy > this.state.totalUserSavings) && (this.state.openWarningEnergyModal === false)){
+                    this.setState({openWarningEnergyModal:true})
+                }
                 
         })
         .catch((error) => {
@@ -228,10 +235,14 @@ class CategoriesScreen extends Component {
                 this.fetchData(this.state.userId, this.state.appliedFilters)
                 this.setState({isFiltersApplied: true});
               // }
+                this.setState({isLoading:false})
+
               return JSON.parse(appliedFilters)
               
             })
             //do something else
+            
+
         });
           console.log("Component did mount")
         
@@ -267,6 +278,8 @@ class CategoriesScreen extends Component {
             alert("User Cost must be greater than Zero");
             return
         }
+        this.setState({isLoading:true})
+
         var curDate = new Date() 
         var formattedDate = format(curDate, 'yyyy-MM-dd HH:mm:ss');
         console.log("InserEnergy:", "Type", this.state.energyTypeId,"Item", this.state.energyItemId,  "User:", this.state.userId)
@@ -299,6 +312,7 @@ class CategoriesScreen extends Component {
                 this.closeElectricityModal()
 
                 this.fetchData(this.state.userId, this.state.appliedFilters)
+                this.setState({isLoading:false})
 
                 
             }
@@ -332,20 +346,20 @@ class CategoriesScreen extends Component {
     
     openTransportModal = () =>{this.setState({isTransportModalVisible:true, energyItemId:1, energyTypeId: 1 })}
     toggleTransportModal = () =>{this.setState({isTransportModalVisible:!this.state.isTransportModalVisible})}
-    closeTransportModal = () =>{this.setState({isTransportModalVisible:false})}
+    closeTransportModal = () =>{this.setState({isTransportModalVisible:false, userCost: 0 })}
     
     openFoodModal = () =>{this.setState({isFoodModalVisible:true, energyItemId:1, energyTypeId: 0 })}
     toggleFoodModal = () =>{this.setState({isFoodModalVisible:!this.state.isFoodModalVisible})}
-    closeFoodModal = () =>{this.setState({isFoodModalVisible:false})}
+    closeFoodModal = () =>{this.setState({isFoodModalVisible:false, userCost: 0 })}
     
     
     openRecycleModal = () =>{this.setState({isRecycleModalVisible:true, energyItemId:1, energyTypeId: 2 })}
     toggleRecycleModal = () =>{this.setState({isRecycleModalVisible:!this.state.isRecycleModalVisible})}
-    closeRecycleModal = () =>{this.setState({isRecycleModalVisible:false})}
+    closeRecycleModal = () =>{this.setState({isRecycleModalVisible:false, userCost: 0 })}
 
     openElectricityModal = () =>{this.setState({isElectricityModalVisible:true, energyItemId:1, energyTypeId: 3})}
     toggleElectricityModal = () =>{this.setState({isElectricityModalVisible:!this.state.isElectricityModalVisible})}
-    closeElectricityModal = () =>{this.setState({isElectricityModalVisible:false})}
+    closeElectricityModal = () =>{this.setState({isElectricityModalVisible:false, userCost: 0 })}
 
 
     render() {
@@ -402,7 +416,7 @@ class CategoriesScreen extends Component {
             },
           ];
 
-        if(!this.state.loading) {
+        if(this.state.isLoading === false) {
             if (this.state.totalUserSavings <= 100){
                 var explText = "Your C02 recyclings per emissions ratio is " + this.state.totalUserSavings +"%"
                 var colorCycle = Colors.red
@@ -455,7 +469,7 @@ class CategoriesScreen extends Component {
                                 
                                 />
                         </TouchableOpacity>
-                            <Text style={{size: 5}}> CO2/Saved C02 </Text>
+                            {/* <Text style={{size: 5}}> CO2/Saved C02 </Text> */}
                             
                     </View>
 
@@ -490,7 +504,7 @@ class CategoriesScreen extends Component {
                     <TouchableOpacity style= {styles.Eachtotal} onPress = {() => {this.setState({ popUpElectricityHelp: true }); }}>
                         <View style= {styles.Eachtotal}>
                             <FontAwesome name="bolt" size={25} color={Colors.primaryColor} />
-                            <Text > Electricity</Text>
+                            <Text > Housing</Text>
                             <Text > {this.state.totalElectricityCost} %</Text>
                         </View>
                     </TouchableOpacity>
@@ -704,7 +718,7 @@ class CategoriesScreen extends Component {
                                         <Slider
                                             value={this.state.userCost}
                                             onValueChange={this.updateCost}
-                                            maximumValue={5000}
+                                            maximumValue={20}
                                             minimumValue={1}
                                             step={1}
                                             trackStyle={{ height: 10, backgroundColor: 'transparent' }}
@@ -862,12 +876,42 @@ class CategoriesScreen extends Component {
 
                         </Dialog>
 
+
+
+
+
+
+                        {  (this.state.warningEnergy > this.state.totalUserSavings)  &&
+                
+                            <Dialog
+                                style={styles.dialogView}
+                                visible={(this.state.openWarningEnergyModal)}
+                                onTouchOutside={() => {
+                                    this.setState({ openWarningEnergyModal: false });
+                                }}
+                            >
+                                <DialogContent>
+                                    <FontAwesome name="warning" size={35} color={"orange"} style={{alignSelf: 'center', margin:20}}></FontAwesome>
+                                    <Text style={styles.title}> Please Recycle</Text>
+                                    <Text></Text>
+                                    <Text style={styles.warningText}> Your carbon / recycle ratio percentage must be more than {this.state.warningEnergy} % </Text>
+                                    <Text></Text>
+                                    <Text style={styles.hintText}> This is a custom warning based on user settings</Text>
+
+                                </DialogContent>
+
+                        </Dialog>
+                        }
+
                 </ScrollView>
 
             )
         }
         else{
-            return(<ActivityIndicator size={"large"} ></ActivityIndicator>)
+            return(  
+                <View style={{ flex: 1,justifyContent: "center"}}>
+                    <ActivityIndicator size="large" color= {Colors.primaryColor} />
+                </View>)
         }
     }
 }
@@ -895,6 +939,14 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 20,
         fontWeight: 'bold'
+    },
+    warningText:{
+        textAlign: 'center',
+        fontSize: 16
+    },
+    hintText:{
+        textAlign: 'center',
+        fontSize: 5
     },
     wrapper: {
         backgroundColor:'rgba(255,255,255,0.5)'
