@@ -7,10 +7,11 @@ import HeaderButton from '../components/HeaderButton';
 import MealList from '../components/MealList';
 import BaseUrl from '../constants/Url';
 import AsyncStorage from '@react-native-community/async-storage'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 import Colors from '../constants/Colors';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Icon } from 'react-native-elements';
 import base64 from 'react-native-base64'
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -232,7 +233,7 @@ class HistoryScreen extends Component {
                   <TouchableOpacity  onPress = {() => {this.setState({ popUpEmmisions: true }); }}>
 
                       <View style= {styles.Eachtotal}>
-                        <FontAwesome name="cloud" size={25} color={Colors.primaryColor} />
+                        <FontAwesome5 name="smog" size={25} color={Colors.primaryColor} />
                         <Text style={styles.text}> Emissions</Text>
                         <Text style={styles.text}>{this.state.totalCo2.toFixed(1)}</Text>
                         <Text style={styles.text}>(kg CO2)</Text>
@@ -242,7 +243,7 @@ class HistoryScreen extends Component {
                   <TouchableOpacity  onPress = {() => {this.setState({ popUpRecycles: true }); }}>
 
                       <View style= {styles.Eachtotal}>
-                          <FontAwesome name="recycle" size={25} color={Colors.primaryColor} />
+                          <MaterialCommunityIcons name="recycle" size={25} color={Colors.primaryColor} />
                           <Text style={styles.text}> Recycled</Text>
                           <Text style={styles.text}> {this.state.totalRecycledCo2.toFixed(1)}</Text>
                           <Text style={styles.text}>(kg CO2)</Text>

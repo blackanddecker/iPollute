@@ -4,6 +4,8 @@ import { View, Text, TextInput, StyleSheet, TouchableOpacity,  SafeAreaView, Scr
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import HeaderButton from '../components/HeaderButton';
 import Colors from '../constants/Colors';
 import Modal from 'react-native-modal';
@@ -358,7 +360,7 @@ class SettingsScreen extends Component {
                             <TouchableOpacity    onPress={()=>this.openPasswordModal()}    underlayColor="black">
                                 <View style={styles.button}>
                                     <View style={styles.iconStyle}>
-                                        <FontAwesome name="key" size={24} color="black" />
+                                        <FontAwesome5 name="key" size={24} color="black" />
                                     </View>
                                     <Text style={styles.buttonText}> Update Password</Text>
                                 </View>
@@ -367,7 +369,7 @@ class SettingsScreen extends Component {
                             <TouchableOpacity    onPress={()=>this.openEmailModal()}    underlayColor="black">
                                 <View style={styles.button}>
                                     <View style={styles.iconStyle}>
-                                        <FontAwesome name="envelope" size={24} color="black" />
+                                        <MaterialCommunityIcons name="email" size={24} color="black" />
                                     </View>
                                     <Text style={styles.buttonText}> Update Email</Text>
                                 </View>
@@ -377,7 +379,7 @@ class SettingsScreen extends Component {
                             <TouchableOpacity    onPress={()=>this.openFavFoodModal()}    underlayColor="black">
                                 <View style={styles.button}>
                                     <View style={styles.iconStyle}>
-                                        <FontAwesome name="apple" size={24} color="black" />
+                                        <Ionicons name="fast-food" size={24} color="black" />
                                     </View>
                                     <Text style={styles.buttonText}> Update Favorite Food</Text>
                                 </View>
@@ -385,7 +387,7 @@ class SettingsScreen extends Component {
                             <TouchableOpacity    onPress={()=>this.openFavTransportModal()}    underlayColor="black">
                                 <View style={styles.button}>
                                     <View style={styles.iconStyle}>
-                                        <FontAwesome name="car" size={24} color="black" />
+                                        <Ionicons name="car" size={24} color="black" />
                                     </View>
                                     <Text style={styles.buttonText}> Update Favorite Transport</Text>
                                 </View>
@@ -393,7 +395,7 @@ class SettingsScreen extends Component {
                             <TouchableOpacity    onPress={()=>this.openEnergyModal()}    underlayColor="black">
                                 <View style={styles.button}>
                                     <View style={styles.iconStyle}>
-                                        <FontAwesome name="warning" size={24} color="black" />
+                                        <Ionicons name="warning" size={24} color="black" />
                                     </View>
                                     <Text style={styles.buttonText}> Add Recycling Warning</Text>
                                 </View>

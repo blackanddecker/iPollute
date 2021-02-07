@@ -4,6 +4,9 @@ import {StyleSheet, Text, View, FlatList,  TextInput, Modal, TouchableHighlight,
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Colors from '../constants/Colors';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import BaseUrl from '../constants/Url';
 import base64 from 'react-native-base64'
@@ -171,10 +174,10 @@ class MealList extends Component {
         itemIcon = <FontAwesome name="plane" size={24} color={Colors.primaryColor}/>
     }
     else if (item.energyItem === 2 & item.energyType === 1){
-        itemIcon = <FontAwesome name="car" size={24} color={Colors.primaryColor} />
+        itemIcon = <Ionicons name="car" size={24} color={Colors.primaryColor} />
     }
     else if (item.energyItem === 3 && item.energyType == 1){
-        itemIcon = <FontAwesome name="car" size={24} color= {Colors.primaryColor} />
+        itemIcon = <Ionicons name="car" size={24} color= {Colors.primaryColor} />
     }
     else if (item.energyItem === 4 & item.energyType === 1){
         itemIcon = <FontAwesome name="bus" size={24} color={Colors.primaryColor} />    
@@ -188,17 +191,26 @@ class MealList extends Component {
     else if (item.energyItem === 7 && item.energyType === 1){
         itemIcon = <FontAwesome name="motorcycle" size={24} color= {Colors.primaryColor} />
     }
-    else if (item.energyItem === 8 && item.energyType === 1){
-        itemIcon = <FontAwesome name="bicycle" size={24} color= {Colors.primaryColor} />
-    }
     else if (item.energyItem === 9 & item.energyType === 1){
-        itemIcon = <FontAwesome name="train" size={24} color= {Colors.primaryColor} />
+        itemIcon = <Ionicons name="train" size={24} color= {Colors.primaryColor} />
+    }
+    else if (item.energyItem === 8 & item.energyType === 1 ){
+        itemIcon = <MaterialCommunityIcons name="car-electric" size={24} color={Colors.primaryColor} />
+    }
+    else if (item.energyItem === 11 & item.energyType === 1 ){
+        itemIcon = <Ionicons name="train" size={24} color= {Colors.primaryColor} />
+    }
+    else if (item.energyItem === 12 & item.energyType === 1 ){
+        itemIcon = <Ionicons name="bicycle" size={24} color={Colors.primaryColor} />
     }
     else if (item.energyType === 0 ){
-        itemIcon = <FontAwesome name="apple" size={24} color= {Colors.primaryColor} />
+        itemIcon = <Ionicons name="fast-food" size={24} color= {Colors.primaryColor} />
+    }
+    else if (item.energyType === 1 ){
+        itemIcon = <Ionicons name="car" size={24} color= {Colors.primaryColor} />
     }
     else if (item.energyType === 2 ){
-        itemIcon = <FontAwesome name="recycle" size={24} color= {Colors.primaryColor} />
+        itemIcon = <MaterialCommunityIcons name="recycle" size={24} color= {Colors.primaryColor} />
     }  
     else if (item.energyItem === 2 & item.energyType === 3  ){
         itemIcon = <FontAwesome name="bolt" size={24} color= {Colors.primaryColor} />
@@ -249,13 +261,13 @@ class MealList extends Component {
 
                     <View style={styles.marginRight} >
                         <TouchableOpacity onPress={()=>this.setUpdateItem(item)}>
-                            <FontAwesome name="pencil" size={25} color={Colors.primaryColor} />
+                            <MaterialCommunityIcons name="pencil" size={25} color={Colors.primaryColor} />
                         </TouchableOpacity>
                     </View>
                     <View style={styles.marginLeft}>
 
                         <TouchableOpacity onPress={ ()=>this.setDeletedItem(item)}>
-                            <FontAwesome name="trash" size={25} color={Colors.primaryColor} />
+                            <MaterialCommunityIcons name="delete" size={25} color={Colors.primaryColor} />
                         </TouchableOpacity>
 
                     </View>

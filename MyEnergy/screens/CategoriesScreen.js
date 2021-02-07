@@ -18,9 +18,11 @@ import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import Modal from 'react-native-modal';
 // import Icon from 'react-native-ionicons'
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
 import { Icon } from 'react-native-elements';
-import * as Progress from 'react-native-progress';
-import {Surface, Shape} from '@react-native-community/art';
+
 import Dialog, { DialogContent } from 'react-native-popup-dialog';
 import { Slider } from 'react-native-elements';
 
@@ -36,10 +38,7 @@ import BaseUrl from '../constants/Url';
 import AsyncStorage from '@react-native-community/async-storage'
 import EnergyObjects from '../constants/EnergyObjects';
 import ProgressCircle from 'react-native-progress-circle'
-import {
-    ProgressChart, PieChart
-} from 'react-native-chart-kit'
-import { TextComponent } from 'react-native';
+
 
 class CategoriesScreen extends Component {
     constructor(){
@@ -369,11 +368,11 @@ class CategoriesScreen extends Component {
     }
     updateCost = (cost) => {this.setState({ userCost: cost })}
     
-    openTransportModal = () =>{this.setState({isTransportModalVisible:true, energyItemId:1, energyTypeId: 1 })}
+    openTransportModal = () =>{this.setState({isTransportModalVisible:true, energyItemId:this.state.favTransport, energyTypeId: 1 })}
     toggleTransportModal = () =>{this.setState({isTransportModalVisible:!this.state.isTransportModalVisible})}
     closeTransportModal = () =>{this.setState({isTransportModalVisible:false, userCost: 0, transportStr: this.state.favTransport})}
     
-    openFoodModal = () =>{this.setState({isFoodModalVisible:true, energyItemId:1, energyTypeId: 0 })}
+    openFoodModal = () =>{this.setState({isFoodModalVisible:true, energyItemId:this.state.favFood, energyTypeId: 0 })}
     toggleFoodModal = () =>{this.setState({isFoodModalVisible:!this.state.isFoodModalVisible})}
     closeFoodModal = () =>{this.setState({isFoodModalVisible:false, userCost: 0, foodStr: this.state.favFood })}
     
@@ -530,7 +529,7 @@ class CategoriesScreen extends Component {
                 <View style= {styles.totals}>
                     <TouchableOpacity style= {styles.Eachtotal} onPress = {() => {this.setState({ popUpTransportHelp: true }); }}>
                         <View style= {styles.Eachtotal}>
-                            <FontAwesome name="car" size={24} color={Colors.primaryColor} />
+                            <Ionicons name="car" size={24} color={Colors.primaryColor} />
                             <Text style={styles.text}> Transport </Text>
                             <Text style={styles.text}> {this.state.totalTransportCost} %</Text>
 
@@ -538,7 +537,7 @@ class CategoriesScreen extends Component {
                     </TouchableOpacity>
                     <TouchableOpacity style= {styles.Eachtotal} onPress = {() => {this.setState({ popUpFoodHelp: true }); }}>
                         <View style= {styles.Eachtotal}>
-                                <FontAwesome name="apple" size={25} color={Colors.primaryColor}  />
+                                <Ionicons name="fast-food" size={25} color={Colors.primaryColor}  />
                                 <Text style={styles.text}> Food </Text>
                                 <Text style={styles.text}> {this.state.totalFoodCost} %</Text>
                         </View>
@@ -555,7 +554,7 @@ class CategoriesScreen extends Component {
                     <TouchableOpacity style= {styles.Eachtotal} onPress = {() => {this.setState({ popUpRecycleHelp: true }); }}>
 
                         <View style= {styles.Eachtotal}>
-                            <FontAwesome name="recycle" size={25} color={Colors.primaryColor}/>
+                            <MaterialCommunityIcons name="recycle" size={25} color={Colors.primaryColor}/>
                             <Text style={styles.text}> Recycled </Text>
                             <Text style={styles.text}> {this.state.totalRecycleCost} (kg CO2) </Text>
                         </View>
