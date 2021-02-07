@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Image, KeyboardAvoidingView, StyleSheet, View, TouchableOpacity, Text, TextInput } from "react-native";
+import { Image, KeyboardAvoidingView, StyleSheet, View, TouchableOpacity, Text, TextInput, ActivityIndicator } from "react-native";
 import Button from "../components/Button";
 import FormTextInput from "../components/FormTextInput";
 import imageLogo from "../assets/logo2.jpeg";
@@ -12,6 +12,8 @@ import HeaderButton from '../components/HeaderButton';
 import AsyncStorage from '@react-native-community/async-storage'
 import Modal from 'react-native-modal';
 import base64 from 'react-native-base64'
+import Colors from '../constants/Colors';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 class LoginScreen extends Component {
   state= {
@@ -22,7 +24,8 @@ class LoginScreen extends Component {
     userId:-1,
     passwordInputRef: '',
     forgotPasswordEmail: '',
-    isForgotPasswordVisible: false
+    isForgotPasswordVisible: false,
+    loading: false
   }
 
   clearAppData = async function() {
@@ -77,6 +80,7 @@ class LoginScreen extends Component {
 
 
   sendForgotPassword = () => {
+    this.setState({ loading: true });
     fetch(BaseUrl+'forgotPassword', {
       headers: {
           'Accept': 'application/json',
@@ -91,22 +95,23 @@ class LoginScreen extends Component {
       .then((response) => response.json())
       .then((responseJson) => {
           console.log(responseJson);     
+          this.setState({ loading: false });
           if (responseJson['success'] == true){
             alert("Email Send");
           }
           else{
             alert("Wrong Email");
           }
-  
       })
       .catch((error) => {
           console.error(error);
+          this.setState({ loading: false });
           alert("Wrong Email");
       });
   }
 
   handleLoginPress = () => {
-    
+    this.setState({ loading: true });
     fetch(BaseUrl+'login', {
     headers: {
         'Accept': 'application/json',
@@ -125,19 +130,19 @@ class LoginScreen extends Component {
         console.log(responseJson);     
         if (responseJson['success'] == true){
 
-
           AsyncStorage.setItem('userId', responseJson['user']['id'].toString()).then((value) => {
 
-            console.log("Login: Set userId:", responseJson['user']['id']);
+            console.log("Login: Set userId:", value);
             this.props.navigation.navigate({
               routeName:'Categories', 
               params:{
-                userId: responseJson['user']['id'],
+                userId: value,
                 email: responseJson['user']['email'],
                 username: responseJson['user']['username'],
                 fullname: responseJson['user']['fullname']
               }
             });
+            this.setState({ loading: false });
 
           });
 
@@ -145,6 +150,7 @@ class LoginScreen extends Component {
           
         }
         else{
+          this.setState({ loading: false });
           alert("Login Failed");
         }
 
@@ -174,83 +180,100 @@ class LoginScreen extends Component {
       !password && passwordTouched
         ? strings.PASSWORD_REQUIRED
         : undefined;
-    return (
-      <View
-        style={styles.container}
-        behavior="padding"
-      >
-        <Image source={imageLogo} style={styles.logo} />
-        <View style={{ height: 60 }} />
-        <View style={styles.form}>
-          <FormTextInput
-            value={this.state.email}
-            onChangeText={this.handleEmailChange}
-            onSubmitEditing={this.handleEmailSubmitPress}
-            placeholder={strings.EMAIL_PLACEHOLDER}
-            autoCorrect={false}
-            keyboardType="email-address"
-            returnKeyType="next"
-            onBlur={this.handleEmailBlur}
-            error={emailError}
-          />
-          <FormTextInput
-            ref={(input) => { this.passwordInputRef = input; }}
-            value={this.state.password}
-            onChangeText={this.handlePasswordChange}
-            placeholder={strings.PASSWORD_PLACEHOLDER}
-            secureTextEntry={true}
-            returnKeyType="done"
-            onBlur={this.handlePasswordBlur}
-            error={passwordError}
-          />
-          <Button
-            label={strings.LOGIN}
-            onPress={this.handleLoginPress}
-            disabled={!email || !password}
-          />
-          
-          <Button
-            label={"Create New Account"}
-            onPress={this.goToSignUp}
-          />
-          <TouchableOpacity style={styles.text} onPress={()=>this.openForgotPasswordModal()}>
-              <Text style={styles.text} >Forgot Password?</Text>
-          </TouchableOpacity>
+    if(this.state.loading === false) {  
+      return (
+        <View
+          style={styles.container}
+          behavior="padding"
+        >
+          <Image source={imageLogo} style={styles.logo} />
+          <View style={{ height: 60 }} />
+          <View style={styles.form}>
+            <FormTextInput
+              value={this.state.email}
+              onChangeText={this.handleEmailChange}
+              onSubmitEditing={this.handleEmailSubmitPress}
+              placeholder={strings.EMAIL_PLACEHOLDER}
+              autoCorrect={false}
+              keyboardType="email-address"
+              returnKeyType="next"
+              onBlur={this.handleEmailBlur}
+              error={emailError}
+            />
+            <FormTextInput
+              ref={(input) => { this.passwordInputRef = input; }}
+              value={this.state.password}
+              onChangeText={this.handlePasswordChange}
+              placeholder={strings.PASSWORD_PLACEHOLDER}
+              secureTextEntry={true}
+              returnKeyType="done"
+              onBlur={this.handlePasswordBlur}
+              error={passwordError}
+            />
+            {/* <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={this.goToSignUp}
+                style={styles.floatingButtonStyle}>
+              <FontAwesome name="plus-circle" size={45} color={Colors.primaryColor}/>
+
+            </TouchableOpacity> */}
+            <Button
+              label={strings.LOGIN}
+              onPress={this.handleLoginPress}
+              disabled={!email || !password}
+            />
+
+            <Button
+              label={"Create New Account"}
+              onPress={this.goToSignUp}
+            />
+            <TouchableOpacity style={styles.text} onPress={()=>this.openForgotPasswordModal()}>
+                <Text style={styles.text} >Forgot Password?</Text>
+            </TouchableOpacity>
+
+          </View>
+
+
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={this.state.isForgotPasswordVisible} 
+            >
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <Text style = {styles.title}>Give your E-mail </Text>
+                            
+                        <TextInput style = {styles.input}
+                            underlineColorAndroid = "transparent"
+                            placeholder = {"Email"}
+                            autoCapitalize = "none"
+                            defaultValue={this.state.forgotPasswordEmail}
+                            onChangeText = {this.forgotPasswordEmail}/>         
+                
+                
+                        <View style={{flexDirection:'row', marginTop:30}}>
+
+                            <TouchableOpacity style={{backgroundColor:'red',width:'50%'}} onPress={()=>this.closeForgotPasswordModal()}>
+                                <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={{backgroundColor:'green',width:'50%'}} onPress={() =>this.sendForgotPassword()}>
+                                <Text style={{color:'white',textAlign:'center',padding:10}}>Ok</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+
+                </View>
+            </Modal>
         </View>
 
-
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={this.state.isForgotPasswordVisible} 
-          >
-              <View style={styles.centeredView}>
-                  <View style={styles.modalView}>
-                      <Text style = {styles.title}>Give your E-mail </Text>
-                          
-                      <TextInput style = {styles.input}
-                          underlineColorAndroid = "transparent"
-                          placeholder = {"Email"}
-                          autoCapitalize = "none"
-                          defaultValue={this.state.forgotPasswordEmail}
-                          onChangeText = {this.forgotPasswordEmail}/>         
-              
-              
-                      <View style={{flexDirection:'row', marginTop:30}}>
-                          <TouchableOpacity style={{backgroundColor:'red',width:'50%'}} onPress={()=>this.closeForgotPasswordModal()}>
-                              <Text style={{color:'white',textAlign:'center',padding:10}}>Cancel</Text>
-                          </TouchableOpacity>
-                          <TouchableOpacity style={{backgroundColor:'green',width:'50%'}} onPress={() =>this.sendForgotPassword()}>
-                              <Text style={{color:'white',textAlign:'center',padding:10}}>Ok</Text>
-                          </TouchableOpacity>
-                      </View>
-                  </View>
-
-              </View>
-          </Modal>
-      </View>
-
-    );
+      );
+      }
+    else{
+      return(  
+          <View style={{ flex: 1,justifyContent: "center"}}>
+              <ActivityIndicator size="large" color= {Colors.primaryColor} />
+          </View>)
+    }
   }
 }
 
@@ -298,6 +321,16 @@ const styles = StyleSheet.create({
     padding:10, 
     color:'blue'
   },
+  addSingIn: {
+    //Here is the trick
+    position: 'absolute',
+    width: 50,
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    right: 30,
+    bottom: 30,
+ },
   modalView: {
     margin: 20,
     backgroundColor: "white",
@@ -312,6 +345,15 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5
   },
+  floatingButtonStyle: {
+    resizeMode: 'contain',
+    textAlign: 'right',
+    alignItems:'flex-end',
+    justifyContent:'flex-end',
+    width: 50,
+    height: 50,
+    //backgroundColor:'black'
+  }
 });
 
 export default LoginScreen;

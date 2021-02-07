@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Image, KeyboardAvoidingView, StyleSheet, View } from "react-native";
+import { Image, KeyboardAvoidingView, StyleSheet, View, ActivityIndicator } from "react-native";
 import Button from "../components/Button";
 import FormTextInput from "../components/FormTextInput";
 import imageLogo from "../assets/logo2.jpeg";
@@ -10,6 +10,7 @@ import MainNavigator from '../navigation/MealsNavigator';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import HeaderButton from '../components/HeaderButton';
 import base64 from 'react-native-base64'
+import Colors from '../constants/Colors';
 
 import AsyncStorage from '@react-native-community/async-storage'
 
@@ -23,7 +24,9 @@ class SignUpScreen extends Component {
     favFood: "",
     favTransport: "",
     emailTouched: false,
-    passwordTouched: false
+    passwordTouched: false, 
+    loading: false
+
   }
 
   handleEmailChange = (email: string) => {
@@ -77,6 +80,8 @@ class SignUpScreen extends Component {
       this.handlePasswordChange("")
       return
     }
+
+    this.setState({ loading: true });
     fetch(BaseUrl+'signup', {
     headers: {
         'Accept': 'application/json',
@@ -107,21 +112,25 @@ class SignUpScreen extends Component {
             username: responseJson['user']['username'],
             fullname: responseJson['user']['fullname']
           });
+          this.setState({ loading: false });
 
           
         }
         else if (responseJson['success'] === false && responseJson['message'] === 'User Exists'){
+          this.setState({ loading: false });
           console.log(this.state.passwordRepeat, this.state.password, "User Exists")
           alert("User Exists");
           this.handleEmailChange("")
         }
         else{
+          this.setState({ loading: false });
           alert("SignIn Failed");
         }
 
     })
     .catch((error) => {
         console.error(error);
+        this.setState({ loading: false });
         alert("SignIn Failed");
         });
 
@@ -145,91 +154,100 @@ class SignUpScreen extends Component {
       !password && passwordTouched
         ? strings.PASSWORD_REQUIRED
         : undefined;
-    return (
-      <View
-        style={styles.container}
-        behavior="padding"
-      >
 
-        <View style={styles.form}>
-        <Image source={imageLogo} style={styles.logo} />
-        <View style={{ height: 60 }} />
+    if(this.state.loading === false) {  
+        return (
+        <View
+          style={styles.container}
+          behavior="padding"
+        >
 
-          <FormTextInput
-            value={this.state.email}
-            onChangeText={this.handleEmailChange}
-            onSubmitEditing={this.handleEmailSubmitPress}
-            placeholder={strings.EMAIL_PLACEHOLDER}
-            autoCorrect={false}
-            keyboardType="email-address"
-            returnKeyType="next"
-            onBlur={this.handleEmailBlur}
-            error={emailError}
-          />
-          <FormTextInput
-            value={this.state.username}
-            onChangeText={this.handleUsernameChange}
-            onSubmitEditing={this.handleEmailSubmitPress}
-            placeholder={"Username"}
-            autoCorrect={false}
-            keyboardType="string"
-            returnKeyType="next"
-            onBlur={this.handleEmailBlur}
-          />
-          {/* <FormTextInput
-            value={this.state.email}
-            onChangeText={this.handleFavFoodChange}
-            onSubmitEditing={this.handleEmailSubmitPress}
-            placeholder={"Favorite Food"}
-            autoCorrect={false}
-            keyboardType="string"
-            returnKeyType="next"
-            onBlur={this.handleEmailBlur}
-          />
-          <FormTextInput
-            value={this.state.email}
-            onChangeText={this.handleFavTransportChange}
-            onSubmitEditing={this.handleEmailSubmitPress}
-            placeholder={"Favorite Transport"}
-            autoCorrect={false}
-            keyboardType="string"
-            returnKeyType="next"
-            onBlur={this.handleEmailBlur}
+          <View style={styles.form}>
+          <Image source={imageLogo} style={styles.logo} />
+          <View style={{ height: 60 }} />
 
-          /> */}
-          <FormTextInput
-            value={this.state.password}
-            onChangeText={this.handlePasswordChange}
-            placeholder={strings.PASSWORD_PLACEHOLDER}
-            secureTextEntry={true}
-            returnKeyType="done"
-            onBlur={this.handlePasswordBlur}
-            error={passwordError}
-          />
+            <FormTextInput
+              value={this.state.email}
+              onChangeText={this.handleEmailChange}
+              onSubmitEditing={this.handleEmailSubmitPress}
+              placeholder={strings.EMAIL_PLACEHOLDER}
+              autoCorrect={false}
+              keyboardType="email-address"
+              returnKeyType="next"
+              onBlur={this.handleEmailBlur}
+              error={emailError}
+            />
+            <FormTextInput
+              value={this.state.username}
+              onChangeText={this.handleUsernameChange}
+              onSubmitEditing={this.handleEmailSubmitPress}
+              placeholder={"Username"}
+              autoCorrect={false}
+              keyboardType="string"
+              returnKeyType="next"
+              onBlur={this.handleEmailBlur}
+            />
+            {/* <FormTextInput
+              value={this.state.email}
+              onChangeText={this.handleFavFoodChange}
+              onSubmitEditing={this.handleEmailSubmitPress}
+              placeholder={"Favorite Food"}
+              autoCorrect={false}
+              keyboardType="string"
+              returnKeyType="next"
+              onBlur={this.handleEmailBlur}
+            />
+            <FormTextInput
+              value={this.state.email}
+              onChangeText={this.handleFavTransportChange}
+              onSubmitEditing={this.handleEmailSubmitPress}
+              placeholder={"Favorite Transport"}
+              autoCorrect={false}
+              keyboardType="string"
+              returnKeyType="next"
+              onBlur={this.handleEmailBlur}
 
-          <FormTextInput
-            value={this.state.passwordRepeat}
-            onChangeText={this.handlePasswordRepeatChange}
-            placeholder={"Repeat Password"}
-            secureTextEntry={true}
-            returnKeyType="done"
-            onBlur={this.handlePasswordBlur}
-            error={passwordError}
-          />
-          <Button
-            label={strings.SIGNIN}
-            onPress={this.handleSignUpPress}
-            disabled={!email || !password}
-          />
+            /> */}
+            <FormTextInput
+              value={this.state.password}
+              onChangeText={this.handlePasswordChange}
+              placeholder={strings.PASSWORD_PLACEHOLDER}
+              secureTextEntry={true}
+              returnKeyType="done"
+              onBlur={this.handlePasswordBlur}
+              error={passwordError}
+            />
 
-          <Button
-            label={"Log In"}
-            onPress={this.goToLogin}
-          />
+            <FormTextInput
+              value={this.state.passwordRepeat}
+              onChangeText={this.handlePasswordRepeatChange}
+              placeholder={"Repeat Password"}
+              secureTextEntry={true}
+              returnKeyType="done"
+              onBlur={this.handlePasswordBlur}
+              error={passwordError}
+            />
+            <Button
+              label={strings.SIGNIN}
+              onPress={this.handleSignUpPress}
+              disabled={!email || !password}
+            />
+
+            <Button
+              label={"Log In"}
+              onPress={this.goToLogin}
+            />
+          </View>
         </View>
-      </View>
 
-    );
+      );
+    }
+    else{
+      return(  
+          <View style={{ flex: 1,justifyContent: "center"}}>
+              <ActivityIndicator size="large" color= {Colors.primaryColor} />
+          </View>)
+    }
   }
 }
 

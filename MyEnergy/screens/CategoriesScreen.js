@@ -6,6 +6,7 @@ import {
     ActivityIndicator,
     StyleSheet,
     Picker,
+    Tooltip,
     Button,
     TouchableOpacity,
     ScrollView,
@@ -203,10 +204,10 @@ class CategoriesScreen extends Component {
                     favFood: responseJson['userDetails']['favFood'],
                     warningEnergy: responseJson['userDetails']['userEnergy'],
                     favTransport: responseJson['userDetails']['favTransport']})
-                console.log(this.state);
+                console.log(this.state.warningEnergy , this.state.totalUserSavings, this.state.openWarningEnergyModal);
 
                 if ((this.state.warningEnergy > this.state.totalUserSavings) && (this.state.openWarningEnergyModal === false)){
-                    this.setState({openWarningEnergyModal:true})
+                    this.setState({openWarningEnergyModal:false})
                 }
                 
         })

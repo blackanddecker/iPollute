@@ -21,7 +21,7 @@
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-minimal-pie-chart": "^8.1.0",
-    "react-native": "0.63.4",
+    "react-native": "^0.63.4",
     "react-native-awesome-alerts": "^1.4.2",
     "react-native-base64": "^0.2.1",
     "react-native-chart-kit": "^6.6.1",

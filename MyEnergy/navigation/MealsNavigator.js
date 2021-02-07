@@ -41,10 +41,11 @@ const defaultStackNavOptions = {
 
 const MealsNavigator = createStackNavigator(
   {
+    Login: LoginScreen,
+    SignUp:SignUpScreen,
     Categories: {
       screen: CategoriesScreen
-    },
-    MealDetail: MealDetailScreen
+    }
   },
   {
     defaultNavigationOptions: defaultStackNavOptions
@@ -62,78 +63,6 @@ const HistoryNavigator  = createStackNavigator(
     defaultNavigationOptions: defaultStackNavOptions
   }
 );
-
-// const tabScreenConfig = {
-//   Meals: {
-//     screen: MealsNavigator,
-//     navigationOptions: {
-//       // tabBarIcon: tabInfo => {
-//       //   return (
-//       //     // <Icon name="baidu" size={25} color={tabInfo.tintColor} />
-//       //     // <SimpleLineIcons name="energy" size={25} color={tabInfo.tintColor} />
-//       //   );
-//       // },
-//       tabBarColor: Colors.primaryColor,      
-//       tabBarLabel:
-//         Platform.OS === 'android' ? (
-//           <Text style={{ fontFamily: 'open-sans-bold' }}>My Energy</Text>
-//         ) : (
-//           'My Energy'
-//         )
-//     }
-//   },
-//   History: {
-//     screen: HistoryNavigator,
-//     navigationOptions: {
-//       // tabBarIcon: tabInfo => {
-//       //     <Icon name="baidu" size={25} color={tabInfo.tintColor} />
-//       // },
-//       tabBarColor: Colors.accentColor,
-//       tabBarLabel:
-//         Platform.OS === 'android' ? (
-//           <Text style={{ fontFamily: 'open-sans-bold' }}>History</Text>
-//         ) : (
-//           'History'
-//         )
-//     }
-//   }
-// };
-
-// const MyEnergyNavigator =
-//   Platform.OS === 'android'
-//     ? createBottomTabNavigator(tabScreenConfig, {
-//         activeTintColor: 'white',
-//         shifting: true,
-//         barStyle: {
-//           backgroundColor: Colors.primaryColor
-//         }
-//       })
-//     : createBottomTabNavigator(tabScreenConfig, {
-//         tabBarOptions: {
-//           labelStyle: {
-//             fontFamily: 'open-sans'
-//           },
-//           activeTintColor: Colors.accentColor
-//         }
-// });
-
-// const HistoryTabNavigator =
-//   Platform.OS === 'android'
-//     ? createBottomTabNavigator(tabScreenConfig, {
-//         activeTintColor: 'white',
-//         shifting: true,
-//         barStyle: {
-//           backgroundColor: Colors.primaryColor
-//         }
-//       })
-//     : createBottomTabNavigator(tabScreenConfig, {
-//         tabBarOptions: {
-//           labelStyle: {
-//             fontFamily: 'open-sans'
-//           },
-//           activeTintColor: Colors.accentColor
-//         }
-// });
 
 const FiltersNavigator = createStackNavigator(
   {
@@ -197,32 +126,32 @@ const RateMeNavigator = createStackNavigator(
   }
 );
 
-const LoginNavigator = createStackNavigator(
-  {
-    Login: LoginScreen,
-    SignUp:SignUpScreen
+// const LoginNavigator = createStackNavigator(
+//   {
+//     Login: LoginScreen,
+//     SignUp:SignUpScreen
 
-  },
-  {
-    navigationOptions: {
-      drawerLabel: 'Login'
-    },
-    defaultNavigationOptions: defaultStackNavOptions
-  }
-);
+//   },
+//   {
+//     navigationOptions: {
+//       drawerLabel: 'Login'
+//     },
+//     defaultNavigationOptions: defaultStackNavOptions
+//   }
+// );
 
 
-const LogoutNavigator = createStackNavigator(
-  {
-    Login: LoginScreen
-  },
-  {
-    navigationOptions: {
-      drawerLabel: 'Logout'
-    },
-    defaultNavigationOptions: defaultStackNavOptions
-  }
-);
+// const LogoutNavigator = createStackNavigator(
+//   {
+//     Login: LoginScreen
+//   },
+//   {
+//     navigationOptions: {
+//       drawerLabel: 'Logout'
+//     },
+//     defaultNavigationOptions: defaultStackNavOptions
+//   }
+// );
 
 // This is for side drawer
 const MainNavigator = createDrawerNavigator(
@@ -307,15 +236,15 @@ const MainNavigator = createDrawerNavigator(
     //       )
     //   }
     // },
-    Logout: {
-      screen:LoginNavigator,
-      navigationOptions: {
-        drawerLabel: 'Logout',
-        drawerIcon: tabInfo =>  (
-          <Ionicons name="ios-log-out" size={25} color={tabInfo.tintColor} />
-          )
-      }
-    }
+    // Logout: {
+    //   screen:LoginNavigator,
+    //   navigationOptions: {
+    //     drawerLabel: 'Logout',
+    //     drawerIcon: tabInfo =>  (
+    //       <Ionicons name="ios-log-out" size={25} color={tabInfo.tintColor} />
+    //       )
+    //   }
+    // }
   },
   {
     contentComponent: props => <CustomDrawerContentComponent {...props} />,

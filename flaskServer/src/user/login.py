@@ -13,6 +13,7 @@ def login(connection, data, key , bcrypt):
     return token or error message
     '''
     data = request.get_json()
+    print(data)
     #check for 400 error
     if request.method != 'POST':
         return 'Wrong method', 405
@@ -32,7 +33,7 @@ def login(connection, data, key , bcrypt):
             auth = request.authorization
             t2 = result[0]['password'].encode('utf-8')
             #check = bcrypt.check_password_hash(result[0]['password'],data['password'] )
-            print(t2, data['password'])
+            #print(t2, data['password'])
             if result[0]['password'] == data['password']:
                 with connection.cursor() as cursor:
                     sql = "CALL login('{}', '{}','{}', @s)".format(data['email'] , result[0]['password'], datetime.datetime.now())
@@ -52,7 +53,7 @@ def login(connection, data, key , bcrypt):
                         token = jwt.encode({
                             'sub':result[0]['id'], 'username':result[0]['username'], 'iat':datetime.datetime.utcnow()+datetime.timedelta(minutes =30)} ,
                              key , algorithm='HS256')
-
+                        print("User Logged in", result[0]['email'])
                         return jsonify({'success': True, 'message': 'You have successfully logged in' ,'token':token, 'user':{'email': data['email'], 'id': result[0]['id']}}) , 200
 
                     else:            

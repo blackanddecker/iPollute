@@ -13,6 +13,8 @@ def signin(connection, data, key , bcrypt):
     return token or error message
     '''
     data = request.get_json()
+    print(data)
+
     #check for 400 error
     if request.method != 'POST':
         return 'Wrong method', 405
@@ -26,7 +28,7 @@ def signin(connection, data, key , bcrypt):
 
         auth = request.authorization
         t2 = data['password'].encode('utf-8')
-        print(t2, data['password'])
+        #print(t2, data['password'])
 
         with connection.cursor() as cursor:
             sql = "CALL signin('{}','{}','{}', @s)".format(data['email'] , data['password'], data['username'])
@@ -46,6 +48,7 @@ def signin(connection, data, key , bcrypt):
                 token = jwt.encode({
                     'sub':check[0]['@s'], 'username':result[0]['username'], 'iat':datetime.datetime.utcnow()+datetime.timedelta(minutes =30)} ,
                         key , algorithm='HS256')
+                print("User signed in", result[0]['email'])
 
                 return jsonify({'success': True, 'message': 'You have successfully signed in' ,'token':token, 'user':{'email': data['email'], 'id': check[0]['@s']}}) , 200
 
