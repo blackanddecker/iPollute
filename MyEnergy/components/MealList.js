@@ -208,18 +208,29 @@ class MealList extends Component {
 
 
     var stringCost = "Energy"
+    var actionType = ''
     if (item.energyType === 0 ){
         stringCost = " Kg"
+        actionType = "Produced"
     }
     else if (item.energyType === 1 ){
         stringCost = " Km"
+        actionType = "Produced"
     }
     else if (item.energyType === 2 ){
         stringCost = " Kg "
+        actionType = "Recycled"
     }
     else if (item.energyType === 3 ){
         stringCost = " KWh"
+        actionType = "Produced"
     }
+ 
+
+    var userDate = new Date(item.energyDate)
+    var userDateMonth = parseInt(userDate.getMonth() , 10 ) + 1;
+    var userDate2 = userDate.getFullYear() + '-' + userDateMonth + '-' + userDate.getDate() + ' ' + + String(userDate.getHours()).padStart(2, '0') + ":" + String(userDate.getMinutes()).padStart(2, '0')
+
     return (
 
             <View style={styles.item} >
@@ -229,21 +240,24 @@ class MealList extends Component {
                     {itemIcon}
                 </View>
                 <View style = {styles.itemTexts}>
-                    <Text style={styles.text}> Date: {item.energyDate} </Text>
                     <Text style={styles.text}> {item.description} : {item.userCost} {stringCost}</Text> 
-                    <Text style={styles.text}> Co2: {item.totalCost.toFixed(1)} Kg</Text>
+                    <Text style={styles.text}> Date: {userDate2} </Text>
+                    <Text style={styles.text}> {actionType} C02: {item.totalCost.toFixed(1)} Kg</Text>
                 </View>
-                
-                <View style={styles.iconStyles}>
-                    <TouchableOpacity onPress={()=>this.setUpdateItem(item)}>
-                        <FontAwesome name="pencil" size={25} color={Colors.primaryColor} />
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.iconStyles}>
+                <View style={styles.iconStylesEdit}>
 
-                    <TouchableOpacity onPress={ ()=>this.setDeletedItem(item)}>
-                        <FontAwesome name="trash" size={25} color={Colors.primaryColor} />
-                    </TouchableOpacity>
+                    <View style={styles.marginRight} >
+                        <TouchableOpacity onPress={()=>this.setUpdateItem(item)}>
+                            <FontAwesome name="pencil" size={25} color={Colors.primaryColor} />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.marginLeft}>
+
+                        <TouchableOpacity onPress={ ()=>this.setDeletedItem(item)}>
+                            <FontAwesome name="trash" size={25} color={Colors.primaryColor} />
+                        </TouchableOpacity>
+
+                    </View>
 
                 </View>
             </View>
@@ -367,8 +381,8 @@ const styles = StyleSheet.create({
 
     // },
     item: {
+        
         marginBottom: 5,
-        display: 'flex',
         flexDirection: 'row',
         height: 50,
         borderRadius: 9,
@@ -391,10 +405,10 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
     },
     marginLeft: {
-        marginLeft: 5,
+        marginLeft: 10,
     },
     marginRight: {
-        justifyContent: 'flex-end',
+        marginRight: 10,
     },
     text: {
         fontSize: 12,
@@ -407,18 +421,21 @@ const styles = StyleSheet.create({
         margin: 10,  
     },
     iconStyles:{
-        width: '10%',
-        flex:1,
+        width: "10%",
         flexDirection: 'row',
         alignSelf: 'center',
         justifyContent: "center",
-        marginLeft:2,
+        marginLeft:5,
     },
-    iconList:{
-        width: '10%',
-        justifyContent: 'flex-end',
-        textAlign: 'center',
-        alignSelf: "center",
+    iconStylesEdit:{
+        flex:1,
+        flexDirection: 'row',
+        justifyContent: "flex-end",
+        marginLeft:5,
+        padding: 20,
+        marginRight: 10,
+        alignSelf: 'stretch',
+        alignItems: 'center',
     },
     textInput: {
         width: '90%',

@@ -77,10 +77,12 @@ class FiltersScreen extends Component {
         .then((responseJson) => {
 
             var minD = new Date(responseJson['filters']['minDate'])
-            var minD2 = minD.getFullYear() + '-' + minD.getMonth() +1 + '-' + minD.getDate()
-
+            var minMonth = parseInt(minD.getMonth() , 10 ) + 1;           
+            var minD2 = minD.getFullYear() + '-' + minMonth + '-' + minD.getDate()
+            
             var maxD = new Date(responseJson['filters']['maxDate'])
-            var maxD2 = maxD.getFullYear() + '-' + maxD.getMonth() +1 + '-' + maxD.getDate()
+            var maxMonth = parseInt(maxD.getMonth() , 10 ) + 1;
+            var maxD2 = maxD.getFullYear() + '-' + maxMonth + '-' + maxD.getDate()
 
             this.setState({
                 minDate : minD2,

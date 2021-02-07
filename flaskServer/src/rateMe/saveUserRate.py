@@ -6,6 +6,7 @@ def saveUserRate(connection, data):
     '''
     Get Filter Options
     '''
+    print(data)
     if 'userId' not in data:
         return {'message':'userId missing!', 'success': False}, 400
     if 'comment' not in data:

@@ -4,18 +4,12 @@ OK Set up database
 OK Connect flask with database 
 OK Connect flask with mobile up 
 
-Calculate hours / costs properly
 
 ------------------ 
 
 
  6. Add News Tab Feature
- 17. Verify budget the first time if user.EnergyTotal = 0 
- 22. Add images of facebook to hyperlink to my profile
- 23. Add progress bar 
  26. Push notifications 
- 35. add recycled objects ( bycycle, on foot, foods from thir garden or farm ) 
- 36. Add total number of kg CO2
  37. Live Geolocation weather / C02 statistics 
  38. Add Statistics page 
 
@@ -25,6 +19,7 @@ Calculate hours / costs properly
 
 
 ==============================
+
 
 Connect to databasae : sqlcmd -S localhost -U SA -P 'efoufikos'
 

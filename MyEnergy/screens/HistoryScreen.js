@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { View, Text, StyleSheet,ActivityIndicator , RefreshControl, ScrollView} from 'react-native';
+import Dialog, { DialogContent } from 'react-native-popup-dialog';
 
 import HeaderButton from '../components/HeaderButton';
 import MealList from '../components/MealList';
@@ -12,6 +13,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Icon } from 'react-native-elements';
 import base64 from 'react-native-base64'
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 class HistoryScreen extends Component {
 
@@ -36,6 +38,16 @@ class HistoryScreen extends Component {
     appliedFilters:"",
     isFiltersApplied: false,
     isUpdateModalVisible:false,
+    popUpEmmisions:false,
+    popUpRecycles:false,
+    popUpWeekEmmisions:false,
+    popUpWeekRecycles:false,
+    totalTransportCost:  0,
+    totalUserEnergyCost: 0 ,
+    totalFoodCost: 0,
+    totalElectricityCost: 0,
+
+    totalRecycleCost: 0,
   }
 
 
@@ -72,7 +84,13 @@ class HistoryScreen extends Component {
             lastWeekCo2: responseJson['totalStats']['lastWeekCo2'],
             totalCo2Reduced: responseJson['totalStats']['totalCo2Reduced'],
             
-            
+            totalTransportCost: responseJson['userEnergy']['totalTransportCost'],
+            totalUserEnergyCost: responseJson['userEnergy']['totalUserEnergyCost'] ,
+            totalFoodCost: responseJson['userEnergy']['totalFoodCost'],
+            totalElectricityCost: responseJson['userEnergy']['totalElectricityCost'],
+
+            totalRecycleCost: responseJson['userEnergy']['totalRecycleCost'],
+
             curWeekCo2Recycled: responseJson['totalStats']['curWeekCo2Recycled'],
             lastWeekCo2Recycled: responseJson['totalStats']['lastWeekCo2Recycled'],
             totalCo2RecycledReduced: responseJson['totalStats']['totalCo2RecycledReduced']
@@ -207,13 +225,19 @@ class HistoryScreen extends Component {
                     <Text style = {styles.text}> Totals</Text>
                   </View>
                   <View style= {styles.totals}> 
-                    <View style= {styles.Eachtotal}>
-                      <FontAwesome name="cloud" size={25} color={Colors.primaryColor} />
-                      <Text style={styles.text}> Emissions</Text>
-                      <Text style={styles.text}>{this.state.totalCo2.toFixed(1)}</Text>
-                      <Text style={styles.text}>(kg CO2)</Text>
+                    
+                  <TouchableOpacity  onPress = {() => {this.setState({ popUpEmmisions: true }); }}>
 
-                    </View>
+                      <View style= {styles.Eachtotal}>
+                        <FontAwesome name="cloud" size={25} color={Colors.primaryColor} />
+                        <Text style={styles.text}> Emissions</Text>
+                        <Text style={styles.text}>{this.state.totalCo2.toFixed(1)}</Text>
+                        <Text style={styles.text}>(kg CO2)</Text>
+
+                      </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity  onPress = {() => {this.setState({ popUpRecycles: true }); }}>
+
                       <View style= {styles.Eachtotal}>
                           <FontAwesome name="recycle" size={25} color={Colors.primaryColor} />
                           <Text style={styles.text}> Recycled</Text>
@@ -221,15 +245,17 @@ class HistoryScreen extends Component {
                           <Text style={styles.text}>(kg CO2)</Text>
 
                       </View>
-
+                  </TouchableOpacity>
                   </View>
                 </View>
 
                 <View style = {{flex:1}}>
                   <View>
-                    <Text style = {styles.text}> Last Week Carbon Progress</Text>
+                    <Text style = {styles.text}> Weekly Progress</Text>
                   </View>
                   <View style= {styles.totals}>
+                    <TouchableOpacity  onPress = {() => {this.setState({ popUpWeekEmmisions: true }); }}>
+
                     <View style= {styles.Eachtotal}>
                       {sinceLastWeekIcon} 
                       <Text style={styles.text}> Produced </Text>
@@ -238,7 +264,9 @@ class HistoryScreen extends Component {
 
                       {/* <MaterialCommunityIcons name="percent" size={24} color={Colors.primaryColor} /> */}
                     </View>
+                    </TouchableOpacity>
 
+                    <TouchableOpacity  onPress = {() => {this.setState({ popUpWeekRecycles: true }); }}>
                     <View style= {styles.Eachtotal}>
                       {sinceLastWeekIconRecycled} 
                       <Text style={styles.text}> Recycled </Text>
@@ -247,6 +275,7 @@ class HistoryScreen extends Component {
 
                       {/* <MaterialCommunityIcons name="percent" size={24} color={Colors.primaryColor} /> */}
                     </View>
+                    </TouchableOpacity>
 
                   </View>
                 
@@ -264,6 +293,75 @@ class HistoryScreen extends Component {
 
               </View>
             </View>
+
+            <Dialog
+                style={styles.dialogView}
+                visible={this.state.popUpEmmisions}
+                    onTouchOutside={() => {
+                        this.setState({ popUpEmmisions: false });
+                    }}
+                >
+                    <DialogContent>
+                        <FontAwesome name="info" size={35} color={Colors.primaryColor} style={{alignSelf: 'center', margin:20}}></FontAwesome>
+                        <Text style={styles.text}> Total Transport Emissions :  {this.state.totalTransportCost}</Text>
+                        <Text style={styles.text}> Total Food Emissions : {this.state.totalFoodCost} </Text>
+                        <Text style={styles.text}> Total Housing Emissions : {this.state.totalElectricityCost} </Text>
+
+                    </DialogContent>
+
+            </Dialog>
+
+
+            <Dialog
+                style={styles.dialogView}
+                visible={this.state.popUpRecycles}
+                    onTouchOutside={() => {
+                        this.setState({ popUpRecycles: false });
+                    }}
+                >
+                    <DialogContent>
+                        <FontAwesome name="info" size={35} color={Colors.primaryColor} style={{alignSelf: 'center', margin:20}}></FontAwesome>
+                        <Text style={styles.text}> Total Recycled kilograms : {this.state.totalRecycleCost} </Text>
+                    </DialogContent>
+
+            </Dialog>
+
+            <Dialog
+                style={styles.dialogView}
+                visible={this.state.popUpWeekEmmisions}
+                    onTouchOutside={() => {
+                        this.setState({ popUpWeekEmmisions: false });
+                    }}
+                >
+                    <DialogContent>
+                        <FontAwesome name="info" size={35} color={Colors.primaryColor} style={{alignSelf: 'center', margin:20}}></FontAwesome>
+                        <Text style={styles.text}>
+                          Comparing Carbon Reducing Progress from last week and current week </Text>
+                          <Text style={styles.text}>Last Week : {this.state.lastWeekCo2} </Text>
+                          <Text style={styles.text}>Current Week: {this.state.curWeekCo2 } </Text>
+                          <Text style={styles.text}>Total: {this.state.totalCo2Reduced}  </Text>
+                    </DialogContent>
+
+            </Dialog>
+
+
+            <Dialog
+                style={styles.dialogView}
+                visible={this.state.popUpWeekRecycles}
+                    onTouchOutside={() => {
+                        this.setState({ popUpWeekRecycles: false });
+                    }}
+                >
+                    <DialogContent>
+                        <FontAwesome name="info" size={35} color={Colors.primaryColor} style={{alignSelf: 'center', margin:20}}></FontAwesome>
+                        <Text style={styles.text}>
+                          Comparing Recycling Increasing Progress from last week and current week </Text>
+                          <Text style={styles.text}>Last Week : {this.state.lastWeekCo2Recycled} </Text>
+                          <Text style={styles.text}>Current Week: {this.state.curWeekCo2Recycled } </Text>
+                          <Text style={styles.text}>Total: {this.state.totalCo2RecycledReduced}  </Text>
+                    </DialogContent>
+
+            </Dialog>
 
             </ScrollView>
 
@@ -314,24 +412,20 @@ const styles = StyleSheet.create({
     alignSelf: "center"
   },
   Eachtotal:{
-    flex:1,
     alignItems: 'center',
     textAlign: 'center',
-    alignSelf: "center",
-    justifyContent: "center"
+    margin:10
   },
   ListView:{
     flex:1,
     backgroundColor: 'white'
   },
   totals:{
-    flex:1,
     marginTop:10,
     marginBottom: 5,
     textAlign: 'center',
     paddingBottom: 15,
     flexDirection: 'row',
-    alignItems: 'stretch',
     alignSelf: "center",
     justifyContent: "center"
   }

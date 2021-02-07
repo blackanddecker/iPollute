@@ -41,6 +41,7 @@ const CustomDrawerContentComponent = (props) => {
                       });
                     });
                     AsyncStorage.clear();
+                    
                     AsyncStorage.getAllKeys((err, keys) => {
                       AsyncStorage.multiGet(keys, (error, stores) => {
                         stores.map((result, i, store) => {
@@ -55,7 +56,7 @@ const CustomDrawerContentComponent = (props) => {
                 { cancelable: false }
               )  
             }>
-              <View style = {{flexDirection: "row", paddingLeft: 20, marginVertical:10 }}>
+              <View style = {{flexDirection: "row", paddingLeft: 20, marginVertical:10}}>
               <Ionicons name="ios-log-out" borderRadius={40} marginVertical={10} size={25} color={"gray"} />
               <Text style={{paddingLeft: 29, fontWeight: 'bold',color: "black", fontFamily: 'open-sans'}}>Logout</Text>
               </View>

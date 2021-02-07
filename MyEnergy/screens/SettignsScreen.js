@@ -23,6 +23,15 @@ class SettingsScreen extends Component {
      }
     state = {
         userId: -1,
+
+        userIdInit: '',
+        emailInit: '',
+        usernameInit: '',
+        userEnergyInit: '',
+        passwordInit: '',
+        passwordRepeat: '',
+        favFoodInit: '',
+        favTransportInit: '',
         username : '',
         email: '',
         userEnergy: 0,
@@ -122,6 +131,14 @@ class SettingsScreen extends Component {
         .then((responseJson) => {
                 console.log(responseJson);
                 this.setState({
+                    userIdInit: responseJson['userDetails']['id'],
+                    emailInit: responseJson['userDetails']['email'],
+                    usernameInit: responseJson['userDetails']['username'],
+                    userEnergyInit: responseJson['userDetails']['userEnergy'],
+                    passwordInit: responseJson['userDetails']['password'],
+                    passwordRepeat: responseJson['userDetails']['password'],
+                    favFoodInit: responseJson['userDetails']['favFood'],
+                    favTransportInit: responseJson['userDetails']['favTransport'],
                     userId: responseJson['userDetails']['id'],
                     email: responseJson['userDetails']['email'],
                     username: responseJson['userDetails']['username'],
@@ -130,7 +147,7 @@ class SettingsScreen extends Component {
                     passwordRepeat: responseJson['userDetails']['password'],
                     favFood: responseJson['userDetails']['favFood'],
                     favTransport: responseJson['userDetails']['favTransport'],
-                    isLoading: !this.state.isLoading })
+                    isLoading: false })
                 console.log(this.state);
                 
         })
@@ -139,28 +156,21 @@ class SettingsScreen extends Component {
              alert("User data didnt fetch");
             });
 
-
-
-
-
-
-
-
         }
         
 
         // Username Modal
         openUsernameModal = () =>{this.setState({isUsernameModalVisible:true})}
         toggleUsernameModal = () =>{this.setState({isUsernameModalVisible:!this.state.isUsernameModalVisible})}
-        closeUsernameModal = () =>{this.setState({isUsernameModalVisible:false})}
+        closeUsernameModal = () =>{this.setState({isUsernameModalVisible:false, username: this.state.usernameInit})}
         // Email Modal
         openEmailModal = () =>{this.setState({isEmailModalVisible:true})}
         toggleEmailModal = () =>{this.setState({isEmailModalVisible:!this.state.isEmailModalVisible})}
-        closeEmailModal = () =>{this.setState({isEmailModalVisible:false})}
+        closeEmailModal = () =>{this.setState({isEmailModalVisible:false, email: this.state.emailInit})}
         // Password Modal
         openPasswordModal = () =>{this.setState({isPasswordModalVisible:true})}
         togglePasswordModal = () =>{this.setState({isPasswordModalVisible:!this.state.isPasswordModalVisible})}
-        closePasswordModal = () =>{this.setState({isPasswordModalVisible:false})}
+        closePasswordModal = () =>{this.setState({isPasswordModalVisible:false,  password: this.state.passwordInit})}
         // Delete Account Modal
         openDeleteAccountModal = () =>{this.setState({isDeleteAccountModalVisible:true})}
         toggleDeleteAccountModal = () =>{this.setState({isDeleteAccountModalVisible:!this.state.isDeleteAccountModalVisible})}
@@ -169,18 +179,18 @@ class SettingsScreen extends Component {
         //Update Energy
         openEnergyModal = () =>{this.setState({isEnergyModalVisible:true})}
         toggleEnergyModal = () =>{this.setState({isEnergyModalVisible:!this.state.isEnergyModalVisible})}
-        closeEnergyModal = () =>{this.setState({isEnergyModalVisible:false})}
+        closeEnergyModal = () =>{this.setState({isEnergyModalVisible:false, userEnergy:this.state.userEnergyInit})}
 
         //Update Fav Food
         openFavFoodModal = () =>{this.setState({isFavFoodVisible:true})}
         toggleFavFoodModal = () =>{this.setState({isFavFoodVisible:!this.state.isFavFoodVisible})}
-        closeFavFoodModal = () =>{this.setState({isFavFoodVisible:false})}
+        closeFavFoodModal = () =>{this.setState({isFavFoodVisible:false, favFood: this.state.favFoodInit})}
 
 
         //Update Fav Transport
         openFavTransportModal = () =>{this.setState({isFavTransportVisible:true})}
         toggleFavTransportModal = () =>{this.setState({isFavTransportVisible:!this.state.isFavTransportVisible})}
-        closeFavTransportModal = () =>{this.setState({isFavTransportVisible:false})}
+        closeFavTransportModal = () =>{this.setState({isFavTransportVisible:false, favTransport: this.state.favTransportInit})}
 
         updateUsername = (username) => {
             this.setState({ username: username })
@@ -244,6 +254,7 @@ class SettingsScreen extends Component {
                     this.closeFavTransportModal()
                     this.closeFavFoodModal()
                     this.closeEnergyModal()
+                    this.fetchData(this.state.userId)
                     this.setState({isLoading:false})
 
 
@@ -260,8 +271,8 @@ class SettingsScreen extends Component {
                 });
         }
         
-        deleteUser = (userId) => {
-            
+        deleteUser = () => {
+            this.setState({isLoading:true})
             fetch( BaseUrl+'deleteUser', {
             headers: {
                 'Accept': 'application/json',
@@ -279,14 +290,22 @@ class SettingsScreen extends Component {
                 console.log(responseJson);
                 if(responseJson['success'] == true){
                     alert("User Deleted Succefully");
+                    this.closeDeleteAccountModal()
+                    AsyncStorage.clear();
+                    this.props.navigation.navigate('Login')
+                    this.setState({isLoading:false})
+
+
                 }
                 else{
+                    this.setState({isLoading:false})
                     alert("User deleted Failed");
                 }
                 
             })
             .catch((error) => {
                 console.error(error);
+                this.setState({isLoading:false})
                 alert("Delete Failed");
                 });
         }
@@ -298,7 +317,7 @@ class SettingsScreen extends Component {
             if(this.state.isLoading === false) {
                 return (
                     <SafeAreaView style={styles.centeredView}>
-                        <ScrollView style={styles.scrollView}>
+                        {/* <ScrollView style={styles.scrollView}> */}
                         <View style={styles.inputLabels}>
                             <TouchableOpacity    onPress={()=>this.openUsernameModal()}    underlayColor="white">
                                 <View style={styles.button}>
@@ -349,16 +368,16 @@ class SettingsScreen extends Component {
                                     <View style={styles.iconStyle}>
                                         <FontAwesome name="warning" size={24} color="black" />
                                     </View>
-                                    <Text style={styles.buttonText}> Add Warning</Text>
+                                    <Text style={styles.buttonText}> Add Recycling Warning</Text>
                                 </View>
                             </TouchableOpacity>
                                 
                             <TouchableOpacity    onPress={()=>this.openDeleteAccountModal()}    underlayColor="black">
-                                <View style={styles.button}>
-                                    <View style={styles.iconStyle}>
-                                        <FontAwesome name="ban" size={24} color="black" />
-                                    </View>
-                                    <Text style={styles.buttonText}> Delete Account</Text>
+                                <View style={styles.bottom, styles.button}>
+                                        <View style={styles.iconStyle}>
+                                            <FontAwesome name="ban" size={24} color="black" />
+                                        </View>
+                                        <Text style={styles.buttonText}> Delete Account</Text>
                                 </View>
                             </TouchableOpacity>
 
@@ -635,7 +654,7 @@ class SettingsScreen extends Component {
 
 
 
-                    </ScrollView>
+                    {/* </ScrollView> */}
                 </SafeAreaView>
                 )
             }
@@ -668,14 +687,15 @@ SettingsScreen.navigationOptions = navData => {
 };
 
 const styles = StyleSheet.create({
-    screen: {
-        marginBottom: 15,
-        position: 'relative',
-        backgroundColor: '#ffffff'
-    },
+
+    centeredView: {
+        // backgroundColor: '#ffffff',
+        flex: 1,
+        justifyContent: "center",
+      },
     inputLabels:{
-        justifyContent: 'flex-start',
-        padding: 10
+        flex: 1,
+        padding: 10,
     },
     picker: {
         borderColor: 'black', 
@@ -718,7 +738,7 @@ const styles = StyleSheet.create({
     },
     button: {
         marginBottom: 15,
-        display: 'flex',
+        // display: 'flex',
         flexDirection: 'row',
         height: 50,
         borderRadius: 6,
@@ -739,6 +759,14 @@ const styles = StyleSheet.create({
             padding: 20,
             color: 'black'
         },
+    bottom: {
+        width: '100%',
+        height: 50,
+        alignItems: 'center',
+        position: 'absolute', //Here is the trick
+        bottom: 0 //Here is the trick
+
+        },
     text:{
             height: 36,
             borderRadius: 8,
@@ -747,11 +775,7 @@ const styles = StyleSheet.create({
             alignSelf: 'stretch',
             // justifyContent: 'center'
     },
-    centeredView: {
-        flex: 1,
-        justifyContent: "center",
-        marginTop: 22
-      },
+
     modalView: {
         margin: 20,
         backgroundColor: "white",

@@ -6,6 +6,7 @@ def deleteUser(connection, data):
     '''
     Delete User
     '''
+    print(data)
     if 'userId' not in data:
         return {'message':'userId missing!', 'success': False}, 400
 

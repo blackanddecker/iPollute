@@ -1,5 +1,5 @@
 import React, {Component } from 'react';
-import { View, Text, StyleSheet, Switch, Platform, TouchableOpacity, ScrollView} from 'react-native';
+import { View, Text, StyleSheet, Switch, Platform, TouchableOpacity, ScrollView, ActivityIndicator} from 'react-native';
 import StarRating from 'react-native-star-rating';
 import HeaderButton from '../components/HeaderButton';
 import { HeaderButtons } from 'react-navigation-header-buttons';
@@ -22,8 +22,8 @@ class RateMeScreen extends Component {
             comment: '',
             userId: -1, 
             comment: '',
-            showSaveAlert: false
-
+            showSaveAlert: false,
+            loading: false
         };
     }
 
@@ -45,7 +45,7 @@ class RateMeScreen extends Component {
 
 
     fetchData = (userId) => {
-
+        this.setState({ loading: true });
         fetch(BaseUrl+'getUserRate', {
             headers: {
                 'Accept': 'application/json',
@@ -62,12 +62,13 @@ class RateMeScreen extends Component {
         .then((responseJson) => {
                 console.log(responseJson);
                 this.setState({
-                    starCount: responseJson['ratings']['star']
+                    starCount: responseJson['ratings']['star'],
                 })
-                console.log(this.state);
+                this.setState({ loading: false});
                 
         })
         .catch((error) => {
+            this.setState({ loading: false});
              console.error(error);
              alert("User data didnt fetch");
         });
@@ -81,12 +82,12 @@ class RateMeScreen extends Component {
       };
 
     saveRatings = () => {
-
+        this.setState({ loading: true});
         fetch(BaseUrl+'saveUserRate', {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': "Basic " + "iPolluteUserName:iPolluteHiddenPassword#901"
+            'Authorization': "Basic " + base64.encode("iPolluteUserName:iPolluteHiddenPassword#901")
 
         },
         body: JSON.stringify({
@@ -100,14 +101,17 @@ class RateMeScreen extends Component {
         .then((response) => response.json())
         .then((responseJson) => {
             if(responseJson['success'] == true){
+                this.setState({ loading: false});
                 alert("Saved Ratings");
             }
             else{
+                this.setState({ loading: false});
                 alert("Fail to save ratings");
             }
         })
         .catch((error) => {
             console.error(error);
+            this.setState({ loading: false});
             alert("Fail to save ratings");
         });
     }
@@ -136,39 +140,48 @@ class RateMeScreen extends Component {
     }   
 
     render() {
-        return (
-            <View style={styles.container}>
+        if(this.state.loading === false) {  
+
+            return (
+                <View style={styles.container}>
+                
+                    <Text style={styles.instructions}> Rate Us</Text>
+                    <Text style={styles.instructions}>
+                    {`${this.state.starCount} of stars is displayed`}
+                    </Text>
+                    <StarRating
+                        disabled={false}
+                        maxStars={5}
+                        fullStarColor={Colors.primaryColor}
+                        rating={this.state.starCount}
+                        selectedStar={(rating) => this.onStarRatingPress(rating)}
+                    />
+
+                    <TextInput
+                        multiline={true}
+                        numberOfLines={5}
+                        value={this.state.comment}
+                        onChangeText={(comment) => this.setComment(comment)}
+                        placeholder={'Insert any comment'}
+                        style={styles.input}
+                    />
             
-                <Text style={styles.instructions}> Rate Us</Text>
-                <Text style={styles.instructions}>
-                {`${this.state.starCount} of stars is displayed`}
-                </Text>
-                <StarRating
-                    disabled={false}
-                    maxStars={5}
-                    fullStarColor={Colors.primaryColor}
-                    rating={this.state.starCount}
-                    selectedStar={(rating) => this.onStarRatingPress(rating)}
-                />
 
-                <TextInput
-                    multiline={true}
-                    numberOfLines={5}
-                    value={this.state.comment}
-                    onChangeText={(comment) => this.setComment(comment)}
-                    placeholder={'Insert any comment'}
-                    style={styles.input}
-                />
-        
-
-                <TouchableOpacity    style={styles.SaveButton2} onPress={()=>this.saveRatings()} underlayColor="white">
-                    <View style={styles.SaveButton}>
-                        <FontAwesome name="save" size={24} color="black" />
-                        <Text style={styles.buttonText}>         Save         </Text>
-                    </View>
-                </TouchableOpacity>
-            </View>
-        );
+                    <TouchableOpacity    style={styles.SaveButton2} onPress={()=>this.saveRatings()} underlayColor="white">
+                        <View style={styles.SaveButton}>
+                            <FontAwesome name="save" size={24} color="black" />
+                            <Text style={styles.buttonText}>         Save         </Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            );
+        }
+        else{
+            return(  
+                <View style={{ flex: 1,justifyContent: "center"}}>
+                    <ActivityIndicator size="large" color= {Colors.primaryColor} />
+                </View>)
+          }
     }
 }
 
