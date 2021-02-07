@@ -111,7 +111,7 @@ def getEnergyHistory(connection, data):
                     if recycled[i]['energyDate'] >= appliedFilters['minCurrentDate'] and recycled[i]['energyDate'] <= appliedFilters['maxCurrentDate']:
                         recycledHistory.append(recycled[i])
                         history.append(recycled[i])
-                        totalRecycleCost += recycledHistory[i]['totalCost']
+                        totalRecycleCost += recycled[i]['totalCost']
 
 
 

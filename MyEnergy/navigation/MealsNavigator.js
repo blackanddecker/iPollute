@@ -29,7 +29,8 @@ const defaultStackNavOptions = {
     backgroundColor: Platform.OS === 'android' ? Colors.primaryColor : ''
   },
   headerTitleStyle: {
-    fontFamily: 'open-sans-bold'
+    fontFamily: 'open-sans-bold',
+    fontWeight: 'bold'
   },
   headerBackTitleStyle: {
     fontFamily: 'open-sans'

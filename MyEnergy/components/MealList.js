@@ -9,6 +9,7 @@ import BaseUrl from '../constants/Url';
 import base64 from 'react-native-base64'
 import { Slider } from 'react-native-elements';
 import { TextComponent } from 'react-native';
+import Timeline from 'react-native-timeline-flatlist'
 
 class MealList extends Component {
   constructor(props) {
@@ -279,6 +280,23 @@ class MealList extends Component {
                 renderItem={this.renderItem}
                 keyExtractor={(item) => item.energyId.toString()}
             />
+              
+              {/* <Timeline
+                //..other props
+                data={dataList}
+                renderItem={this.renderItem}
+                keyExtractor={(item) => item.energyId.toString()}
+                circleSize={20}
+                circleColor='rgb(45,156,219)'
+                lineColor='rgb(45,156,219)'
+                timeContainerStyle={{minWidth:52, marginTop: -5}}
+                timeStyle={{textAlign: 'center', backgroundColor:'#ff9797', color:'white', padding:5, borderRadius:13}}
+                descriptionStyle={{color:'gray'}}
+                options={{
+                  style:{paddingTop:5}
+                }}
+              /> */}
+
 
             {  this.state.isDeleteModalVisible &&
                 
@@ -319,10 +337,12 @@ class MealList extends Component {
                 >
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
-                        <Text style = {styles.title}>Update Action</Text>
+                        <Text style = {styles.title}>Update {this.state.updatedItem.description}</Text>
                                  
-                
-                        <Text style = {styles.textModal}>How Many: {this.state.updatedUserCost}</Text>
+                        <Text> Current value is: {this.state.updatedItem.userCost}
+                        
+                        </Text>
+                        <Text > Updated value: {this.state.updatedUserCost}</Text>
  
                             <Slider
                                 value={this.state.updatedUserCost}

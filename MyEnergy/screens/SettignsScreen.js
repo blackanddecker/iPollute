@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity,  SafeAreaView, ScrollView, Picker, ActivityIndicator} from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity,  SafeAreaView, ScrollView, ActivityIndicator, Picker} from 'react-native';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -13,7 +13,10 @@ import { Icon } from 'react-native-elements';
 import Password from "../components/PasswordTextBox";
 import base64 from 'react-native-base64'
 import { Slider } from 'react-native-elements';
+import EnergyObjects from '../constants/EnergyObjects';
 
+// import {Picker} from '@react-native-picker/picker';
+// import { Dropdown } from 'react-native-material-dropdown';
 class SettingsScreen extends Component {
     constructor(props){
         super(props);
@@ -74,46 +77,66 @@ class SettingsScreen extends Component {
       }
 
       fetchData = (userId) => {
-
-        fetch(BaseUrl+'getEnergyObjects', {
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': "Basic " + base64.encode("iPolluteUserName:iPolluteHiddenPassword#901")
-            },
-            body: JSON.stringify({
-                userId:userId,
-                appliedFilters: ''
-            }),
-            method: 'POST'
-        })
-        .then((response) => response.json())
-        .then((responseJson) => {
             var transportData = []
             var foodData = []
             var electricityData = []
             var recycledData = []
             //console.log(responseJson);
-            for (const key in responseJson['transportObjects']){
-                transportData.push(responseJson['transportObjects'][key])
+            for (const key in EnergyObjects.transportObjects){
+                // console.log("key:",responseJson['transportObjects'][key])
+                transportData.push(EnergyObjects.transportObjects[key])
             }
-            for (const key in responseJson['foodObjects']){
-                foodData.push(responseJson['foodObjects'][key])
+            for (const key in EnergyObjects.foodObjects){
+                foodData.push(EnergyObjects.foodObjects[key])
             }
-            for (const key in responseJson['recycledObjects']){
-                recycledData.push(responseJson['recycledObjects'][key])
+            for (const key in EnergyObjects.recycledObjects){
+                recycledData.push(EnergyObjects.recycledObjects[key])
             }
-            for (const key in responseJson['electricityObjects']){
-                electricityData.push(responseJson['electricityObjects'][key])
+            for (const key in EnergyObjects.electricityObjects){
+                electricityData.push(EnergyObjects.electricityObjects[key])
             }
-            this.setState({recycleStr:1, electricityStr:1, foodStr:1, transportStr:1})
             this.setState({transportData:transportData, foodData:foodData, electricityData:electricityData, recycledData:recycledData})
-        })
-        .catch((error) => {
-            console.error(error);
-            alert("Transport data didnt fetch");
+
+        // fetch(BaseUrl+'getEnergyObjects', {
+        //     headers: {
+        //         'Accept': 'application/json',
+        //         'Content-Type': 'application/json',
+        //         'Authorization': "Basic " + base64.encode("iPolluteUserName:iPolluteHiddenPassword#901")
+        //     },
+        //     body: JSON.stringify({
+        //         userId:userId,
+        //         appliedFilters: ''
+        //     }),
+        //     method: 'POST'
+        // })
+        // .then((response) => response.json())
+        // .then((responseJson) => {
+        //     var transportData = []
+        //     var foodData = []
+        //     var electricityData = []
+        //     var recycledData = []
+        //     //console.log(responseJson);
+        //     for (const key in EnergyObjects.transportObjects){
+        //         // console.log("key:",responseJson['transportObjects'][key])
+        //         transportData.push(EnergyObjects.transportObjects[key])
+        //     }
+        //     for (const key in EnergyObjects.foodObjects){
+        //         foodData.push(EnergyObjects.foodObjects[key])
+        //     }
+        //     for (const key in EnergyObjects.recycledObjects){
+        //         recycledData.push(EnergyObjects.recycledObjects[key])
+        //     }
+        //     for (const key in EnergyObjects.electricityObjects){
+        //         electricityData.push(EnergyObjects.electricityObjects[key])
+        //     }
+        //     this.setState({recycleStr:1, electricityStr:1, foodStr:1, transportStr:1})
+        //     this.setState({transportData:transportData, foodData:foodData, electricityData:electricityData, recycledData:recycledData})
+        // })
+        // .catch((error) => {
+        //     console.error(error);
+        //     alert("Transport data didnt fetch");
             
-        });
+        // });
 
 
         fetch(BaseUrl+'getUserDetails', {
@@ -146,6 +169,8 @@ class SettingsScreen extends Component {
                     password: responseJson['userDetails']['password'],
                     passwordRepeat: responseJson['userDetails']['password'],
                     favFood: responseJson['userDetails']['favFood'],
+                    foodStr: responseJson['userDetails']['favFood'],
+                    transportStr: responseJson['userDetails']['favTransport'],
                     favTransport: responseJson['userDetails']['favTransport'],
                     isLoading: false })
                 console.log(this.state);
@@ -184,13 +209,13 @@ class SettingsScreen extends Component {
         //Update Fav Food
         openFavFoodModal = () =>{this.setState({isFavFoodVisible:true})}
         toggleFavFoodModal = () =>{this.setState({isFavFoodVisible:!this.state.isFavFoodVisible})}
-        closeFavFoodModal = () =>{this.setState({isFavFoodVisible:false, favFood: this.state.favFoodInit})}
+        closeFavFoodModal = () =>{this.setState({isFavFoodVisible:false, favFood: this.state.favFoodInit, foodStr: this.state.favFoodInit})}
 
 
         //Update Fav Transport
         openFavTransportModal = () =>{this.setState({isFavTransportVisible:true})}
         toggleFavTransportModal = () =>{this.setState({isFavTransportVisible:!this.state.isFavTransportVisible})}
-        closeFavTransportModal = () =>{this.setState({isFavTransportVisible:false, favTransport: this.state.favTransportInit})}
+        closeFavTransportModal = () =>{this.setState({isFavTransportVisible:false, favTransport: this.state.favTransportInit, transportStr: this.state.favTransportInit})}
 
         updateUsername = (username) => {
             this.setState({ username: username })
@@ -319,6 +344,7 @@ class SettingsScreen extends Component {
                     <SafeAreaView style={styles.centeredView}>
                         {/* <ScrollView style={styles.scrollView}> */}
                         <View style={styles.inputLabels}>
+                            <Text style = {styles.textLabels}> Account </Text>
                             <TouchableOpacity    onPress={()=>this.openUsernameModal()}    underlayColor="white">
                                 <View style={styles.button}>
                                     <View style={styles.iconStyle}>
@@ -346,7 +372,8 @@ class SettingsScreen extends Component {
                                     <Text style={styles.buttonText}> Update Email</Text>
                                 </View>
                             </TouchableOpacity>
-                            
+                            <Text style = {styles.textLabels}> Preferences </Text>
+
                             <TouchableOpacity    onPress={()=>this.openFavFoodModal()}    underlayColor="black">
                                 <View style={styles.button}>
                                     <View style={styles.iconStyle}>
@@ -371,7 +398,9 @@ class SettingsScreen extends Component {
                                     <Text style={styles.buttonText}> Add Recycling Warning</Text>
                                 </View>
                             </TouchableOpacity>
-                                
+                            
+                            <Text>  </Text>
+ 
                             <TouchableOpacity    onPress={()=>this.openDeleteAccountModal()}    underlayColor="black">
                                 <View style={styles.bottom, styles.button}>
                                         <View style={styles.iconStyle}>
@@ -520,6 +549,15 @@ class SettingsScreen extends Component {
                                     <Text style = {styles.title}>Update Favorite Food </Text>
                                         
                                     <View style={styles.picker}>
+
+                                    {/* <Dropdown
+                                        label={foods.description}
+                                        data={this.state.foodData}
+                                        value={foods.id}
+                                    /> */}
+
+
+
                                             <Picker selectedValue = {this.state.foodStr} 
                                                     onValueChange = {this.updateFavFood} 
                                                 >
@@ -710,6 +748,15 @@ const styles = StyleSheet.create({
         margin: 20,
         fontWeight: 'bold',
         textAlign: 'center',
+        justifyContent: 'flex-start',
+        alignSelf: 'stretch'
+    },
+
+    textLabels: {
+        fontFamily: 'open-sans-bold',
+        fontSize: 12,
+        margin: 10,
+        fontWeight: 'bold',
         justifyContent: 'flex-start',
         alignSelf: 'stretch'
     },

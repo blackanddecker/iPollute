@@ -30,10 +30,12 @@ import HeaderButton from '../components/HeaderButton';
 import Colors from '../constants/Colors';
 import { format, set } from "date-fns";
 import base64 from 'react-native-base64'
+import { withNavigationFocus } from 'react-navigation';
 
 import BaseUrl from '../constants/Url';
 import AsyncStorage from '@react-native-community/async-storage'
-
+import EnergyObjects from '../constants/EnergyObjects';
+import ProgressCircle from 'react-native-progress-circle'
 import {
     ProgressChart, PieChart
 } from 'react-native-chart-kit'
@@ -101,48 +103,70 @@ class CategoriesScreen extends Component {
 
 
     fetchData = (userId, appliedFilters) => {
-        fetch(BaseUrl+'getEnergyObjects', {
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': "Basic " + base64.encode("iPolluteUserName:iPolluteHiddenPassword#901")
-            },
-            body: JSON.stringify({
-                userId:userId,
-                appliedFilters: appliedFilters
-            }),
-            method: 'POST'
-        })
-        .then((response) => response.json())
-        .then((responseJson) => {
+        // fetch(BaseUrl+'getEnergyObjects', {
+        //     headers: {
+        //         'Accept': 'application/json',
+        //         'Content-Type': 'application/json',
+        //         'Authorization': "Basic " + base64.encode("iPolluteUserName:iPolluteHiddenPassword#901")
+        //     },
+        //     body: JSON.stringify({
+        //         userId:userId,
+        //         appliedFilters: appliedFilters
+        //     }),
+        //     method: 'POST'
+        // })
+        // .then((response) => response.json())
+        // .then((responseJson) => {
+        //     var transportData = []
+        //     var foodData = []
+        //     var electricityData = []
+        //     var recycledData = []
+        //     //console.log(responseJson);
+        //     for (const key in responseJson['transportObjects']){
+        //         // console.log("key:",responseJson['transportObjects'][key])
+        //         transportData.push(responseJson['transportObjects'][key])
+        //     }
+        //     for (const key in responseJson['foodObjects']){
+        //         foodData.push(responseJson['foodObjects'][key])
+        //     }
+        //     for (const key in responseJson['recycledObjects']){
+        //         recycledData.push(responseJson['recycledObjects'][key])
+        //     }
+        //     for (const key in responseJson['electricityObjects']){
+        //         electricityData.push(responseJson['electricityObjects'][key])
+        //     }
+        //     this.setState({recycleStr:1, electricityStr:1, foodStr:1, transportStr:1})
+        //     this.setState({transportData:transportData, foodData:foodData, electricityData:electricityData, recycledData:recycledData})
+        //     this.setState({isTransportLoading: !this.state.isTransportLoading, isFoodLoading: !this.state.isFoodLoading  })
+        // })
+        // .catch((error) => {
+        //     console.error(error);
+        //     alert("Transport data didnt fetch");
+            
+        // });
+        
             var transportData = []
             var foodData = []
             var electricityData = []
             var recycledData = []
             //console.log(responseJson);
-            for (const key in responseJson['transportObjects']){
+            for (const key in EnergyObjects.transportObjects){
                 // console.log("key:",responseJson['transportObjects'][key])
-                transportData.push(responseJson['transportObjects'][key])
+                transportData.push(EnergyObjects.transportObjects[key])
             }
-            for (const key in responseJson['foodObjects']){
-                foodData.push(responseJson['foodObjects'][key])
+            for (const key in EnergyObjects.foodObjects){
+                foodData.push(EnergyObjects.foodObjects[key])
             }
-            for (const key in responseJson['recycledObjects']){
-                recycledData.push(responseJson['recycledObjects'][key])
+            for (const key in EnergyObjects.recycledObjects){
+                recycledData.push(EnergyObjects.recycledObjects[key])
             }
-            for (const key in responseJson['electricityObjects']){
-                electricityData.push(responseJson['electricityObjects'][key])
+            for (const key in EnergyObjects.electricityObjects){
+                electricityData.push(EnergyObjects.electricityObjects[key])
             }
             this.setState({recycleStr:1, electricityStr:1, foodStr:1, transportStr:1})
             this.setState({transportData:transportData, foodData:foodData, electricityData:electricityData, recycledData:recycledData})
             this.setState({isTransportLoading: !this.state.isTransportLoading, isFoodLoading: !this.state.isFoodLoading  })
-        })
-        .catch((error) => {
-            console.error(error);
-            alert("Transport data didnt fetch");
-            
-        });
-        
+
         
         fetch(BaseUrl+'getEnergyHistory', {
             headers: {
@@ -202,8 +226,11 @@ class CategoriesScreen extends Component {
                     // userEnergy: responseJson['userDetails']['energyTotal'],
                     isLoading:false,
                     favFood: responseJson['userDetails']['favFood'],
+                    foodStr: responseJson['userDetails']['favFood'],
                     warningEnergy: responseJson['userDetails']['userEnergy'],
-                    favTransport: responseJson['userDetails']['favTransport']})
+                    favTransport: responseJson['userDetails']['favTransport'],
+                    transportStr: responseJson['userDetails']['favTransport'],
+                })
                 console.log(this.state.warningEnergy , this.state.totalUserSavings, this.state.openWarningEnergyModal);
 
                 if ((this.state.warningEnergy > this.state.totalUserSavings) && (this.state.openWarningEnergyModal === false)){
@@ -231,7 +258,7 @@ class CategoriesScreen extends Component {
         })
         .then(userId => {
             var appliedFilters = AsyncStorage.getItem('appliedFilters').then((appliedFilters) => {    
-              console.log("Get appliedFilters Async History:",appliedFilters);
+              console.log("componentDidMount appliedFilters:",appliedFilters);
                 this.setState({appliedFilters: JSON.parse(appliedFilters)});
                 this.fetchData(this.state.userId, this.state.appliedFilters)
                 this.setState({isFiltersApplied: true});
@@ -241,22 +268,19 @@ class CategoriesScreen extends Component {
               return JSON.parse(appliedFilters)
               
             })
-            //do something else
-            
-
         });
-          console.log("Component did mount")
         
     }
 
-    componentDidUpdate(){
+    componentDidUpdate(prevProps){
+        
         const appliedFilters = AsyncStorage.getItem('appliedFilters').then((value) => {    
-          console.log("Get appliedFilters Async History:",value);
+          console.log("componentDidUpdate appliedFilters:",value);
           return JSON.parse(value) 
         })
         .then(appliedFilters => {
           console.log("Compare filters:", this.state.appliedFilters, appliedFilters)
-          if (JSON.stringify(this.state.appliedFilters) !== JSON.stringify(appliedFilters)) {
+          if ((JSON.stringify(this.state.appliedFilters) !== JSON.stringify(appliedFilters)) || (prevProps.isFocused !== this.props.isFocused) ) {
             console.log("Save new Filters")
             this.setState({appliedFilters: appliedFilters});
             this.fetchData(this.state.userId, this.state.appliedFilters)
@@ -347,11 +371,11 @@ class CategoriesScreen extends Component {
     
     openTransportModal = () =>{this.setState({isTransportModalVisible:true, energyItemId:1, energyTypeId: 1 })}
     toggleTransportModal = () =>{this.setState({isTransportModalVisible:!this.state.isTransportModalVisible})}
-    closeTransportModal = () =>{this.setState({isTransportModalVisible:false, userCost: 0 })}
+    closeTransportModal = () =>{this.setState({isTransportModalVisible:false, userCost: 0, transportStr: this.state.favTransport})}
     
     openFoodModal = () =>{this.setState({isFoodModalVisible:true, energyItemId:1, energyTypeId: 0 })}
     toggleFoodModal = () =>{this.setState({isFoodModalVisible:!this.state.isFoodModalVisible})}
-    closeFoodModal = () =>{this.setState({isFoodModalVisible:false, userCost: 0 })}
+    closeFoodModal = () =>{this.setState({isFoodModalVisible:false, userCost: 0, foodStr: this.state.favFood })}
     
     
     openRecycleModal = () =>{this.setState({isRecycleModalVisible:true, energyItemId:1, energyTypeId: 2 })}
@@ -451,7 +475,22 @@ class CategoriesScreen extends Component {
                         {/* <Text> {explText} </Text> */}
                         <Text></Text>
                         <TouchableOpacity onPress={() => {this.setState({ popUpHelp: true }); }}>
-                            <Progress.Circle 
+                            
+                        <ProgressCircle
+                            percent={this.state.totalUserSavings}
+                            radius={95}
+                            borderWidth={5}
+                            color={Colors.thirdBlueColor}
+                            shadowColor="#999"
+                            bgColor="#fff"
+                            size={160} 
+
+                        >
+                            <Text style={{ color:Colors.thirdBlueColor , fontSize: 28 }}>{this.state.totalUserSavings}%</Text>
+                            <Text style={{ fontSize: 12 }}> Carbon-Recycle Ratio</Text>
+                        </ProgressCircle>
+
+                            {/* <Progress.Circle 
                                 size={160} 
                                 indeterminate={false} 
                                 animated={true} 
@@ -462,13 +501,16 @@ class CategoriesScreen extends Component {
                                 direction={"clockwise"} 
                                 thickness ={8} 
                                 unfilledColor={'rgba(255, 255, 255, 0.2)'}
-                                formatText = {()=>{return (
+                                formatText = {()=>{
+                                    return (
+                                    
                                     this.state.totalUserSavings + "%"
                                     
                                     )}}
                                 // unfilledColor = {colorCycle}
                                 
-                                />
+                                > */}
+                                {/* </Progress.Circle> */}
                         </TouchableOpacity>
                             {/* <Text style={{size: 5}}> CO2/Saved C02 </Text> */}
                             
@@ -1094,4 +1136,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default CategoriesScreen;
+export default withNavigationFocus(CategoriesScreen);

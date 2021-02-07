@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { View, Text, StyleSheet,ActivityIndicator , RefreshControl, ScrollView} from 'react-native';
 import Dialog, { DialogContent } from 'react-native-popup-dialog';
-
+import { withNavigationFocus } from 'react-navigation';
 import HeaderButton from '../components/HeaderButton';
 import MealList from '../components/MealList';
 import BaseUrl from '../constants/Url';
@@ -132,14 +132,15 @@ class HistoryScreen extends Component {
     this.forceUpdate();
   };
   
-  componentDidUpdate(){
+  componentDidUpdate(prevProps){
+
     const appliedFilters = AsyncStorage.getItem('appliedFilters').then((value) => {    
-      console.log("Get appliedFilters Async History:",value);
+      console.log("componentDidUpdate Get appliedFilters Async History:",value);
       return JSON.parse(value) 
     })
     .then(appliedFilters => {
-      console.log("Compare filters:", this.state.appliedFilters, appliedFilters)
-      if (JSON.stringify(this.state.appliedFilters) !== JSON.stringify(appliedFilters)) {
+      console.log("Compare filters:", this.state.appliedFilters, appliedFilters,"||",this.props.isFocused, prevProps.isFocused)
+      if ((JSON.stringify(this.state.appliedFilters) !== JSON.stringify(appliedFilters)) || (prevProps.isFocused !== this.props.isFocused) ) {
         console.log("Save new Filters")
         this.setState({appliedFilters: appliedFilters});
         this.fetchData(this.state.userId, appliedFilters)
@@ -166,8 +167,9 @@ class HistoryScreen extends Component {
   }
 
     render() {
-      console.log("Render")
-
+      // console.log("Render")
+      const { isFocused } = this.props;
+      console.log(isFocused)
 
       // if (appliedFilters !== "" && this.state.isFiltersApplied == false){
       //   this.fetchData(this.state.userId, this.state.appliedFilters)
@@ -186,6 +188,8 @@ class HistoryScreen extends Component {
       // else{
       //   totalCo2Reduced = " - " 
       // }
+
+    
 
       if(this.state.isLoading === false) {
         if (totalCo2Reduced < 0 ){
@@ -218,7 +222,6 @@ class HistoryScreen extends Component {
               }
           >
             <View style = {{ backgroundColor: (this.state.isUpdateModalVisible)? 'rgba(0, 0, 0, 0.4)' : 'transparent'}}>
-
               <View style = {{flexDirection : 'row'}}>
               <View style = {{flex:1}}>
                   <View>
@@ -290,8 +293,11 @@ class HistoryScreen extends Component {
                     _handleRefresh={this._onRefresh}
                     _fetchData={this.fetchData}
                     />
+             
+              </View> 
 
-              </View>
+
+              
             </View>
 
             <Dialog
@@ -303,9 +309,9 @@ class HistoryScreen extends Component {
                 >
                     <DialogContent>
                         <FontAwesome name="info" size={35} color={Colors.primaryColor} style={{alignSelf: 'center', margin:20}}></FontAwesome>
-                        <Text style={styles.text}> Total Transport Emissions :  {this.state.totalTransportCost}</Text>
-                        <Text style={styles.text}> Total Food Emissions : {this.state.totalFoodCost} </Text>
-                        <Text style={styles.text}> Total Housing Emissions : {this.state.totalElectricityCost} </Text>
+                        <Text style={styles.textInfo}> Total Transport Emissions : { Math.round(0.01 * this.state.totalUserEnergyCost * this.state.totalTransportCost).toFixed(1)} Kg -  {this.state.totalTransportCost} %</Text>
+                        <Text style={styles.textInfo}> Total Food Emissions : { Math.round(0.01 * this.state.totalUserEnergyCost * this.state.totalFoodCost).toFixed(1)} Kg - {this.state.totalFoodCost} %</Text>
+                        <Text style={styles.textInfo}> Total Housing Emissions : { Math.round(0.01 * this.state.totalUserEnergyCost * this.state.totalElectricityCost).toFixed(1)} Kg - {this.state.totalElectricityCost} % </Text>
 
                     </DialogContent>
 
@@ -321,7 +327,7 @@ class HistoryScreen extends Component {
                 >
                     <DialogContent>
                         <FontAwesome name="info" size={35} color={Colors.primaryColor} style={{alignSelf: 'center', margin:20}}></FontAwesome>
-                        <Text style={styles.text}> Total Recycled kilograms : {this.state.totalRecycleCost} </Text>
+                        <Text style={styles.textInfo}> Total Recycled kilograms : {this.state.totalRecycleCost} </Text>
                     </DialogContent>
 
             </Dialog>
@@ -337,9 +343,9 @@ class HistoryScreen extends Component {
                         <FontAwesome name="info" size={35} color={Colors.primaryColor} style={{alignSelf: 'center', margin:20}}></FontAwesome>
                         <Text style={styles.text}>
                           Comparing Carbon Reducing Progress from last week and current week </Text>
-                          <Text style={styles.text}>Last Week : {this.state.lastWeekCo2} </Text>
-                          <Text style={styles.text}>Current Week: {this.state.curWeekCo2 } </Text>
-                          <Text style={styles.text}>Total: {this.state.totalCo2Reduced}  </Text>
+                          <Text style={styles.textInfo}>Last Week : {this.state.lastWeekCo2} </Text>
+                          <Text style={styles.textInfo}>Current Week: {this.state.curWeekCo2 } </Text>
+                          <Text style={styles.textInfo}>Total: {this.state.totalCo2Reduced}  </Text>
                     </DialogContent>
 
             </Dialog>
@@ -356,9 +362,9 @@ class HistoryScreen extends Component {
                         <FontAwesome name="info" size={35} color={Colors.primaryColor} style={{alignSelf: 'center', margin:20}}></FontAwesome>
                         <Text style={styles.text}>
                           Comparing Recycling Increasing Progress from last week and current week </Text>
-                          <Text style={styles.text}>Last Week : {this.state.lastWeekCo2Recycled} </Text>
-                          <Text style={styles.text}>Current Week: {this.state.curWeekCo2Recycled } </Text>
-                          <Text style={styles.text}>Total: {this.state.totalCo2RecycledReduced}  </Text>
+                          <Text style={styles.textInfo}>Last Week : {this.state.lastWeekCo2Recycled} </Text>
+                          <Text style={styles.textInfo}>Current Week: {this.state.curWeekCo2Recycled } </Text>
+                          <Text style={styles.textInfo}>Total: {this.state.totalCo2RecycledReduced}  </Text>
                     </DialogContent>
 
             </Dialog>
@@ -411,6 +417,10 @@ const styles = StyleSheet.create({
     marginTop:2 ,
     alignSelf: "center"
   },
+  textInfo: {
+    color: 'black',
+    marginTop:2 ,
+  },
   Eachtotal:{
     alignItems: 'center',
     textAlign: 'center',
@@ -432,8 +442,5 @@ const styles = StyleSheet.create({
 
 });
 
-export default HistoryScreen;
-
-
-
+export default withNavigationFocus(HistoryScreen);
 

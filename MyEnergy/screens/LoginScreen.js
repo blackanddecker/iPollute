@@ -156,9 +156,10 @@ class LoginScreen extends Component {
 
     })
     .catch((error) => {
+        this.setState({ loading: false });
         console.error(error);
         alert("Login Failed");
-        });
+      });
 
   };
 

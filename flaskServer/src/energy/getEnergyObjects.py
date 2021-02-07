@@ -50,6 +50,7 @@ def getEnergyObjects(connection, data):
                     electricity[i]['typeDescription'] = 'electricity'
                     electricity[i]['energyType'] = 3
 
+            print({"foodObjects" : foods, "transportObjects" : transports, "recycledObjects":  recycles, "electricityObjects": electricity})
             return {"foodObjects" : foods, "transportObjects" : transports, "recycledObjects":  recycles, "electricityObjects": electricity}, 200
 
 
