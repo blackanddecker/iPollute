@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.7.32, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.33, for Linux (x86_64)
 --
--- Host: 127.0.0.1    Database: iPollute
+-- Host: 34.77.113.111    Database: ecowallet
 -- ------------------------------------------------------
--- Server version	5.7.32-0ubuntu0.18.04.1
+-- Server version	5.7.30-google-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -14,38 +14,40 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+SET @MYSQLDUMP_TEMP_LOG_BIN = @@SESSION.SQL_LOG_BIN;
+SET @@SESSION.SQL_LOG_BIN= 0;
 
 --
--- Table structure for table `user`
+-- GTID state at the beginning of the backup 
 --
 
-DROP TABLE IF EXISTS `user`;
+SET @@GLOBAL.GTID_PURGED='2cbca7a8-66d7-11eb-889b-42010a8400bb:1-57733';
+
+--
+-- Table structure for table `electricity`
+--
+
+DROP TABLE IF EXISTS `electricity`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `user` (
+CREATE TABLE `electricity` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `email` varchar(90) DEFAULT NULL,
-  `password` varchar(45) DEFAULT NULL,
-  `username` varchar(45) DEFAULT NULL,
-  `energyCurrent` float DEFAULT '0',
-  `active` int(11) DEFAULT '1',
-  `userEnergy` float DEFAULT '0',
-  `favFood` int(11) DEFAULT '1',
-  `favTransport` int(11) DEFAULT '1',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `email_UNIQUE` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+  `description` varchar(45) DEFAULT NULL,
+  `cost` float DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `user`
+-- Dumping data for table `electricity`
 --
 
-LOCK TABLES `user` WRITE;
-/*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'a','a','a',10321,1,0,1,1),(2,'b','b','b',21,1,12,1,1);
-/*!40000 ALTER TABLE `user` ENABLE KEYS */;
+LOCK TABLES `electricity` WRITE;
+/*!40000 ALTER TABLE `electricity` DISABLE KEYS */;
+INSERT INTO `electricity` VALUES (1,'Natural Gas',0.198),(2,'Electricity',0.23),(3,'Heating Oil',0.246);
+/*!40000 ALTER TABLE `electricity` ENABLE KEYS */;
 UNLOCK TABLES;
+SET @@SESSION.SQL_LOG_BIN = @MYSQLDUMP_TEMP_LOG_BIN;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -56,4 +58,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-01-24 20:39:33
+-- Dump completed on 2021-02-07 20:53:42
