@@ -17,7 +17,7 @@ const AboutsScreen = props => {
       <Text style={styles.text}>iPollute is a carbon footprint tracker that helps you learn more about your carbon emissions and carbon footprint from your daily lifestyle. iPollute can help you towards achieving a sustainable lifestyle, whether through sustainable travel, reducing your dietary carbon footprint, or removing CO2 by offsetting the CO2 emissions you can't avoid. </Text>
       <Text style={styles.title}>Owner: Foufikos Evangelos</Text>
       <Text style={styles.title}>Contact Info: efoufikos@inf.uth.gr</Text>
-      <Text style={styles.title}>Version 0.8 </Text>
+      <Text style={styles.title}>Version 1.0 (Beta) </Text>
 
       <View style={styles.socialIcons}>
         <SocialIcon

@@ -1,6 +1,6 @@
 ''' Flask Server to support iPollute Mobile Application'''
 # Flask Expansions
-from flask import Flask, request
+from flask import Flask, request, render_template
 from flask_cors import CORS, cross_origin 
 from flask_bcrypt import Bcrypt 
 from flask_mail import Mail, Message 
@@ -120,9 +120,9 @@ def service_unavailable(e):
 def service_unavailable(e):
 	return {'error': 'Error in authentication method'}, 401
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def _hello_world():
-    return 'Hello, World!'
+    return  render_template( configs['HTML_TEMPLATE']), 200
 
 @app.route('/signup', methods=['POST'])
 @auth.login_required

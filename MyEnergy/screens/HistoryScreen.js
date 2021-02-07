@@ -30,7 +30,7 @@ class HistoryScreen extends Component {
     refreshing: false,
     transportData: [],
     historyData: [],
-    isLoading: true,
+    isLoading: false,
     isDisabled: true,
     totalCo2 : 0, 
     totalRecycledCo2:0, 
@@ -47,7 +47,7 @@ class HistoryScreen extends Component {
     totalUserEnergyCost: 0 ,
     totalFoodCost: 0,
     totalElectricityCost: 0,
-
+    totalCo2RecycledReduced:0,
     totalRecycleCost: 0,
   }
 
@@ -75,7 +75,6 @@ class HistoryScreen extends Component {
           }
   
           this.setState({
-            isLoading: false,
             historyData: historyData,
             totalCo2: responseJson['totalStats']['totalCo2'],
             totalRecycledCo2: responseJson['totalStats']['totalRecycledCo2'],
@@ -117,8 +116,10 @@ class HistoryScreen extends Component {
     .then(userId => {
       var appliedFilters = AsyncStorage.getItem('appliedFilters').then((appliedFilters) => {    
         console.log("Get appliedFilters Async History:",appliedFilters);
-          this.setState({appliedFilters: JSON.parse(appliedFilters)});
+          this.setState({appliedFilters: JSON.parse(appliedFilters), isLoading: true});
+          this.setState({isLoading: true});
           this.fetchData(this.state.userId, this.state.appliedFilters)
+          this.setState({isLoading: false});
           this.setState({isFiltersApplied: true});
         // }
         return JSON.parse(appliedFilters)
@@ -144,7 +145,10 @@ class HistoryScreen extends Component {
       if ((JSON.stringify(this.state.appliedFilters) !== JSON.stringify(appliedFilters)) || (prevProps.isFocused !== this.props.isFocused) ) {
         console.log("Save new Filters")
         this.setState({appliedFilters: appliedFilters});
+        
+        this.setState({isLoading: true});
         this.fetchData(this.state.userId, appliedFilters)
+        this.setState({isLoading: false});
 
       }
     });

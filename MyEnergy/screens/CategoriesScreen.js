@@ -282,7 +282,10 @@ class CategoriesScreen extends Component {
           if ((JSON.stringify(this.state.appliedFilters) !== JSON.stringify(appliedFilters)) || (prevProps.isFocused !== this.props.isFocused) ) {
             console.log("Save new Filters")
             this.setState({appliedFilters: appliedFilters});
+            this.setState({isLoading:true})
             this.fetchData(this.state.userId, this.state.appliedFilters)
+            this.setState({isLoading:false})
+
           }
         });
       }

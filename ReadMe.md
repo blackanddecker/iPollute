@@ -13,8 +13,12 @@ To set up project for development mode
  2. Server
 
 Create virtual python3 enviroment
-
+    virtualenv -p python3 env
     source env/bin/activate
+
+Install requirements
+
+    pip3 install -r requirements
 
 Add enviromental variables
 
@@ -46,6 +50,16 @@ Build Application
 
     npm run android
 
+
+## Release Apk 
+
+    cd android 
+
+    ./gradlew buildRelease
+
+Testing : 
+
+    npx react-native run-android --variant=release
 
 ## Troubleshooting 
 

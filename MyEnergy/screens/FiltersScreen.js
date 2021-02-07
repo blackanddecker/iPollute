@@ -29,6 +29,7 @@ class FiltersScreen extends Component {
         maxKm: 0,
         minKm: 0,
         minKg: 0,   
+        maxKg: 0,   
 
         transports: [],
         foods: [],
@@ -320,27 +321,13 @@ class FiltersScreen extends Component {
                                 onValueChange={this.updateCurrentKg}
                                 maximumValue={this.state.maxKg}
                                 minimumValue={this.state.minKg}
-                                step={5}
+                                step={1}
                                 trackStyle={{ height: 10, backgroundColor: 'transparent' }}
                                 thumbStyle={{ height: 20, width: 20, backgroundColor: Colors.primaryColor }}
                             /> 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                         </View>
-                        <Text style={styles.text}>Food (kg) {String(">")} {this.state.lowCurrentKg}</Text>
+                        <Text style={styles.text}>Food (kg) {String(">")} {Math.round(this.state.lowCurrentKg).toFixed(1)}</Text>
                     </View>
 
                     <View style={styles.component}>
