@@ -3,7 +3,7 @@ import { Platform, Text, ScrollView } from 'react-native';
 import {
   createStackNavigator
 } from 'react-navigation-stack';
-import { createAppContainer } from 'react-navigation';
+import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 
 import {createDrawerNavigator} from 'react-navigation-drawer'
 
@@ -38,13 +38,32 @@ const defaultStackNavOptions = {
   headerTitle: 'A Screen'
 };
 
-
-const MealsNavigator = createStackNavigator(
+const LoginNavigator = createStackNavigator(
   {
     Login: LoginScreen,
-    SignUp:SignUpScreen,
+    SignUp:SignUpScreen
+
+  },
+  {
+    defaultNavigationOptions: defaultStackNavOptions
+  }
+);
+
+const CatNavigator  = createStackNavigator(
+  {
+    Categories: CategoriesScreen
+  },
+  {
+    defaultNavigationOptions: defaultStackNavOptions
+  }
+);
+
+
+const MealsNavigator = createSwitchNavigator(
+  {
+    Auth: LoginNavigator,
     Categories: {
-      screen: CategoriesScreen
+      screen: CatNavigator
     }
   },
   {
@@ -52,17 +71,18 @@ const MealsNavigator = createStackNavigator(
   }
 );
 
-const HistoryNavigator  = createStackNavigator(
+const HistoryNavigator = createStackNavigator(
   {
     History: HistoryScreen,
-    Categories: {
-      screen: MealsNavigator
-    }
   },
   {
+    navigationOptions: {
+      drawerLabel: 'History'
+    },
     defaultNavigationOptions: defaultStackNavOptions
   }
 );
+
 
 const FiltersNavigator = createStackNavigator(
   {
@@ -126,19 +146,7 @@ const RateMeNavigator = createStackNavigator(
   }
 );
 
-// const LoginNavigator = createStackNavigator(
-//   {
-//     Login: LoginScreen,
-//     SignUp:SignUpScreen
 
-//   },
-//   {
-//     navigationOptions: {
-//       drawerLabel: 'Login'
-//     },
-//     defaultNavigationOptions: defaultStackNavOptions
-//   }
-// );
 
 
 // const LogoutNavigator = createStackNavigator(
@@ -182,15 +190,6 @@ const MainNavigator = createDrawerNavigator(
           )
       }
     },
-    // City: {
-    //   screen:CityNavigator,
-    //   navigationOptions: {
-    //     drawerLabel: 'City',
-    //     drawerIcon: tabInfo =>  (
-    //       <FontAwesome name="building" size={25} color={tabInfo.tintColor} />
-    //       )
-    //   }
-    // },
     Settings: {
       screen:SettingsNavigator,
       navigationOptions: {
