@@ -32,5 +32,7 @@ yarn-error.log*
 
 my-new-project/.expo/
 flaskServer/src/energy/__pycache__/
-
+flaskServer/src/user/__pycache__/
 readings/*
+
+flaskServer/env/*
