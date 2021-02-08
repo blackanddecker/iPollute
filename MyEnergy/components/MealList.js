@@ -166,7 +166,16 @@ class MealList extends Component {
 
   updateUserCost = (cost) => {this.setState({ updatedUserCost: cost })}
 
-
+ renderEmptyList = () => {
+     return (
+         <View style = {{height: 100, flex : 1, justifyContent:'center'}}>
+             <Text style = {{textAlign: 'center'}}> Empty History </Text>
+             <Text style = {{textAlign: 'center'}}> Please add your last transport and recycling actions </Text>
+         </View>
+        )
+ }
+ 
+ 
  renderItem = ({ item }) => {
 
     var itemIcon = <FontAwesome name="train-car" size={24} color={Colors.primaryColor} /> 
@@ -193,6 +202,9 @@ class MealList extends Component {
     }
     else if (item.energyItem === 9 & item.energyType === 1){
         itemIcon = <Ionicons name="train" size={24} color= {Colors.primaryColor} />
+    }
+    else if (item.energyItem === 10 & item.energyType === 1){
+        itemIcon = <FontAwesome name="ship" size={24} color= {Colors.primaryColor} />
     }
     else if (item.energyItem === 8 & item.energyType === 1 ){
         itemIcon = <MaterialCommunityIcons name="car-electric" size={24} color={Colors.primaryColor} />
@@ -223,26 +235,26 @@ class MealList extends Component {
     var stringCost = "Energy"
     var actionType = ''
     if (item.energyType === 0 ){
-        stringCost = " Kg"
+        stringCost = "Kg"
         actionType = "Produced"
     }
     else if (item.energyType === 1 ){
-        stringCost = " Km"
+        stringCost = "Km"
         actionType = "Produced"
     }
     else if (item.energyType === 2 ){
-        stringCost = " Kg "
+        stringCost = "Kg "
         actionType = "Recycled"
     }
     else if (item.energyType === 3 ){
-        stringCost = " KWh"
+        stringCost = "KWh"
         actionType = "Produced"
     }
  
 
     var userDate = new Date(item.energyDate)
     var userDateMonth = parseInt(userDate.getMonth() , 10 ) + 1;
-    var userDate2 = userDate.getFullYear() + '-' + userDateMonth + '-' + userDate.getDate() + ' ' + + String(userDate.getHours()).padStart(2, '0') + ":" + String(userDate.getMinutes()).padStart(2, '0')
+    var userDate2 = userDate.getDate() +'/'+ userDateMonth + '/'  + userDate.getFullYear() + ' -' + ' '  + String(userDate.getHours()).padStart(2, '0') + ":" + String(userDate.getMinutes()).padStart(2, '0')
 
     return (
 
@@ -253,11 +265,16 @@ class MealList extends Component {
                     {itemIcon}
                 </View>
                 <View style = {styles.itemTexts}>
-                    <Text style={styles.text}> {item.description} : {item.userCost} {stringCost}</Text> 
-                    <Text style={styles.text}> Date: {userDate2} </Text>
-                    <Text style={styles.text}> {actionType} C02: {item.totalCost.toFixed(1)} Kg</Text>
+                    <Text style={styles.textDescription}> {item.description}: {item.userCost} {stringCost}</Text> 
+                    <Text style={styles.textDate}> {userDate2} </Text>
+                    {/* <Text style={styles.text}> {actionType} C02: {item.totalCost.toFixed(1)} Kg</Text> */}
                 </View>
                 <View style={styles.iconStylesEdit}>
+                    <View>
+                        <Text style={styles.textCO2}> {item.totalCost.toFixed(1)} Kg</Text>
+                        <Text style={styles.textCO2Unit}> CO2</Text>
+
+                    </View>
 
                     <View style={styles.marginRight} >
                         <TouchableOpacity onPress={()=>this.setUpdateItem(item)}>
@@ -291,6 +308,7 @@ class MealList extends Component {
                 data={dataList}
                 renderItem={this.renderItem}
                 keyExtractor={(item) => item.energyId.toString()}
+                ListEmptyComponent={this.renderEmptyList()}
             />
               
               {/* <Timeline
@@ -431,22 +449,46 @@ const styles = StyleSheet.create({
         color: 'black'
     },
     itemTexts: {
+        alignSelf: 'center',
         justifyContent: 'flex-start',
         flexDirection: 'column',
         borderBottomColor: 'grey',
         alignItems: 'flex-start',
     },
     marginLeft: {
-        marginLeft: 10,
+        marginLeft: 4,
     },
     marginRight: {
-        marginRight: 10,
+        marginRight: 5,
+        marginLeft: 8
     },
     text: {
         fontSize: 12,
         fontWeight: 'bold',
         marginLeft: 10,
         
+    },
+    textCO2: {
+        fontSize: 12,
+        fontWeight: 'bold',
+        marginLeft: 10,
+        
+    },
+    textCO2Unit: {
+        fontSize: 10,
+        marginLeft: 10,
+        justifyContent:'center',
+        alignItems: 'center',
+        alignSelf: 'center'
+    },
+    textDescription:{
+        fontSize: 13,
+        fontWeight: 'bold',
+        marginLeft: 10,
+    },
+    textDate:{
+        fontSize: 12,
+        marginLeft: 10,
     },
     textModal: {
         fontSize: 12,

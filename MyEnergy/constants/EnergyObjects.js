@@ -88,7 +88,7 @@ export default {
     foodObjects: [
         {
           'id': 1,
-          'description': 'Beef  beef herd',
+          'description': 'Beef (beef herd)',
           'cost': 60.0,
           'typeDescription': 'foods',
           'energyType': 0
@@ -130,8 +130,99 @@ export default {
         },
         {
           'id': 7,
-          'description': 'Beef  dairy herd',
+          'description': 'Beef (dairy herd)',
           'cost': 21.0,
+          'typeDescription': 'foods',
+          'energyType': 0
+        },
+        {
+          'id': 8,
+          'description': 'Palm Oil',
+          'cost': 8.0,
+          'typeDescription': 'foods',
+          'energyType': 0
+        },
+        {
+          'id': 9,
+          'description': 'Fish (farmed)',
+          'cost': 5,
+          'typeDescription': 'foods',
+          'energyType': 0
+        },
+        {
+          'id': 10,
+          'description': 'Eggs',
+          'cost': 4.5,
+          'typeDescription': 'foods',
+          'energyType': 0
+        },
+        {
+          'id': 11,
+          'description': 'Rice',
+          'cost': 4,
+          'typeDescription': 'foods',
+          'energyType': 0
+        },
+        {
+          'id': 12,
+          'description': 'Milk',
+          'cost': 3,
+          'typeDescription': 'foods',
+          'energyType': 0
+        },
+        {
+          'id': 13,
+          'description': 'Fish (wild catch)',
+          'cost': 3.5,
+          'typeDescription': 'foods',
+          'energyType': 0
+        },
+        {
+          'id': 14,
+          'description': 'Tomatoes',
+          'cost': 1.4,
+          'typeDescription': 'foods',
+          'energyType': 0
+        },
+        {
+          'id': 15,
+          'description': 'Bananas',
+          'cost': 0.7,
+          'typeDescription': 'foods',
+          'energyType': 0
+        },
+        {
+          'id': 16,
+          'description': 'Apples',
+          'cost': 0.4,
+          'typeDescription': 'foods',
+          'energyType': 0
+        },
+        {
+          'id': 17,
+          'description': 'Root Vegetables',
+          'cost': 0.4,
+          'typeDescription': 'foods',
+          'energyType': 0
+        },      
+        {
+          'id': 18,
+          'description': 'Peas',
+          'cost': 0.9,
+          'typeDescription': 'foods',
+          'energyType': 0
+        },
+        {
+          'id': 19,
+          'description': 'Maize(Corn)',
+          'cost': 1,
+          'typeDescription': 'foods',
+          'energyType': 0
+        },
+        {
+          'id': 20,
+          'description': 'Wheat & Rye',
+          'cost': 4,
           'typeDescription': 'foods',
           'energyType': 0
         }

@@ -82,6 +82,10 @@ class RateMeScreen extends Component {
       };
 
     saveRatings = () => {
+        if (this.state.comment.length > 390){
+            alert("Maximum 400 letters in comments")
+            return
+        }
         this.setState({ loading: true});
         fetch(BaseUrl+'saveUserRate', {
         headers: {
@@ -101,7 +105,7 @@ class RateMeScreen extends Component {
         .then((response) => response.json())
         .then((responseJson) => {
             if(responseJson['success'] == true){
-                this.setState({ loading: false});
+                this.setState({ loading: false, comment: ''});
                 alert("Saved Ratings");
             }
             else{
@@ -162,10 +166,10 @@ class RateMeScreen extends Component {
                         numberOfLines={5}
                         value={this.state.comment}
                         onChangeText={(comment) => this.setComment(comment)}
-                        placeholder={'Insert any comment'}
+                        placeholder={'Insert any comment '}
                         style={styles.input}
                     />
-            
+                    {/* <Text style = {styles.lengthText}> {this.state.comment.length}/ 400</Text> */}
 
                     <TouchableOpacity    style={styles.SaveButton2} onPress={()=>this.saveRatings()} underlayColor="white">
                         <View style={styles.SaveButton}>
@@ -220,6 +224,12 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: '#333333',
         marginBottom: 5,
+    },
+    lengthText:{
+        justifyContent: 'flex-end',
+        alignItems: 'flex-end',
+        alignSelf: 'auto',
+        fontSize: 8
     },
     input: {
         width: 250,

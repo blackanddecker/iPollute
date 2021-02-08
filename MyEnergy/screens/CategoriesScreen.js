@@ -388,6 +388,137 @@ class CategoriesScreen extends Component {
     toggleElectricityModal = () =>{this.setState({isElectricityModalVisible:!this.state.isElectricityModalVisible})}
     closeElectricityModal = () =>{this.setState({isElectricityModalVisible:false, userCost: 0 })}
 
+    getProperElectricityPickerName = (id, description) =>{
+        if (id === 1){
+            return ("🏠 " + description)
+        }
+        if (id === 2){
+            return ("💡 " + description)
+        }
+        if (id === 3){
+            return ("🏠 " + description)
+        }
+        return ("🏠 " + description)
+    }
+
+    getProperRecyclePickerName = (id, description) =>{
+        if (id === 7){
+            return ("🥾 " + description)
+        }
+        if (id === 12){
+            return ("📄 " + description)
+        }
+        if (id === 15){
+            return ("💡 " + description)
+        }
+        if (id === 7){
+            return ("♻️ " + description)
+        }
+        if (id === 7){
+            return ("♻️ " + description)
+        }
+        if (id === 7){
+            return ("♻️ " + description)
+        }
+        if (id === 7){
+            return ("♻️ " + description)
+        }
+        return ("♻️ " + description)
+    }
+
+    getProperTransportPickerName = (id, description) =>{
+        if (id === 1 || id === 5 || id===6){
+            return ("✈️ " + description)
+        }
+        if (id === 2 || id === 8){
+            return ("🚗 " + description)
+        }
+        if (id === 3){
+            return ("🚗 " + description)
+        }
+        if (id === 10){
+            return ("🛳️ " + description)
+        }
+        if (id === 11){
+            return ("🚝 " + description)
+        }
+        if (id === 9){
+            return ("🚉 " + description)
+        }
+        if (id === 7){
+            return ("🏍️ " + description)
+        }
+        if (id === 4){
+            return ("🚌 " + description)
+        }
+        if (id === 12){
+            return ("🚲 " + description)
+        }
+        
+        return ("🚗" + description)
+    }
+
+    getProperFoodPickerName = (id, description) =>{
+        if (id === 1){
+            return ("🐄 " + description)
+        }
+        if (id === 2){
+            return ("🐐 " + description)
+        }
+        if (id === 3){
+            return ("🧀 " + description)
+        }
+        if (id === 4){
+            return ("🍫 " + description)
+        }
+        if (id === 5){
+            return ("☕ " + description)
+        }
+        if (id === 6){
+            return ("🐖 " + description)
+        }
+        if (id === 7){
+            return ("🐄 " + description)
+        }
+        if (id === 8){
+            return ("🌴 " + description)
+        }
+        if (id === 9){
+            return ("🐟 " + description)
+        }
+        if (id === 10){
+            return ("🥚 " + description)
+        }
+        if (id === 11){
+            return ("🍚 " + description)
+        }
+        if (id === 12){
+            return ("🍶 " + description)
+        }
+        if (id === 13){
+            return ("🐟 " + description)
+        }
+        if (id === 14){
+            return ("🍅 " + description)
+        }
+        if (id === 15){
+            return ("🍌 " + description)
+        }
+        if (id === 16){
+            return ("🍎 " + description)
+        }
+        if (id === 17){
+            return ("🥬 " + description)
+        }
+        if (id === 18){
+            return ("🍐 " + description)
+        }
+        if (id === 19 || id === 20){
+            return ("🌽 " + description)
+        }
+        
+        return ("🐄" + description)
+    }
 
     render() {
 
@@ -631,7 +762,7 @@ class CategoriesScreen extends Component {
                                                     {this.state.transportData.map((transports, id) => {
                                                         return <Picker.Item 
                                                             value={transports.id} 
-                                                            label={transports.description}
+                                                            label={this.getProperTransportPickerName(transports.id, transports.description)}
                                                             key={transports.id}    /> 
                                                             }
                                                         )}
@@ -689,7 +820,7 @@ class CategoriesScreen extends Component {
                                                         {this.state.foodData.map((foods, id) => {
                                                             return <Picker.Item 
                                                                 value={foods.id} 
-                                                                label={foods.description}
+                                                                label={this.getProperFoodPickerName(foods.id, foods.description)}
                                                                 key={foods.id}    /> 
                                                                 
                                                                 }
@@ -697,14 +828,14 @@ class CategoriesScreen extends Component {
                                             </Picker>  
                                         </View>
                                         <Text></Text>
-                                        <Text style = {styles.text}>Add Kilograms: {this.state.userCost}</Text>  
+                                        <Text style = {styles.text}>Add Kilograms: {(this.state.userCost).toFixed(1)}</Text>  
                                         
                                         <Slider
                                             value={this.state.userCost}
                                             onValueChange={this.updateCost}
                                             maximumValue={10}
-                                            minimumValue={1}
-                                            step={1}
+                                            minimumValue={0.1}
+                                            step={0.1}
                                             trackStyle={{ height: 10, backgroundColor: 'transparent' }}
                                             thumbStyle={{ height: 20, width: 20, backgroundColor: Colors.primaryColor }}
                                         /> 
@@ -741,7 +872,10 @@ class CategoriesScreen extends Component {
                                         <Text style = {styles.text}>Choose Recycled Object: </Text>
                                         <View style={styles.picker}>
                                             <Picker selectedValue = {this.state.recycleStr} 
-                                                    onValueChange = {this.updateRecycled} 
+                                                    onValueChange = {this.updateRecycled}
+                                                    mode = "dialog"
+                                                    prompt='Choose Recycled Object'
+ 
                                                     placeholder={{
                                                         label: 'Select a color...',
                                                         value: null,
@@ -750,7 +884,7 @@ class CategoriesScreen extends Component {
                                                         {this.state.recycledData.map((recycled, id) => {
                                                             return <Picker.Item 
                                                                 value={recycled.id} 
-                                                                label={recycled.description + ","+ recycled.id }
+                                                                label={this.getProperRecyclePickerName(recycled.id, recycled.description)}
                                                                 key={recycled.id}    /> 
                                                                 
                                                                 }
@@ -758,14 +892,14 @@ class CategoriesScreen extends Component {
                                             </Picker>  
                                         </View>
                                         <Text></Text>
-                                        <Text style = {styles.text}>Recycled Kilograms: {this.state.userCost}</Text>
+                                        <Text style = {styles.text}>Recycled Kilograms: {(this.state.userCost).toFixed(1)}</Text>
 
                                         <Slider
                                             value={this.state.userCost}
                                             onValueChange={this.updateCost}
                                             maximumValue={20}
-                                            minimumValue={1}
-                                            step={1}
+                                            minimumValue={0.1}
+                                            step={0.1}
                                             trackStyle={{ height: 10, backgroundColor: 'transparent' }}
                                             thumbStyle={{ height: 20, width: 20, backgroundColor: Colors.primaryColor }}
                                         /> 
@@ -803,11 +937,14 @@ class CategoriesScreen extends Component {
                                         <View style={styles.picker}>
                                             <Picker selectedValue = {this.state.electricityStr} 
                                                     onValueChange = {this.updateElectricity} 
+                                                    mode = "dialog"
+                                                    prompt='Choose Housing Emissions'
+
                                                 >
                                                         {this.state.electricityData.map((electricity, id) => {
                                                             return <Picker.Item 
                                                                 value={electricity.id} 
-                                                                label={electricity.description}
+                                                                label={this.getProperElectricityPickerName(electricity.id, electricity.description)}
                                                                 key={electricity.id}    /> 
                                                                 
                                                                 }
