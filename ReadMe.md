@@ -1,7 +1,7 @@
-IPollute
+EcoWallet
 ---------
 
-Ipollute is a carbon footprint tracker that helps you learn more about your carbon emissions and carbon footprint from your daily lifestyle. Ipollute can help you towards achieving a sustainable lifestyle, whether through sustainable travel, reducing your dietary carbon footprint, or removing CO2 by offsetting the CO2 emissions you can't avoid.
+EcoWallet is a carbon footprint tracker that helps you learn more about your carbon emissions and carbon footprint from your daily lifestyle. EcoWallet can help you towards achieving a sustainable lifestyle, whether through sustainable travel, reducing your dietary carbon footprint, or removing CO2 by offsetting the CO2 emissions you can't avoid.
 
 ## Development 
 
