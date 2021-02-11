@@ -148,26 +148,13 @@ const RateMeNavigator = createStackNavigator(
 );
 
 
-
-
-// const LogoutNavigator = createStackNavigator(
-//   {
-//     Login: LoginScreen
-//   },
-//   {
-//     navigationOptions: {
-//       drawerLabel: 'Logout'
-//     },
-//     defaultNavigationOptions: defaultStackNavOptions
-//   }
-// );
-
 // This is for side drawer
 const MainNavigator = createDrawerNavigator(
   {
     MealsFavs: {
       screen: MealsNavigator,
       navigationOptions: {
+        drawerLockMode: 'locked-closed',
         drawerLabel: 'My Energy',
         drawerIcon: tabInfo =>  (
             <FontAwesome name="bolt" size={25} color={tabInfo.tintColor} />
@@ -217,34 +204,7 @@ const MainNavigator = createDrawerNavigator(
           <FontAwesome name="info" size={25} color={tabInfo.tintColor} />
           )
       }
-    },
-    // Login: {
-    //   screen:LoginNavigator,
-    //   navigationOptions: {
-    //     drawerLabel: 'Login',
-    //     drawerIcon: tabInfo =>  (
-    //       <Ionicons name="md-information-circle-outline" size={25} color={tabInfo.tintColor} />
-    //       )
-    //   }
-    // },
-    // SignUpScreen: {
-    //   screen:MealsFavsNavigator,
-    //   navigationOptions: {
-    //     drawerLabel: 'Sign-Up',
-    //     drawerIcon: tabInfo =>  (
-    //       <Ionicons name="md-information-circle-outline" size={25} color={tabInfo.tintColor} />
-    //       )
-    //   }
-    // },
-    // Logout: {
-    //   screen:LoginNavigator,
-    //   navigationOptions: {
-    //     drawerLabel: 'Logout',
-    //     drawerIcon: tabInfo =>  (
-    //       <Ionicons name="ios-log-out" size={25} color={tabInfo.tintColor} />
-    //       )
-    //   }
-    // }
+    }
   },
   {
     contentComponent: props => <CustomDrawerContentComponent {...props} />,
