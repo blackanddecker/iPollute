@@ -338,7 +338,138 @@ class SettingsScreen extends Component {
         }
 
 
-
+        getProperElectricityPickerName = (id, description) =>{
+            if (id === 1){
+                return ("🏠 " + description)
+            }
+            if (id === 2){
+                return ("💡 " + description)
+            }
+            if (id === 3){
+                return ("🏠 " + description)
+            }
+            return ("🏠 " + description)
+        }
+    
+        getProperRecyclePickerName = (id, description) =>{
+            if (id === 7){
+                return ("🥾 " + description)
+            }
+            if (id === 12){
+                return ("📄 " + description)
+            }
+            if (id === 15){
+                return ("💡 " + description)
+            }
+            if (id === 7){
+                return ("♻️ " + description)
+            }
+            if (id === 7){
+                return ("♻️ " + description)
+            }
+            if (id === 7){
+                return ("♻️ " + description)
+            }
+            if (id === 7){
+                return ("♻️ " + description)
+            }
+            return ("♻️ " + description)
+        }
+    
+        getProperTransportPickerName = (id, description) =>{
+            if (id === 1 || id === 5 || id===6){
+                return ("✈️ " + description)
+            }
+            if (id === 2 || id === 8){
+                return ("🚗 " + description)
+            }
+            if (id === 3){
+                return ("🚗 " + description)
+            }
+            if (id === 10){
+                return ("🛳️ " + description)
+            }
+            if (id === 11){
+                return ("🚝 " + description)
+            }
+            if (id === 9){
+                return ("🚉 " + description)
+            }
+            if (id === 7){
+                return ("🏍️ " + description)
+            }
+            if (id === 4){
+                return ("🚌 " + description)
+            }
+            if (id === 12){
+                return ("🚲 " + description)
+            }
+            
+            return ("🚗" + description)
+        }
+    
+        getProperFoodPickerName = (id, description) =>{
+            if (id === 1){
+                return ("🐄 " + description)
+            }
+            if (id === 2){
+                return ("🐐 " + description)
+            }
+            if (id === 3){
+                return ("🧀 " + description)
+            }
+            if (id === 4){
+                return ("🍫 " + description)
+            }
+            if (id === 5){
+                return ("☕ " + description)
+            }
+            if (id === 6){
+                return ("🐖 " + description)
+            }
+            if (id === 7){
+                return ("🐄 " + description)
+            }
+            if (id === 8){
+                return ("🌴 " + description)
+            }
+            if (id === 9){
+                return ("🐟 " + description)
+            }
+            if (id === 10){
+                return ("🥚 " + description)
+            }
+            if (id === 11){
+                return ("🍚 " + description)
+            }
+            if (id === 12){
+                return ("🍶 " + description)
+            }
+            if (id === 13){
+                return ("🐟 " + description)
+            }
+            if (id === 14){
+                return ("🍅 " + description)
+            }
+            if (id === 15){
+                return ("🍌 " + description)
+            }
+            if (id === 16){
+                return ("🍎 " + description)
+            }
+            if (id === 17){
+                return ("🥬 " + description)
+            }
+            if (id === 18){
+                return ("🍐 " + description)
+            }
+            if (id === 19 || id === 20){
+                return ("🌽 " + description)
+            }
+            
+            return ("🐄" + description)
+        }
+    
 
         render() {
             if(this.state.isLoading === false) {
@@ -566,7 +697,7 @@ class SettingsScreen extends Component {
                                                 {this.state.foodData.map((foods, id) => {
                                                     return <Picker.Item 
                                                         value={foods.id} 
-                                                        label={foods.description}
+                                                        label={this.getProperFoodPickerName(foods.id, foods.description)}
                                                         key={foods.id}    /> 
                                                         
                                                         }
@@ -607,7 +738,7 @@ class SettingsScreen extends Component {
                                                     {this.state.transportData.map((transports, id) => {
                                                         return <Picker.Item 
                                                             value={transports.id} 
-                                                            label={transports.description}
+                                                            label={this.getProperTransportPickerName(transports.id, transports.description)}
                                                             key={transports.id}    /> 
                                                             }
                                                         )}

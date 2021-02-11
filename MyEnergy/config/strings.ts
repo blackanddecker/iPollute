@@ -3,7 +3,7 @@ const strings = {
     WELCOME_TO_LOGIN: "Welcome to the login screen!",
     EMAIL_PLACEHOLDER: "Email",
     PASSWORD_PLACEHOLDER: "Password",
-    SIGNIN : "Sing In"
+    SIGNIN : "Sign Up"
   };
   
   export default strings;

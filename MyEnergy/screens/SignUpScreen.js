@@ -105,14 +105,17 @@ class SignUpScreen extends Component {
         console.log(responseJson);     
         if (responseJson['success'] == true){
           console.log("Set param:", responseJson['user']['id']);
-          AsyncStorage.setItem('userId', responseJson['user']['id']);
-          this.props.navigation.navigate('Categories', 
-            {userId: responseJson['user']['id'],
-            email: responseJson['user']['email'],
-            username: responseJson['user']['username'],
-            fullname: responseJson['user']['fullname']
+
+          AsyncStorage.setItem('userId', responseJson['user']['id'].toString()).then((value) => {
+
+            this.props.navigation.navigate('Categories', 
+              {userId: responseJson['user']['id'],
+              email: responseJson['user']['email'],
+              username: responseJson['user']['username'],
+              fullname: responseJson['user']['fullname']
+            });
+            this.setState({ loading: false });
           });
-          this.setState({ loading: false });
 
           
         }
@@ -124,14 +127,14 @@ class SignUpScreen extends Component {
         }
         else{
           this.setState({ loading: false });
-          alert("SignIn Failed");
+          alert("Sign-Up Failed");
         }
 
     })
     .catch((error) => {
         console.error(error);
         this.setState({ loading: false });
-        alert("SignIn Failed");
+        alert("Sign-Up Failed");
         });
 
   };
@@ -253,7 +256,7 @@ class SignUpScreen extends Component {
 
 SignUpScreen.navigationOptions = navData => {
   return {
-      headerTitle: 'Sign-In',
+      headerTitle: 'Sign-Up',
       // headerLeft: (
       //     <HeaderButtons HeaderButtonComponent={HeaderButton}>
       //         <Item

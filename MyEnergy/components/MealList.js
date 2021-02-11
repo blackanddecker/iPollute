@@ -265,8 +265,9 @@ class MealList extends Component {
                     {itemIcon}
                 </View>
                 <View style = {styles.itemTexts}>
-                    <Text style={styles.textDescription}> {item.description}: {item.userCost} {stringCost}</Text> 
-                    <Text style={styles.textDate}> {userDate2} </Text>
+                    <Text style={styles.textDescription}>{item.description}: {item.userCost} {stringCost}</Text> 
+                    <Text style={styles.textDate}> {userDate2}  </Text> 
+                    {/* <Text style={styles.textDate}> {userDate2} </Text> */}
                     {/* <Text style={styles.text}> {actionType} C02: {item.totalCost.toFixed(1)} Kg</Text> */}
                 </View>
                 <View style={styles.iconStylesEdit}>
@@ -432,9 +433,8 @@ const styles = StyleSheet.create({
     // },
     item: {
         
-        marginBottom: 5,
         flexDirection: 'row',
-        height: 50,
+        height: 70,
         borderRadius: 9,
         justifyContent: 'flex-start',
         alignItems: 'stretch',
@@ -442,6 +442,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderTopWidth:1,
         borderTopColor:'grey'
+
         },
     buttonText: {
         textAlign: 'left',
@@ -449,8 +450,9 @@ const styles = StyleSheet.create({
         color: 'black'
     },
     itemTexts: {
+        flex:1, 
         alignSelf: 'center',
-        justifyContent: 'flex-start',
+        justifyContent: 'center',
         flexDirection: 'column',
         borderBottomColor: 'grey',
         alignItems: 'flex-start',
@@ -469,7 +471,7 @@ const styles = StyleSheet.create({
         
     },
     textCO2: {
-        fontSize: 12,
+        fontSize: 14,
         fontWeight: 'bold',
         marginLeft: 10,
         
@@ -506,7 +508,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: "flex-end",
         marginLeft:5,
-        padding: 20,
         marginRight: 10,
         alignSelf: 'stretch',
         alignItems: 'center',

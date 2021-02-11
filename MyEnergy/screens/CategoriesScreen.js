@@ -12,7 +12,8 @@ import {
     ScrollView,
     RefreshControl,
     NumberInput,
-    TouchableHighlight
+    TouchableHighlight,
+    Alert
 } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import Modal from 'react-native-modal';
@@ -91,7 +92,9 @@ class CategoriesScreen extends Component {
         popUpElectricityHelp:false,
         popUpRecycleHelp:false,
         popUpTransportHelp:false,
-        openWarningEnergyModal:false
+        openWarningEnergyModal:true, 
+        savedEnergyInfo: false,
+        savedEnergyMessage : ''
     }
     
     _onRefresh = () => {
@@ -231,10 +234,6 @@ class CategoriesScreen extends Component {
                     transportStr: responseJson['userDetails']['favTransport'],
                 })
                 console.log(this.state.warningEnergy , this.state.totalUserSavings, this.state.openWarningEnergyModal);
-
-                if ((this.state.warningEnergy > this.state.totalUserSavings) && (this.state.openWarningEnergyModal === false)){
-                    this.setState({openWarningEnergyModal:false})
-                }
                 
         })
         .catch((error) => {
@@ -285,6 +284,8 @@ class CategoriesScreen extends Component {
             this.setState({isLoading:true})
             this.fetchData(this.state.userId, this.state.appliedFilters)
             this.setState({isLoading:false})
+            this.setState({ openWarningEnergyModal: true})
+
 
           }
         });
@@ -332,7 +333,18 @@ class CategoriesScreen extends Component {
         .then((responseJson) => {
             console.log(responseJson);
             if(responseJson['success'] == true){
-                alert(responseJson['message']);
+                //alert(responseJson['message']); 
+
+                // Alert.alert(
+                //     'Action Saved',
+                //     responseJson['message'],
+                //     [
+                //       { text: 'OK', onPress: () => console.log('OK Pressed') }
+                //     ],
+                //     { cancelable: false }
+                //   );
+
+                this.setState({savedEnergyInfo:true, savedEnergyMessage: responseJson['message']})
                 this.closeTransportModal()
                 this.closeFoodModal()
                 this.closeRecycleModal()
@@ -378,7 +390,6 @@ class CategoriesScreen extends Component {
     openFoodModal = () =>{this.setState({isFoodModalVisible:true, energyItemId:this.state.favFood, energyTypeId: 0 })}
     toggleFoodModal = () =>{this.setState({isFoodModalVisible:!this.state.isFoodModalVisible})}
     closeFoodModal = () =>{this.setState({isFoodModalVisible:false, userCost: 0, foodStr: this.state.favFood })}
-    
     
     openRecycleModal = () =>{this.setState({isRecycleModalVisible:true, energyItemId:1, energyTypeId: 2 })}
     toggleRecycleModal = () =>{this.setState({isRecycleModalVisible:!this.state.isRecycleModalVisible})}
@@ -599,8 +610,23 @@ class CategoriesScreen extends Component {
                         onRefresh={this._onRefresh}
                     />
                     }
-                >
-                    <View style={styles.progressStyle}> 
+                >   
+                    {  ((this.state.warningEnergy > this.state.totalUserSavings) && this.state.openWarningEnergyModal === true) &&
+                        <View style = {{flexDirection:'row', backgroundColor: "orange", justifyContent: "center", alignItems: "center", alignSelf: 'flex-start'}}>
+                            <View style = {{alignSelf: 'center'}}>
+                                <FontAwesome name="warning" size={20} color={"white"} style={{ margin:5}}></FontAwesome>
+                            </View>
+                            <View style ={{flex:1, marginRight: 10}}>
+                                <Text style={styles.titleWarning}> Please Recycle</Text>
+                                <Text style={styles.warningText}> Your carbon / recycle ratio percentage must be more than {this.state.warningEnergy} % </Text>
+                                
+                            </View>
+                            <View style = {{alignSelf: 'center'}}>
+                                <Ionicons name="close-circle-outline" size={18} color={"white"} style={{ margin:5}} onPress = {() => {this.setState({ openWarningEnergyModal: false });}}></Ionicons>
+                            </View>
+                        </View>
+                    }
+                    <View style={styles.progressStyle}>     
                     {/* <View style={styles.infoHelp}>
                         <FontAwesome name="info" size={20} color={Colors.primaryColor} onPress={() => {this.setState({ popUpHelp: true }); }}/>
                     </View> */}
@@ -664,24 +690,31 @@ class CategoriesScreen extends Component {
                     <TouchableOpacity style= {styles.Eachtotal} onPress = {() => {this.setState({ popUpTransportHelp: true }); }}>
                         <View style= {styles.Eachtotal}>
                             <Ionicons name="car" size={24} color={Colors.primaryColor} />
-                            <Text style={styles.text}> Transport </Text>
-                            <Text style={styles.text}> {this.state.totalTransportCost} %</Text>
-
+                            <Text style={styles.textExpl}> Transport </Text>
+                            <View style = {{flexDirection: 'row'}}>
+                                <Text style={styles.textNumber}> {this.state.totalTransportCost}</Text><Text style={styles.textUnit}> %</Text>
+                            </View>
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity style= {styles.Eachtotal} onPress = {() => {this.setState({ popUpFoodHelp: true }); }}>
                         <View style= {styles.Eachtotal}>
                                 <Ionicons name="fast-food" size={25} color={Colors.primaryColor}  />
-                                <Text style={styles.text}> Food </Text>
-                                <Text style={styles.text}> {this.state.totalFoodCost} %</Text>
+                                <Text style={styles.textExpl}> Food </Text>
+                                <View style = {{flexDirection: 'row'}}>
+                                    <Text style={styles.textNumber}> {this.state.totalFoodCost}</Text><Text style={styles.textUnit}> %</Text>
+                                </View>
                         </View>
                     </TouchableOpacity>
                     
                     <TouchableOpacity style= {styles.Eachtotal} onPress = {() => {this.setState({ popUpElectricityHelp: true }); }}>
                         <View style= {styles.Eachtotal}>
                             <FontAwesome name="bolt" size={25} color={Colors.primaryColor} />
-                            <Text > Housing</Text>
-                            <Text > {this.state.totalElectricityCost} %</Text>
+                            <Text style={styles.textExpl}> Housing</Text>
+                            <View style = {{flexDirection: 'row', textAlign:'center'}}>
+                                <Text style={styles.textNumber}> {this.state.totalElectricityCost}</Text>
+                                <Text style={styles.textUnit}> %</Text>
+                            </View>
+
                         </View>
                     </TouchableOpacity>
 
@@ -689,8 +722,9 @@ class CategoriesScreen extends Component {
 
                         <View style= {styles.Eachtotal}>
                             <MaterialCommunityIcons name="recycle" size={25} color={Colors.primaryColor}/>
-                            <Text style={styles.text}> Recycled </Text>
-                            <Text style={styles.text}> {this.state.totalRecycleCost} (kg CO2) </Text>
+                            <Text style={styles.textExpl}> Recycled </Text>
+                            <Text style={styles.textNumber}> {(this.state.totalRecycleCost).toFixed(1)}</Text>
+                            <Text style={styles.textUnit}> (kg CO2) </Text>
                         </View>
                     </TouchableOpacity>
 
@@ -698,7 +732,6 @@ class CategoriesScreen extends Component {
 
 
                     <View style={styles.inputLabels}>
-                        <Text> </Text>
                         <TouchableOpacity    onPress={()=>this.openTransportModal()}    underlayColor="white">
                             <View style={styles.button}>
                                 <View style={styles.iconsStyles}>
@@ -707,7 +740,6 @@ class CategoriesScreen extends Component {
                                 <Text style={styles.buttonText}> Transport Emissions</Text>
                             </View>
                         </TouchableOpacity>
-                        <Text> </Text>
                         <TouchableOpacity    onPress={()=>this.openFoodModal()}    underlayColor="white">
                             <View style={styles.button}>
                                 <View style={styles.iconsStyles}>
@@ -716,7 +748,6 @@ class CategoriesScreen extends Component {
                                 <Text style={styles.buttonText}> Food Emissions</Text>
                             </View>
                         </TouchableOpacity>
-                        <Text> </Text>
 
                         <TouchableOpacity    onPress={()=>this.openElectricityModal()}    underlayColor="white">
                             <View style={styles.button}>
@@ -727,7 +758,6 @@ class CategoriesScreen extends Component {
                             </View>
                         </TouchableOpacity>
 
-                        <Text> </Text>
 
                         <TouchableOpacity    onPress={()=>this.openRecycleModal()}    underlayColor="white">
                             <View style={styles.buttonRecycle}>
@@ -990,7 +1020,8 @@ class CategoriesScreen extends Component {
                             >
                             <DialogContent>
                                     <FontAwesome name="info" size={35} color={Colors.primaryColor} style={{alignSelf: 'center', margin:20}} ></FontAwesome>
-                                    <Text style={styles.text}>Total: {this.state.totalUserEnergyCost} (kg CO2) </Text>
+                                    <Text style={styles.text}>Total carbon emissions are: {this.state.totalUserEnergyCost} kg CO2 </Text>
+                                    <Text style={styles.text}>Total saved kg of C02 because of recycling are: {this.state.totalUserEnergyRecycle} kg CO2 </Text>
                                     <Text style={styles.text}>{explText}</Text>
 
                                 </DialogContent>
@@ -1058,32 +1089,22 @@ class CategoriesScreen extends Component {
 
                         </Dialog>
 
+                        <Dialog
+                            style={styles.dialogView}
+                            visible={(this.state.savedEnergyInfo)}
+                            onTouchOutside={() => {
+                                this.setState({ savedEnergyInfo: false });
+                            }}
+                        >
+                            <DialogContent>
+                                    <FontAwesome name="check-circle" size={35} color={"green"} style={{alignSelf: 'center', margin:15}}></FontAwesome>
+                                    <View style= {{alignItems: 'center', justifyContent: 'center'}}>
+                                        <Text style={styles.title}>Action Saved </Text>
+                                        <Text style={styles.text}>Your action is equivalent of {this.state.savedEnergyMessage}.  </Text>
+                                    </View>
+                            </DialogContent>
 
-
-
-
-
-                        {  (this.state.warningEnergy > this.state.totalUserSavings)  &&
-                
-                            <Dialog
-                                style={styles.dialogView}
-                                visible={(this.state.openWarningEnergyModal)}
-                                onTouchOutside={() => {
-                                    this.setState({ openWarningEnergyModal: false });
-                                }}
-                            >
-                                <DialogContent>
-                                    <FontAwesome name="warning" size={35} color={"orange"} style={{alignSelf: 'center', margin:20}}></FontAwesome>
-                                    <Text style={styles.title}> Please Recycle</Text>
-                                    <Text></Text>
-                                    <Text style={styles.warningText}> Your carbon / recycle ratio percentage must be more than {this.state.warningEnergy} % </Text>
-                                    <Text></Text>
-                                    <Text style={styles.hintText}> This is a custom warning based on user settings</Text>
-
-                                </DialogContent>
-
-                        </Dialog>
-                        }
+                    </Dialog>
 
                 </ScrollView>
 
@@ -1122,13 +1143,37 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold'
     },
+    titleWarning:{
+        textAlign: 'center',
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: 'white'
+
+    },
     warningText:{
         textAlign: 'center',
-        fontSize: 16
+        fontSize: 12,
+        color: 'white'
+
     },
     hintText:{
         textAlign: 'center',
         fontSize: 5
+    },
+    textUnit:{
+        textAlign: 'center',
+        fontSize: 12,
+        alignSelf: 'center',
+        justifyContent: 'center',
+        flexDirection: 'column',
+    },
+    textNumber:{
+        textAlign: 'center',
+        fontSize: 15
+    },
+    textExpl:{
+        textAlign: 'center',
+        fontSize: 12
     },
     wrapper: {
         backgroundColor:'rgba(255,255,255,0.5)'
@@ -1149,8 +1194,7 @@ const styles = StyleSheet.create({
         color: 'black'
     },
     inputLabels:{
-        justifyContent: 'flex-start',
-        padding: 10
+        justifyContent: 'flex-start'
     },
     submitButton: {
             backgroundColor: Colors.primaryColor,
@@ -1172,6 +1216,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         height: 60,
         borderRadius: 6,
+        marginBottom: 13, 
         alignItems: 'center',
         width: '100%',
         paddingLeft:20,
@@ -1183,7 +1228,7 @@ const styles = StyleSheet.create({
             width: 0 
         },
         shadowRadius: 25,
-        backgroundColor:    Colors.primaryColor
+        backgroundColor: Colors.primaryColor
     },
 
 
@@ -1248,7 +1293,7 @@ const styles = StyleSheet.create({
         elevation: 5
     },
     totals:{
-        marginBottom: 2,
+        marginBottom: 5,
         marginTop: 10,
 
         // textAlign: 'center',

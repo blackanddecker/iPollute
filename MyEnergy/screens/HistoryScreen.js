@@ -126,7 +126,7 @@ class HistoryScreen extends Component {
         
       })
       //do something else
-  });
+    });
     console.log("Component did mount")
   }
     
@@ -136,7 +136,17 @@ class HistoryScreen extends Component {
   
   componentDidUpdate(prevProps){
 
-    const appliedFilters = AsyncStorage.getItem('appliedFilters').then((value) => {    
+    var userId = AsyncStorage.getItem('userId').then((value) => {
+      value = parseInt(value)
+      console.log("History User Id Async:",this.state.userId);
+      return value      
+    })
+    .then(userId => {
+      if (userId !== this.state.userId){
+        this.setState({userId: userId});
+      }
+
+      var appliedFilters = AsyncStorage.getItem('appliedFilters').then((value) => {    
       console.log("componentDidUpdate Get appliedFilters Async History:",value);
       return JSON.parse(value) 
     })
@@ -151,6 +161,8 @@ class HistoryScreen extends Component {
         this.setState({isLoading: false});
 
       }
+      //do something else
+      })
     });
   }
 
@@ -314,9 +326,9 @@ class HistoryScreen extends Component {
                 >
                     <DialogContent>
                         <FontAwesome name="info" size={35} color={Colors.primaryColor} style={{alignSelf: 'center', margin:20}}></FontAwesome>
-                        <Text style={styles.textInfo}> Total Transport Emissions : { Math.round(0.01 * this.state.totalUserEnergyCost * this.state.totalTransportCost).toFixed(1)} Kg -  {this.state.totalTransportCost} %</Text>
-                        <Text style={styles.textInfo}> Total Food Emissions : { Math.round(0.01 * this.state.totalUserEnergyCost * this.state.totalFoodCost).toFixed(1)} Kg - {this.state.totalFoodCost} %</Text>
-                        <Text style={styles.textInfo}> Total Housing Emissions : { Math.round(0.01 * this.state.totalUserEnergyCost * this.state.totalElectricityCost).toFixed(1)} Kg - {this.state.totalElectricityCost} % </Text>
+                        <Text style={styles.textInfo}> Total Transport Emissions : { Math.round(0.01 * this.state.totalUserEnergyCost * this.state.totalTransportCost).toFixed(1)} Kg C02 -  {this.state.totalTransportCost} %</Text>
+                        <Text style={styles.textInfo}> Total Food Emissions : { Math.round(0.01 * this.state.totalUserEnergyCost * this.state.totalFoodCost).toFixed(1)} Kg C02 - {this.state.totalFoodCost} %</Text>
+                        <Text style={styles.textInfo}> Total Housing Emissions : { Math.round(0.01 * this.state.totalUserEnergyCost * this.state.totalElectricityCost).toFixed(1)} Kg C02 - {this.state.totalElectricityCost} % </Text>
 
                     </DialogContent>
 
@@ -332,7 +344,7 @@ class HistoryScreen extends Component {
                 >
                     <DialogContent>
                         <FontAwesome name="info" size={35} color={Colors.primaryColor} style={{alignSelf: 'center', margin:20}}></FontAwesome>
-                        <Text style={styles.textInfo}> Total Recycled kilograms : {this.state.totalRecycleCost} </Text>
+                        <Text style={styles.textInfo}> Total Recycled: {this.state.totalRecycleCost.toFixed(1)} kg CO2 </Text>
                     </DialogContent>
 
             </Dialog>
