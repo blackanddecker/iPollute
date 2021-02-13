@@ -927,7 +927,7 @@ class CategoriesScreen extends Component {
                                         <Slider
                                             value={this.state.userCost}
                                             onValueChange={this.updateCost}
-                                            maximumValue={20}
+                                            maximumValue={10}
                                             minimumValue={0.1}
                                             step={0.1}
                                             trackStyle={{ height: 10, backgroundColor: 'transparent' }}

@@ -46,6 +46,7 @@ const LoginNavigator = createStackNavigator(
 
   },
   {
+    
     defaultNavigationOptions: defaultStackNavOptions
   }
 );

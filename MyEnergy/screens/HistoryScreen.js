@@ -326,9 +326,9 @@ class HistoryScreen extends Component {
                 >
                     <DialogContent>
                         <FontAwesome name="info" size={35} color={Colors.primaryColor} style={{alignSelf: 'center', margin:20}}></FontAwesome>
-                        <Text style={styles.textInfo}> Total Transport Emissions : { Math.round(0.01 * this.state.totalUserEnergyCost * this.state.totalTransportCost).toFixed(1)} Kg C02 -  {this.state.totalTransportCost} %</Text>
-                        <Text style={styles.textInfo}> Total Food Emissions : { Math.round(0.01 * this.state.totalUserEnergyCost * this.state.totalFoodCost).toFixed(1)} Kg C02 - {this.state.totalFoodCost} %</Text>
-                        <Text style={styles.textInfo}> Total Housing Emissions : { Math.round(0.01 * this.state.totalUserEnergyCost * this.state.totalElectricityCost).toFixed(1)} Kg C02 - {this.state.totalElectricityCost} % </Text>
+                        <Text style={styles.textInfo}> Total Transport Emissions : { (0.01 * this.state.totalUserEnergyCost * this.state.totalTransportCost).toFixed(1)} Kg C02 -  {this.state.totalTransportCost} %</Text>
+                        <Text style={styles.textInfo}> Total Food Emissions : { (0.01 * this.state.totalUserEnergyCost * this.state.totalFoodCost).toFixed(1)} Kg C02 - {this.state.totalFoodCost} %</Text>
+                        <Text style={styles.textInfo}> Total Housing Emissions : { (0.01 * this.state.totalUserEnergyCost * this.state.totalElectricityCost).toFixed(1)} Kg C02 - {this.state.totalElectricityCost} % </Text>
 
                     </DialogContent>
 
@@ -360,9 +360,10 @@ class HistoryScreen extends Component {
                         <FontAwesome name="info" size={35} color={Colors.primaryColor} style={{alignSelf: 'center', margin:20}}></FontAwesome>
                         <Text style={styles.text}>
                           Comparing Carbon Reducing Progress from last week and current week </Text>
-                          <Text style={styles.textInfo}>Last Week : {this.state.lastWeekCo2} </Text>
-                          <Text style={styles.textInfo}>Current Week: {this.state.curWeekCo2 } </Text>
-                          <Text style={styles.textInfo}>Total: {this.state.totalCo2Reduced}  </Text>
+                          <Text style={styles.textInfo}>Last Week : {this.state.lastWeekCo2} kg C02</Text>
+                          <Text style={styles.textInfo}>Current Week: {this.state.curWeekCo2 } kg C02</Text>
+                          <Text style={styles.textInfo}>Total difference: {(this.state.curWeekCo2 - this.state.lastWeekCo2).toFixed(1)} kg C02</Text>
+                          <Text style={styles.textInfo}>Total difference: {this.state.totalCo2Reduced} % </Text>
                     </DialogContent>
 
             </Dialog>
@@ -379,9 +380,10 @@ class HistoryScreen extends Component {
                         <FontAwesome name="info" size={35} color={Colors.primaryColor} style={{alignSelf: 'center', margin:20}}></FontAwesome>
                         <Text style={styles.text}>
                           Comparing Recycling Increasing Progress from last week and current week </Text>
-                          <Text style={styles.textInfo}>Last Week : {this.state.lastWeekCo2Recycled} </Text>
-                          <Text style={styles.textInfo}>Current Week: {this.state.curWeekCo2Recycled } </Text>
-                          <Text style={styles.textInfo}>Total: {this.state.totalCo2RecycledReduced}  </Text>
+                          <Text style={styles.textInfo}>Last Week : {this.state.lastWeekCo2Recycled} kg C02</Text>
+                          <Text style={styles.textInfo}>Current Week: {this.state.curWeekCo2Recycled } kg C02 </Text>
+                          <Text style={styles.textInfo}>Total difference: {(this.state.curWeekCo2Recycled - this.state.lastWeekCo2Recycled).toFixed(1)} kg C02</Text>
+                          <Text style={styles.textInfo}>Total: {this.state.totalCo2RecycledReduced} % </Text>
                     </DialogContent>
 
             </Dialog>

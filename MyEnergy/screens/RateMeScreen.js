@@ -30,7 +30,7 @@ class RateMeScreen extends Component {
 
     componentDidMount = () => {
 
-        const { navigation } = this.props;
+        // const { navigation } = this.props;
         const userId = AsyncStorage.getItem('userId').then((value) => {
           this.setState({userId: value});
       
@@ -121,7 +121,19 @@ class RateMeScreen extends Component {
     }
 
 
-
+    componentDidUpdate(prevProps){
+        if ( prevProps.isFocused !== this.props.isFocused ) {
+            const userId = AsyncStorage.getItem('userId').then((value) => {
+                this.setState({userId: value});
+            
+                console.log("Settings AsyncStorage UserId:",this.state.userId);
+                return value
+              })
+              .then(userId => {
+                      this.fetchData(this.state.userId)
+                  })
+        }
+    }
 
 
 
