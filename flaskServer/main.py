@@ -75,7 +75,7 @@ auth = HTTPBasicAuth()
 
 @auth.verify_password
 def verify_password(username, password):
-    print(username, password)
+    #print(username, password)
     if username == 'iPolluteUserName':
         check_password_hash(password,  configs['BASIC_AUTH'])
         return username

@@ -200,7 +200,7 @@ def getEnergyHistory(connection, data):
                     "curWeekCo2Recycled": round(curWeekCo2Recycled,1),
                     "lastWeekCo2Recycled": round(lastWeekCo2Recycled,1)
                     } }
-            print(response)
+            #print(response)
             return response, 200
 
     
