@@ -16,6 +16,7 @@ import Password from "../components/PasswordTextBox";
 import base64 from 'react-native-base64'
 import { Slider } from 'react-native-elements';
 import EnergyObjects from '../constants/EnergyObjects';
+import { withNavigationFocus } from 'react-navigation';
 
 // import {Picker} from '@react-native-picker/picker';
 // import { Dropdown } from 'react-native-material-dropdown';
@@ -994,4 +995,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default SettingsScreen;
+export default withNavigationFocus(SettingsScreen);

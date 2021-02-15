@@ -804,7 +804,7 @@ class CategoriesScreen extends Component {
                                         <Slider
                                             value={this.state.userCost}
                                             onValueChange={this.updateCost}
-                                            maximumValue={1000}
+                                            maximumValue={100}
                                             minimumValue={1}
                                             step={1}
                                             trackStyle={{ height: 10, backgroundColor: 'transparent' }}
@@ -858,14 +858,14 @@ class CategoriesScreen extends Component {
                                             </Picker>  
                                         </View>
                                         <Text></Text>
-                                        <Text style = {styles.text}>Add Kilograms: {(this.state.userCost).toFixed(1)}</Text>  
+                                        <Text style = {styles.text}>Add Kilograms: {(this.state.userCost).toFixed(2)}</Text>  
                                         
                                         <Slider
                                             value={this.state.userCost}
                                             onValueChange={this.updateCost}
-                                            maximumValue={10}
-                                            minimumValue={0.1}
-                                            step={0.1}
+                                            maximumValue={1}
+                                            minimumValue={0.01}
+                                            step={0.01}
                                             trackStyle={{ height: 10, backgroundColor: 'transparent' }}
                                             thumbStyle={{ height: 20, width: 20, backgroundColor: Colors.primaryColor }}
                                         /> 
@@ -927,7 +927,7 @@ class CategoriesScreen extends Component {
                                         <Slider
                                             value={this.state.userCost}
                                             onValueChange={this.updateCost}
-                                            maximumValue={10}
+                                            maximumValue={5}
                                             minimumValue={0.1}
                                             step={0.1}
                                             trackStyle={{ height: 10, backgroundColor: 'transparent' }}

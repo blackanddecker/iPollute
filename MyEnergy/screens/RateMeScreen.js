@@ -12,6 +12,7 @@ import BaseUrl from '../constants/Url';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import base64 from 'react-native-base64'
+import { withNavigationFocus } from 'react-navigation';
 
 class RateMeScreen extends Component {
 
@@ -270,4 +271,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default RateMeScreen
+export default withNavigationFocus(RateMeScreen);

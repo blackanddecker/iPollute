@@ -254,7 +254,7 @@ class MealList extends Component {
 
     var userDate = new Date(item.energyDate)
     var userDateMonth = parseInt(userDate.getMonth() , 10 ) + 1;
-    var userDate2 = userDate.getDate() +'/'+ userDateMonth + '/'  + userDate.getFullYear() + ' -' + ' '  + String(userDate.getHours()).padStart(2, '0') + ":" + String(userDate.getMinutes()).padStart(2, '0')
+    var userDate2 = userDate.getUTCDate() +'/'+ userDateMonth + '/'  + userDate.getFullYear() + ' -' + ' '  + String(userDate.getUTCHours()).padStart(2, '0') + ":" + String(userDate.getMinutes()).padStart(2, '0')
 
     return (
 

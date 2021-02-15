@@ -13,6 +13,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 
 import { Icon } from 'react-native-elements';
 import base64 from 'react-native-base64'
+import { withNavigationFocus } from 'react-navigation';
 
 
 class FiltersScreen extends Component {
@@ -35,8 +36,6 @@ class FiltersScreen extends Component {
         foods: [],
         lowCurrentKg:0,
         lowCurrentKm:0,
-        highCurrentKg:0,
-        highCurrentKm:0,
         maxCurrentDate: new Date(),
         minCurrentDate: new Date(),
         isTransport: true, 
@@ -50,8 +49,19 @@ class FiltersScreen extends Component {
         this.forceUpdate();
     };
 
-    componentDidUpdate(){
+    componentDidUpdate(prevProps){
+        if ( prevProps.isFocused !== this.props.isFocused ) {
+            const userId = AsyncStorage.getItem('userId').then((value) => {
+                this.setState({userId: value});
+                console.log("Settings AsyncStorage UserId:",this.state.userId);
+                return value
+              })
+              .then(userId => {
+                      this.fetchData(this.state.userId)
+                  })
+        }
     }
+
 
     _onRefresh = () => {
         this.setState({refreshing: true});
@@ -78,12 +88,16 @@ class FiltersScreen extends Component {
         .then((responseJson) => {
 
             var minD = new Date(responseJson['filters']['minDate'])
-            var minMonth = parseInt(minD.getMonth() , 10 ) + 1;           
-            var minD2 = minD.getFullYear() + '-' + minMonth + '-' + minD.getDate()
+
+            var minMonth = parseInt(minD.getMonth() , 10 ) + 1; ;           
+            var minD2 = minD.getFullYear() + '-' + minMonth + '-' + minD.getUTCDate()
+            console.log(minD, "- > Min Date:", minD.getFullYear() + '-' + minMonth + '-' + minD.getUTCDate())
+            
             
             var maxD = new Date(responseJson['filters']['maxDate'])
             var maxMonth = parseInt(maxD.getMonth() , 10 ) + 1;
-            var maxD2 = maxD.getFullYear() + '-' + maxMonth + '-' + maxD.getDate()
+            var maxD2 = maxD.getFullYear() + '-' + maxMonth + '-' + maxD.getUTCDate()
+            console.log(maxD, "- > Max Date:", maxD.getFullYear() + '-' + maxMonth + '-' + maxD.getUTCDate())
 
             this.setState({
                 minDate : minD2,
@@ -97,8 +111,6 @@ class FiltersScreen extends Component {
 
                 lowCurrentKg:responseJson['filters']['minKg'],
                 lowCurrentKm:responseJson['filters']['minKm'],
-                highCurrentKg:responseJson['filters']['maxKg'],
-                highCurrentKm:responseJson['filters']['maxKm'],
 
                 transports: [],
                 foods: [],
@@ -141,9 +153,7 @@ class FiltersScreen extends Component {
             isElectricity:this.state.isElectricity,
             isRecycle:this.state.isRecycle,
             lowKm: this.state.lowCurrentKm,
-            highKm: this.state.highCurrenKm,
             lowKg: this.state.lowCurrentKg,
-            highKg: this.state.highCurrenKg,
             minCurrentDate: this.state.minCurrentDate, 
             maxCurrentDate: this.state.maxCurrentDate, 
 
@@ -321,13 +331,13 @@ class FiltersScreen extends Component {
                                 onValueChange={this.updateCurrentKg}
                                 maximumValue={this.state.maxKg}
                                 minimumValue={this.state.minKg}
-                                step={1}
+                                step={0.01}
                                 trackStyle={{ height: 10, backgroundColor: 'transparent' }}
                                 thumbStyle={{ height: 20, width: 20, backgroundColor: Colors.primaryColor }}
                             /> 
 
                         </View>
-                        <Text style={styles.text}>Food (kg) {String(">")} {Math.round(this.state.lowCurrentKg).toFixed(1)}</Text>
+                        <Text style={styles.text}>Food (kg) {String("> ")}: {(this.state.lowCurrentKg).toFixed(2)}</Text>
                     </View>
 
                     <View style={styles.component}>
@@ -338,12 +348,12 @@ class FiltersScreen extends Component {
                                 onValueChange={this.updateCurrentKm}
                                 maximumValue={this.state.maxKm}
                                 minimumValue={this.state.minKm}
-                                step={5}
+                                step={1}
                                 trackStyle={{ height: 10, backgroundColor: 'transparent' }}
                                 thumbStyle={{ height: 20, width: 20, backgroundColor: Colors.primaryColor }}
                             />
                         </View>
-                        <Text style={styles.text}>Transport (km) {String(">")} {this.state.lowCurrentKm}</Text>
+                        <Text style={styles.text}>Transport (km) {String(">")} : {this.state.lowCurrentKm}</Text>
                     </View>
 
                     <View>
@@ -529,4 +539,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default FiltersScreen;
+export default withNavigationFocus(FiltersScreen);
